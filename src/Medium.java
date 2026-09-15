@@ -52,8 +52,6 @@ public class Medium
     int vxz;
     int adv;
     boolean vert;
-    float[] tcos;
-    float[] tsin;
     int lastmaf;
     int checkpoint;
     boolean lastcheck;
@@ -108,8 +106,7 @@ public class Medium
     int[][][] stc;
     boolean[] bst;
     int[] twn;
-    int resdown;
-    int rescnt;
+    int origfade = 3000;
     
     public Medium() {
         this.focus_point = 400;
@@ -140,7 +137,7 @@ public class Medium
         this.crs = false;
         this.cx = 400;
         this.cy = 225;
-        this.cz = 50;
+        this.cz = 1000;
         this.xz = 0;
         this.zy = 0;
         this.x = 0;
@@ -160,8 +157,6 @@ public class Medium
         this.vxz = 180;
         this.adv = 500;
         this.vert = false;
-        this.tcos = new float[360];
-        this.tsin = new float[360];
         this.lastmaf = 0;
         this.checkpoint = -1;
         this.lastcheck = false;
@@ -216,14 +211,6 @@ public class Medium
         this.stc = null;
         this.bst = null;
         this.twn = null;
-        this.resdown = 0;
-        this.rescnt = 5;
-        for (int i = 0; i < 360; ++i) {
-            this.tcos[i] = (float)Math.cos(i * 0.017453292519943295);
-        }
-        for (int j = 0; j < 360; ++j) {
-            this.tsin[j] = (float)Math.sin(j * 0.017453292519943295);
-        }
     }
     
     public float random() {
@@ -623,19 +610,19 @@ public class Medium
         }
         if (n2 != 0) {
             if (n2 == 1) {
-                if (this.bcxz < 180) {
+                if (this.bcxz < 90) {
                     this.bcxz += n3;
                 }
-                if (this.bcxz > 180) {
-                    this.bcxz = 180;
+                if (this.bcxz > 90) {
+                    this.bcxz = 90;
                 }
             }
             if (n2 == -1) {
-                if (this.bcxz > -180) {
+                if (this.bcxz > -90) {
                     this.bcxz -= n3;
                 }
-                if (this.bcxz < -180) {
-                    this.bcxz = -180;
+                if (this.bcxz < -90) {
+                    this.bcxz = -90;
                 }
             }
         }
@@ -837,7 +824,7 @@ public class Medium
         }
     }
     
-    public void groundpolys(final Graphics2D graphics2D) {
+    public void groundpolys(final Graphics2D rd) {
         int n = (int) ((this.x - this.sgpx) / 1200 - 12);
         if (n < 0) {
             n = 0;
@@ -865,7 +852,7 @@ public class Medium
             for (int j = n2; j < ncl; ++j) {
                 array[i - n][j - n2] = 0;
                 final int n3 = i + j * this.nrw;
-                if (this.resdown < 2 || n3 % 2 == 0) {
+                if (n3 % 2 == 0) {
                     final float n4 = this.cx + (int)((this.cgpx[n3] - this.x - this.cx) * this.cos(this.xz) - (this.cgpz[n3] - this.z - this.cz) * this.sin(this.xz));
                     final float n5 = this.cz + (int)((250 - this.y - this.cy) * this.sin(this.zy) + (this.cz + (int)((this.cgpx[n3] - this.x - this.cx) * this.sin(this.xz) + (this.cgpz[n3] - this.z - this.cz) * this.cos(this.xz)) - this.cz) * this.cos(this.zy));
                     if (this.xs(n4 + this.pmx[n3], n5) > 0 && this.xs(n4 - this.pmx[n3], n5) < this.w && n5 > -this.pmx[n3] && n5 < this.fade[2]) {
@@ -920,8 +907,8 @@ public class Medium
                                 g = (g * 7 + this.cfade[1]) / 8;
                                 b2 = (b2 * 7 + this.cfade[2]) / 8;
                             }
-                            graphics2D.setColor(new Color(r, g, b2));
-                            graphics2D.fillPolygon(array5, array6, 8);
+                            rd.setColor(new Color(r, g, b2));
+                            rd.fillPolygon(array5, array6, 8);
                         }
                     }
                 }
@@ -981,8 +968,8 @@ public class Medium
                             g2 = (g2 * 7 + this.cfade[1]) / 8;
                             b4 = (b4 * 7 + this.cfade[2]) / 8;
                         }
-                        graphics2D.setColor(new Color(r2, g2, b4));
-                        graphics2D.fillPolygon(array10, array11, 8);
+                        rd.setColor(new Color(r2, g2, b4));
+                        rd.fillPolygon(array10, array11, 8);
                     }
                 }
             }
@@ -1125,7 +1112,7 @@ public class Medium
         }
     }
     
-    public void drawclouds(final Graphics2D graphics2D) {
+    public void drawclouds(final Graphics2D rd) {
         for (int i = 0; i < this.noc; ++i) {
             final float n = this.cx + (int)((this.clx[i] - this.x / 20 - this.cx) * this.cos(this.xz) - (this.clz[i] - this.z / 20 - this.cz) * this.sin(this.xz));
             final float n2 = this.cz + (int)((this.cldd[4] - this.y / 20 - this.cy) * this.sin(this.zy) + (this.cz + (int)((this.clx[i] - this.x / 20 - this.cx) * this.sin(this.xz) + (this.clz[i] - this.z / 20 - this.cz) * this.cos(this.xz)) - this.cz) * this.cos(this.zy));
@@ -1228,8 +1215,8 @@ public class Medium
                                     b2 = (b2 * this.fogd + this.cfade[2]) / (this.fogd + 1);
                                 }
                             }
-                            graphics2D.setColor(new Color(r, g, b2));
-                            graphics2D.fillPolygon(array4, array5, 6);
+                            rd.setColor(new Color(r, g, b2));
+                            rd.fillPolygon(array4, array5, 6);
                         }
                     }
                 }
@@ -1315,8 +1302,8 @@ public class Medium
                                     b4 = (b4 * this.fogd + this.cfade[2]) / (this.fogd + 1);
                                 }
                             }
-                            graphics2D.setColor(new Color(r2, g2, b4));
-                            graphics2D.fillPolygon(array4, array5, 6);
+                            rd.setColor(new Color(r2, g2, b4));
+                            rd.fillPolygon(array4, array5, 6);
                         }
                     }
                 }
@@ -1366,8 +1353,8 @@ public class Medium
                                 b6 = (b6 * this.fogd + this.cfade[2]) / (this.fogd + 1);
                             }
                         }
-                        graphics2D.setColor(new Color(r3, g3, b6));
-                        graphics2D.fillPolygon(array4, array5, 12);
+                        rd.setColor(new Color(r3, g3, b6));
+                        rd.fillPolygon(array4, array5, 12);
                     }
                 }
             }
@@ -1473,7 +1460,7 @@ public class Medium
         }
     }
     
-    public void drawmountains(final Graphics2D graphics2D) {
+    public void drawmountains(final Graphics2D rd) {
         for (int i = 0; i < this.nmt; ++i) {
             final int n = this.mrd[i];
             final float n2 = this.cx + (int)((this.mtx[n][0] - this.x / 30 - this.cx) * this.cos(this.xz) - (this.mtz[n][0] - this.z / 30 - this.cz) * this.sin(this.xz));
@@ -1530,8 +1517,8 @@ public class Medium
                             if (n10 < 3.5) {
                                 n10 = 3.5f;
                             }
-                            graphics2D.setColor(new Color((int)((this.mtc[n][k][0] + this.cgrnd[0] + this.csky[0] * n10 + this.cfade[0] * n10) / (2.0f + n10 * 2.0f)), (int)((this.mtc[n][k][1] + this.cgrnd[1] + this.csky[1] * n10 + this.cfade[1] * n10) / (2.0f + n10 * 2.0f)), (int)((this.mtc[n][k][2] + this.cgrnd[2] + this.csky[2] * n10 + this.cfade[2] * n10) / (2.0f + n10 * 2.0f))));
-                            graphics2D.fillPolygon(array4, array5, 4);
+                            rd.setColor(new Color((int)((this.mtc[n][k][0] + this.cgrnd[0] + this.csky[0] * n10 + this.cfade[0] * n10) / (2.0f + n10 * 2.0f)), (int)((this.mtc[n][k][1] + this.cgrnd[1] + this.csky[1] * n10 + this.cfade[1] * n10) / (2.0f + n10 * 2.0f)), (int)((this.mtc[n][k][2] + this.cgrnd[2] + this.csky[2] * n10 + this.cfade[2] * n10) / (2.0f + n10 * 2.0f))));
+                            rd.fillPolygon(array4, array5, 4);
                         }
                     }
                 }
@@ -1600,7 +1587,7 @@ public class Medium
         }
     }
     
-    public void drawstars(final Graphics2D graphics2D) {
+    public void drawstars(final Graphics2D rd) {
         for (int i = 0; i < this.nst; ++i) {
             final float n = this.cx + (int)(this.stx[i] * this.cos(this.xz) - this.stz[i] * this.sin(this.xz));
             final float n2 = this.cz + (int)(this.stx[i] * this.sin(this.xz) + this.stz[i] * this.cos(this.xz));
@@ -1653,16 +1640,16 @@ public class Medium
                 if (this.bst[i]) {
                     n10 = 1;
                 }
-                graphics2D.setColor(new Color(this.stc[i][1][0], this.stc[i][1][1], this.stc[i][1][2]));
-                graphics2D.fillRect(xs - 1, ys, 3 + n10, 1 + n10);
-                graphics2D.fillRect(xs, ys - 1, 1 + n10, 3 + n10);
-                graphics2D.setColor(new Color(this.stc[i][0][0], this.stc[i][0][1], this.stc[i][0][2]));
-                graphics2D.fillRect(xs, ys, 1 + n10, 1 + n10);
+                rd.setColor(new Color(this.stc[i][1][0], this.stc[i][1][1], this.stc[i][1][2]));
+                rd.fillRect(xs - 1, ys, 3 + n10, 1 + n10);
+                rd.fillRect(xs, ys - 1, 1 + n10, 3 + n10);
+                rd.setColor(new Color(this.stc[i][0][0], this.stc[i][0][1], this.stc[i][0][2]));
+                rd.fillRect(xs, ys, 1 + n10, 1 + n10);
             }
         }
     }
     
-    public void d(final Graphics2D graphics2D) {
+    public void d(final Graphics2D rd) {
         this.nsp = 0;
         if (this.zy > 90) {
             this.zy = 90;
@@ -1727,8 +1714,8 @@ public class Medium
                 }
             }
             if (array2[0] < this.h && array2[1] > this.ih) {
-                graphics2D.setColor(new Color(r, g, b));
-                graphics2D.fillPolygon(array, array2, 4);
+                rd.setColor(new Color(r, g, b));
+                rd.fillPolygon(array, array2, 4);
             }
         }
         if (this.lightn != -1 && this.lton) {
@@ -1809,8 +1796,8 @@ public class Medium
                 b3 = b2;
             }
             if (array2[0] > this.ih && array2[1] < this.h) {
-                graphics2D.setColor(new Color(r2, g2, b2));
-                graphics2D.fillPolygon(array, array2, 4);
+                rd.setColor(new Color(r2, g2, b2));
+                rd.fillPolygon(array, array2, 4);
             }
         }
         array[0] = this.iw;
@@ -1829,10 +1816,10 @@ public class Medium
             if (n6 > 1.0f) {
                 n6 = 1.0f;
             }
-            graphics2D.setColor(new Color((int)((r2 * (1.0f - n6) + n * (1.0f + n6)) / 2.0f), (int)((g2 * (1.0f - n6) + n2 * (1.0f + n6)) / 2.0f), (int)((b2 * (1.0f - n6) + n3 * (1.0f + n6)) / 2.0f)));
-            graphics2D.fillPolygon(array, array2, 4);
+            rd.setColor(new Color((int)((r2 * (1.0f - n6) + n * (1.0f + n6)) / 2.0f), (int)((g2 * (1.0f - n6) + n2 * (1.0f + n6)) / 2.0f), (int)((b2 * (1.0f - n6) + n3 * (1.0f + n6)) / 2.0f)));
+            rd.fillPolygon(array, array2, 4);
         }
-        if (this.resdown != 2) {
+        if (true) {
             for (int k = 1; k < 20; ++k) {
                 float n7 = 7000;
                 float n8 = this.skyline - 700 - k * 70;
@@ -1864,17 +1851,17 @@ public class Medium
                 g3 = (int) (g3 * 0.991F);
                 b3 = (int) (b3 * 0.998F);
                 if (array2[1] > this.ih && array2[0] < this.h) {
-                    graphics2D.setColor(new Color(r3, g3, b3));
-                    graphics2D.fillPolygon(array, array2, 4);
+                    rd.setColor(new Color(r3, g3, b3));
+                    rd.fillPolygon(array, array2, 4);
                 }
             }
             if (this.lightson) {
-                this.drawstars(graphics2D);
+                this.drawstars(rd);
             }
-            this.drawmountains(graphics2D);
-            this.drawclouds(graphics2D);
+            this.drawmountains(rd);
+            this.drawclouds(rd);
         }
-        this.groundpolys(graphics2D);
+        this.groundpolys(rd);
         if (this.noelec != 0) {
             --this.noelec;
         }
@@ -2123,29 +2110,19 @@ public class Medium
         }
     }
     
-    public void adjstfade(final float n, final float n2, final int n3, final GameSparker gameSparker) {
-        if (this.resdown != 2) {
-            if (n == 5.0f) {
-                if (this.resdown == 0 && this.rescnt == 0) {
-                    gameSparker.moto = 0;
-                    Madness.anti = 0;
-                    this.fadfrom(this.fade[0] = 3000);
-                    this.resdown = 1;
-                    this.rescnt = 10;
-                }
-                if (this.resdown == 1 && this.rescnt == 0) {
-                    this.resdown = 2;
-                }
-                if ((n3 == 0 || this.resdown == 0) && n2 <= -20.0f) {
-                    --this.rescnt;
-                }
+    public void adjstfade(float f) {
+        if (f < 15.0f) {
+            this.fade[0] = (int)(this.origfade - 1000.0f * (15.0f - f));
+            if (this.fade[0] < 3000) {
+                this.fade[0] = 3000;
             }
-            else if (this.resdown == 0) {
-                this.rescnt = 5;
+            this.fadfrom(this.fade[0]);
+        } else if (this.fade[0] != this.origfade) {
+            this.fade[0] = this.fade[0] + 500;
+            if (this.fade[0] > this.origfade) {
+                this.fade[0] = this.origfade;
             }
-            else {
-                this.rescnt = 10;
-            }
+            this.fadfrom(this.fade[0]);
         }
     }
     
@@ -2156,11 +2133,11 @@ public class Medium
         return (int) ((cz - this.focus_point) * (this.cx - n) / cz + n);
     }
     
-    public int ys(final float n8, float n7) {
-        if (n7 < 10) {
-            n7 = 10;
+    public int ys(final float n8, float cz) {
+        if (cz < this.cz) {
+            cz = this.cz;
         }
-        return (int) ((n7 - this.focus_point) * (this.cy - n8) / n7 + n8);
+        return (int) ((cz - this.focus_point) * (this.cy - n8) / cz + n8);
     }
     
     public float cos(float i) {

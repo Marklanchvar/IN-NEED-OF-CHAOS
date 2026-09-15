@@ -4787,7 +4787,6 @@ public class StageMaker extends Applet implements Runnable
         if (this.offImage != null) {
             this.rd = (Graphics2D)this.offImage.getGraphics();
         }
-        this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         this.setLayout(null);
         this.slstage.setFont(new Font("Arial", 1, 13));
         this.slstage.add(this.rd, "Select a Stage...         ");

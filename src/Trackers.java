@@ -16,8 +16,8 @@ public class Trackers
     int nt;
     float sx;
     float sz;
-    float ncx;
-    float ncz;
+    int ncx;
+    int ncz;
     int[][][] sect;
     
     public Trackers() {
@@ -54,7 +54,7 @@ public class Trackers
         if (this.ncz <= 0) {
             this.ncz = 1;
         }
-        this.sect = new int[(int) this.ncx][(int) this.ncz][];
+        this.sect = new int[this.ncx][this.ncz][];
         for (int i = 0; i < this.ncx; ++i) {
             for (int j = 0; j < this.ncz; ++j) {
                 final float n3 = this.sx + i * 3000 + 1500;

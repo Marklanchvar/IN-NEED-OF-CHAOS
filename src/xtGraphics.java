@@ -1416,7 +1416,7 @@ public class xtGraphics extends Panel implements Runnable
         this.rd.setFont(new Font("Arial", 1, 11));
         this.ftm = this.rd.getFontMetrics();
         this.drawcs(358, "Loading game, please wait.", 0, 0, 0, 3);
-        this.rd.setColor(new Color(255, 255, 255));
+        this.rd.setColor(Color.WHITE);
         this.rd.fillRect(295, 398, 210, 17);
         this.shload += (this.dnload + 10.0f - this.shload) / 100.0f;
         if (this.shload > this.kbload) {
@@ -2305,7 +2305,7 @@ public class xtGraphics extends Panel implements Runnable
                             this.app.tnick.setForeground(Color.BLACK);
                         }
                         else {
-                            this.app.tnick.setForeground(new Color(255, 0, 0));
+                            this.app.tnick.setForeground(Color.RED);
                         }
                         this.app.tnick.requestFocus();
                         this.app.tpass.setBackground(new Color(206, 237, 255));
@@ -2316,7 +2316,7 @@ public class xtGraphics extends Panel implements Runnable
                             this.app.tpass.setForeground(Color.BLACK);
                         }
                         else {
-                            this.app.tpass.setForeground(new Color(255, 0, 0));
+                            this.app.tpass.setForeground(Color.RED);
                         }
                         if (!this.app.tnick.getText().equals("") && this.cd.reco != 1) {
                             this.app.tpass.requestFocus();
@@ -3118,8 +3118,6 @@ public class xtGraphics extends Panel implements Runnable
             this.m.cx = 400;
             this.m.cy = 225;
             this.m.cz = 50;
-            this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-            this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             if (this.multion == 0) {
                 this.fase = 0;
             }
@@ -4794,8 +4792,6 @@ public class xtGraphics extends Panel implements Runnable
                 if (this.gmode == 2) {
                     this.opselect = 1;
                 }
-                this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
             control.enter = false;
             control.handb = false;
@@ -4822,7 +4818,7 @@ public class xtGraphics extends Panel implements Runnable
     }
     
     public void nofocus() {
-        this.rd.setColor(new Color(255, 255, 255));
+        this.rd.setColor(Color.WHITE);
         this.rd.fillRect(0, 0, 800, 20);
         this.rd.fillRect(0, 0, 20, 450);
         this.rd.fillRect(0, 430, 800, 20);
@@ -5091,7 +5087,7 @@ public class xtGraphics extends Panel implements Runnable
             this.drawSmokeCarsbg();
         }
         else {
-            this.rd.setColor(new Color(255, 255, 255));
+            this.rd.setColor(Color.WHITE);
             this.rd.fillRect(65, 25, 670, 400);
             this.carsbginflex();
             this.flatrstart = 6;
@@ -5149,9 +5145,7 @@ public class xtGraphics extends Panel implements Runnable
             this.drawcs(69, "" + this.cd.viewname + "'s account cars!", 220, 112, 33, 3);
         }
         if (!this.remi) {
-            this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             array[this.sc[0]].d(this.rd);
-            this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         if (this.cfase == 8) {
             this.drawprom(150, 85);
@@ -5975,7 +5969,7 @@ public class xtGraphics extends Panel implements Runnable
                                     this.app.tnick.setForeground(Color.BLACK);
                                 }
                                 else {
-                                    this.app.tnick.setForeground(new Color(255, 0, 0));
+                                    this.app.tnick.setForeground(Color.RED);
                                 }
                                 this.app.tnick.requestFocus();
                                 this.app.tpass.show();
@@ -5987,7 +5981,7 @@ public class xtGraphics extends Panel implements Runnable
                                     this.app.tpass.setForeground(Color.BLACK);
                                 }
                                 else {
-                                    this.app.tpass.setForeground(new Color(255, 0, 0));
+                                    this.app.tpass.setForeground(Color.RED);
                                 }
                                 if (!this.app.tnick.getText().equals("") && this.cd.reco != 1) {
                                     this.app.tpass.requestFocus();
@@ -6813,9 +6807,7 @@ public class xtGraphics extends Panel implements Runnable
                     array[n4].zy = 0;
                     final ContO contO2 = array[n4];
                     contO2.wzy -= 10;
-                    this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-                    array[n4].d(this.rd);
-                    this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    //array[n4].d(this.rd);
                     if (Math.random() < 0.5) {
                         this.rd.setComposite(AlphaComposite.getInstance(3, 0.4f));
                         this.rd.setColor(new Color(236, 226, 202));
@@ -7990,6 +7982,8 @@ public class xtGraphics extends Panel implements Runnable
                 this.rd.drawImage(this.dmg, 600, 7, null);
                 this.rd.drawImage(this.pwr, 600, 27, null);
                 this.rd.drawImage(this.lap, 19, 7, null);
+                this.rd.setColor(Color.BLACK);
+                this.rd.drawString("" + this.app.remainderTime + "", m.w / 4 - this.getWidth(),  m.h / 4 - this.getHeight());
                 this.rd.setColor(new Color(0, 0, 100));
                 this.rd.drawString("" + (mad.nlaps + 1) + " / " + checkPoints.nlaps + "", 51, 18);
                 this.rd.drawImage(this.was, 92, 7, null);
@@ -8001,9 +7995,7 @@ public class xtGraphics extends Panel implements Runnable
                 if (control.radar && checkPoints.stage != 10) {
                     this.radarstat(mad, contO, checkPoints);
                 }
-                this.rd.setColor(Color.BLACK);
-                this.rd.drawString("elapsed time:" + GameSparker.gameTime, m.w / 4, m.h / 4 + 20);
-                this.rd.drawString("sleep time:" + GameSparker.millisToSleep, m.w / 4, m.h / 4);
+                
             }
             if (!this.holdit) {
                 if (this.starcnt != 0 && this.starcnt <= 35) {
@@ -8733,7 +8725,6 @@ public class xtGraphics extends Panel implements Runnable
         }
         this.rot(array, array3, n3, n5, this.ana, 7);
         final float abs = Math.abs(this.ana);
-        this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (!b) {
             if (abs > 7 || n2 > 0 || n2 == -2 || this.cntan != 0) {
                 for (int l = 0; l < 7; ++l) {
@@ -8896,7 +8887,6 @@ public class xtGraphics extends Panel implements Runnable
             this.rd.setColor(new Color(r4, g4, b5));
             this.rd.drawPolygon(array, array2, 7);
         }
-        this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
     
     public void radarstat(final Mad mad, final ContO contO, final CheckPoints checkPoints) {
@@ -8904,7 +8894,6 @@ public class xtGraphics extends Panel implements Runnable
         this.rd.setColor(new Color(this.m.csky[0], this.m.csky[1], this.m.csky[2]));
         this.rd.fillRoundRect(10, 55, 172, 172, 30, 30);
         this.rd.setComposite(AlphaComposite.getInstance(3, 1.0f));
-        this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         this.rd.setColor(new Color(this.m.csky[0] / 2, this.m.csky[1] / 2, this.m.csky[2] / 2));
         for (int i = 0; i < checkPoints.n; ++i) {
             int n = i + 1;
@@ -9050,7 +9039,6 @@ public class xtGraphics extends Panel implements Runnable
         this.rd.drawLine(94, 141, 98, 141);
         this.rd.setColor(new Color(r, g, b2));
         this.rd.fillRect(95, 140, 3, 3);
-        this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         if (this.m.darksky) {
             final Color color = new Color(this.m.csky[0], this.m.csky[1], this.m.csky[2]);
             final float[] hsbvals = new float[3];
@@ -10408,7 +10396,7 @@ public class xtGraphics extends Panel implements Runnable
         }
         if (b) {
             if (s.equals("X") && n6 == 1) {
-                this.rd.setColor(new Color(255, 0, 0));
+                this.rd.setColor(Color.RED);
             }
             else {
                 this.rd.setColor(Color.BLACK);

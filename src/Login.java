@@ -86,8 +86,8 @@ public class Login implements Runnable
     int pend;
     boolean pendb;
     boolean gotcai;
-    int cax;
-    int cay;
+    float cax;
+    float cay;
     boolean btroom;
     boolean showtf;
     int[] bgmy;
@@ -853,10 +853,10 @@ public class Login implements Runnable
         this.rd.drawRoundRect(319, 83, 180, 96, 20, 20);
         this.rd.drawRoundRect(173, 83, 132, 32, 20, 20);
         if (!this.gotcai) {
-            int n3;
-            int n2 = n3 = array[this.xt.sc[0]].p[0].oz[0];
-            int n5;
-            int n4 = n5 = array[this.xt.sc[0]].p[0].oy[0];
+            float n3;
+            float n2 = n3 = array[this.xt.sc[0]].p[0].oz[0];
+            float n5;
+            float n4 = n5 = array[this.xt.sc[0]].p[0].oy[0];
             for (int j = 0; j < array[this.xt.sc[0]].npl; ++j) {
                 for (int k = 0; k < array[this.xt.sc[0]].p[j].n; ++k) {
                     if (array[this.xt.sc[0]].p[j].oz[k] < n2) {
@@ -883,9 +883,7 @@ public class Login implements Runnable
         array[this.xt.sc[0]].zy = 0;
         array[this.xt.sc[0]].xz = -90;
         array[this.xt.sc[0]].xy = this.pend;
-        this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         array[this.xt.sc[0]].d(this.rd);
-        this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (!this.pendb) {
             this.pend += 2;
             if (this.pend > 80) {
@@ -1374,10 +1372,10 @@ public class Login implements Runnable
             this.rd.drawString("" + this.xt.cd.names[this.xt.sc[0]] + "", 336 - this.ftm.stringWidth("" + this.xt.cd.names[this.xt.sc[0]] + "") / 2, 81);
             this.rd.drawRoundRect(246, 83, 180, 96, 20, 20);
             if (!this.gotcai) {
-                int n4;
-                int n3 = n4 = array[this.xt.sc[0]].p[0].oz[0];
-                int n6;
-                int n5 = n6 = array[this.xt.sc[0]].p[0].oy[0];
+                float n4;
+                float n3 = n4 = array[this.xt.sc[0]].p[0].oz[0];
+                float n6;
+                float n5 = n6 = array[this.xt.sc[0]].p[0].oy[0];
                 for (int j = 0; j < array[this.xt.sc[0]].npl; ++j) {
                     for (int k = 0; k < array[this.xt.sc[0]].p[j].n; ++k) {
                         if (array[this.xt.sc[0]].p[j].oz[k] < n3) {
@@ -1404,9 +1402,7 @@ public class Login implements Runnable
             array[this.xt.sc[0]].zy = 0;
             array[this.xt.sc[0]].xz = -90;
             array[this.xt.sc[0]].xy = this.pend;
-            this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             array[this.xt.sc[0]].d(this.rd);
-            this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             if (!this.pendb) {
                 this.pend += 2;
                 if (this.pend > 80) {

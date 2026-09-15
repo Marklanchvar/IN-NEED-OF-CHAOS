@@ -1,6 +1,8 @@
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 import java.io.DataInputStream;
 import java.io.ByteArrayInputStream;
@@ -27,6 +29,7 @@ public class ContO
 	boolean noline;
 	boolean decor;
 	float grounded;
+	float wrad;
 	float grat;
 	float[] keyx;
 	float[] keyz;
@@ -87,9 +90,6 @@ public class ContO
 	float roofat;
 	int wh;
 	
-	private int[] sortIndices = new int[286];
-	private float[] sortKeys = new float[286];
-
 	public ContO(final byte[] buf, final Medium m, final Trackers t) {
 		this.npl = 0;
 		this.x = 0;
@@ -108,6 +108,7 @@ public class ContO
 		this.noline = false;
 		this.decor = false;
 		this.grounded = 1.0f;
+		this.wrad = 0;
 		this.grat = 0;
 		this.keyx = new float[4];
 		this.keyz = new float[4];
@@ -153,23 +154,23 @@ public class ContO
 		int n = 0;
 		int n2 = 0;
 		int n3 = 0;
-		float n4 = 1.0f;
+		float scaler = 1.0f;
 		float n5 = 1.0f;
 		final float[] array2 = { 1.0f, 1.0f, 1.0f };
 		final float[] array3 = new float[100];
 		final float[] array4 = new float[100];
 		final float[] array5 = new float[100];
 		final int[] array6 = { 0, 0, 0 };
-		boolean b = false;
+		boolean isRoad = false;
 		final Wheels wheels = new Wheels();
 		boolean b2 = false;
 		int n6 = 0;
-		int getvalue = 1;
-		int getvalue2 = 0;
-		int getvalue3 = 0;
-		int n7 = 0;
-		int n8 = 0;
-		boolean b3 = false;
+		int gr = 1;
+		int fs = 0;
+		int wheelGr = 0;
+		int lightType = 0;
+		int reflectType = 0;
+		boolean noOutline = false;
 		int n9 = 0;
 		try (DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(buf))) {
 			String line;
@@ -179,50 +180,50 @@ public class ContO
 					if (string.startsWith("<p>")) {
 						n = 1;
 						n3 = 0;
-						getvalue = 0;
-						getvalue2 = 0;
-						n7 = 0;
+						gr = 0;
+						fs = 0;
+						lightType = 0;
 						array[this.npl] = 1;
 						if (n9 == 0) {
-							b3 = false;
+							noOutline = false;
 						}
 					}
 					if (n != 0) {
 						if (string.startsWith("gr(")) {
-							getvalue = this.getvalue("gr", string, 0);
+							gr = this.getvalue("gr", string, 0);
 						}
 						if (string.startsWith("fs(")) {
-							getvalue2 = this.getvalue("fs", string, 0);
+							fs = this.getvalue("fs", string, 0);
 							array[this.npl] = 2;
 						}
 						if (string.startsWith("c(")) {
-							n8 = 0;
+							reflectType = 0;
 							array6[0] = this.getvalue("c", string, 0);
 							array6[1] = this.getvalue("c", string, 1);
 							array6[2] = this.getvalue("c", string, 2);
 						}
 						if (string.startsWith("glass")) {
-							n8 = 1;
+							reflectType = 1;
 						}
 						if (string.startsWith("gshadow")) {
-							n8 = 2;
+							reflectType = 2;
 						}
 						if (string.startsWith("lightF")) {
-							n7 = 1;
+							lightType = 1;
 						}
 						if (string.startsWith("light")) {
-							n7 = 1;
+							lightType = 1;
 						}
 						if (string.startsWith("lightB")) {
-							n7 = 2;
+							lightType = 2;
 						}
 						if (string.startsWith("noOutline")) {
-							b3 = true;
+							noOutline = true;
 						}
 						if (string.startsWith("p(")) {
-							array3[n3] = (this.getvalue("p", string, 0) * n4 * n5 * array2[0]);
-							array4[n3] = (this.getvalue("p", string, 1) * n4 * array2[1]);
-							array5[n3] = (this.getvalue("p", string, 2) * n4 * array2[2]);
+							array3[n3] = (this.getvalue("p", string, 0) * scaler * n5 * array2[0]);
+							array4[n3] = (this.getvalue("p", string, 1) * scaler * array2[1]);
+							array5[n3] = (this.getvalue("p", string, 2) * scaler * array2[2]);
 							final float maxR = (float)Math.sqrt(array3[n3] * array3[n3] + array4[n3] * array4[n3] + array5[n3] * array5[n3]);
 							if (maxR > this.maxR) {
 								this.maxR = maxR;
@@ -231,11 +232,11 @@ public class ContO
 						}
 					}
 					if (string.startsWith("</p>")) {
-						this.p[this.npl] = new Plane(this.m, this.t, array3, array5, array4, n3, array6, n8, getvalue, getvalue2, 0, 0, 0, this.disline, 0, b, n7, b3);
-						if (array6[0] == this.fcol[0] && array6[1] == this.fcol[1] && array6[2] == this.fcol[2] && n8 == 0) {
+						this.p[this.npl] = new Plane(this.m, this.t, array3, array5, array4, n3, array6, reflectType, gr, fs, 0, 0, 0, this.disline, 0, isRoad, lightType, noOutline);
+						if (array6[0] == this.fcol[0] && array6[1] == this.fcol[1] && array6[2] == this.fcol[2] && reflectType == 0) {
 							this.p[this.npl].colnum = 1;
 						}
-						if (array6[0] == this.scol[0] && array6[1] == this.scol[1] && array6[2] == this.scol[2] && n8 == 0) {
+						if (array6[0] == this.scol[0] && array6[1] == this.scol[1] && array6[2] == this.scol[2] && reflectType == 0) {
 							this.p[this.npl].colnum = 2;
 						}
 						++this.npl;
@@ -246,12 +247,12 @@ public class ContO
 					wheels.setrims(this.getvalue("rims", string, 0), this.getvalue("rims", string, 1), this.getvalue("rims", string, 2), this.getvalue("rims", string, 3), this.getvalue("rims", string, 4));
 				}
 				if (string.startsWith("w(") && n6 < 4) {
-					this.keyx[n6] = (int)(this.getvalue("w", string, 0) * n4 * array2[0]);
-					this.keyz[n6] = (int)(this.getvalue("w", string, 2) * n4 * array2[2]);
-					wheels.make(this.m, this.t, this.p, this.npl, (int)(this.getvalue("w", string, 0) * n4 * n5 * array2[0]), (int)(this.getvalue("w", string, 1) * n4 * array2[1]), (int)(this.getvalue("w", string, 2) * n4 * array2[2]), this.getvalue("w", string, 3), (int)(this.getvalue("w", string, 4) * n4 * n5), (int)(this.getvalue("w", string, 5) * n4), getvalue3);
+					this.keyx[n6] = (int)(this.getvalue("w", string, 0) * scaler * array2[0]);
+					this.keyz[n6] = (int)(this.getvalue("w", string, 2) * scaler * array2[2]);
+					wheels.make(this.m, this.t, this.p, this.npl, (int)(this.getvalue("w", string, 0) * scaler * n5 * array2[0]), (int)(this.getvalue("w", string, 1) * scaler * array2[1]), (int)(this.getvalue("w", string, 2) * scaler * array2[2]), this.getvalue("w", string, 3), (int)(this.getvalue("w", string, 4) * scaler * n5), (int)(this.getvalue("w", string, 5) * scaler), wheelGr);
 					this.npl += 19;
 					if (this.m.loadnew) {
-						this.wh += (int)(this.getvalue("w", string, 5) * n4);
+						this.wh += (int)(this.getvalue("w", string, 5) * scaler);
 						if (wheels.ground > 140) {
 							String s = "FRONT";
 							if (this.keyz[n6] < 0) {
@@ -293,7 +294,7 @@ public class ContO
 							this.keyz[n6] = 0;
 							this.keyx[n6] = 0;
 						}
-						if ((int)(this.getvalue("w", string, 4) * n4 * n5) > 300) {
+						if ((int)(this.getvalue("w", string, 4) * scaler * n5) > 300) {
 							String s4 = "FRONT";
 							if (this.keyz[n6] < 0) {
 								s4 = "BACK";
@@ -353,22 +354,22 @@ public class ContO
 							this.tzy[this.tnt] = this.getvalue("zy", string, 0);
 						}
 						if (string.startsWith("radx")) {
-							this.tradx[this.tnt] = (int)(this.getvalue("radx", string, 0) * n4);
+							this.tradx[this.tnt] = (int)(this.getvalue("radx", string, 0) * scaler);
 						}
 						if (string.startsWith("rady")) {
-							this.trady[this.tnt] = (int)(this.getvalue("rady", string, 0) * n4);
+							this.trady[this.tnt] = (int)(this.getvalue("rady", string, 0) * scaler);
 						}
 						if (string.startsWith("radz")) {
-							this.tradz[this.tnt] = (int)(this.getvalue("radz", string, 0) * n4);
+							this.tradz[this.tnt] = (int)(this.getvalue("radz", string, 0) * scaler);
 						}
 						if (string.startsWith("ty")) {
-							this.ty[this.tnt] = (int)(this.getvalue("ty", string, 0) * n4);
+							this.ty[this.tnt] = (int)(this.getvalue("ty", string, 0) * scaler);
 						}
 						if (string.startsWith("tx")) {
-							this.tx[this.tnt] = (int)(this.getvalue("tx", string, 0) * n4);
+							this.tx[this.tnt] = (int)(this.getvalue("tx", string, 0) * scaler);
 						}
 						if (string.startsWith("tz")) {
-							this.tz[this.tnt] = (int)(this.getvalue("tz", string, 0) * n4);
+							this.tz[this.tnt] = (int)(this.getvalue("tz", string, 0) * scaler);
 						}
 						if (string.startsWith("skid")) {
 							this.skd[this.tnt] = this.getvalue("skid", string, 0);
@@ -399,26 +400,26 @@ public class ContO
 				}
 				if (string.startsWith("newstone")) {
 					this.noline = true;
-					b3 = true;
+					noOutline = true;
 					n9 = 1;
 				}
 				if (string.startsWith("decorative")) {
 					this.decor = true;
 				}
 				if (string.startsWith("road")) {
-					b = true;
+					isRoad = true;
 				}
 				if (string.startsWith("notroad")) {
-					b = false;
+					isRoad = false;
 				}
 				if (string.startsWith("grounded(")) {
 					this.grounded = this.getvalue("grounded", string, 0) / 100.0f;
 				}
 				if (string.startsWith("div(")) {
-					n4 = this.getvalue("div", string, 0) / 10.0f;
+					scaler = this.getvalue("div", string, 0) / 10.0f;
 				}
 				if (string.startsWith("idiv(")) {
-					n4 = this.getvalue("idiv", string, 0) / 100.0f;
+					scaler = this.getvalue("idiv", string, 0) / 100.0f;
 				}
 				if (string.startsWith("iwid(")) {
 					n5 = this.getvalue("iwid", string, 0) / 100.0f;
@@ -433,16 +434,16 @@ public class ContO
 					array2[2] = this.getvalue("ScaleZ", string, 0) / 100.0f;
 				}
 				if (string.startsWith("gwgr(")) {
-					getvalue3 = this.getvalue("gwgr", string, 0);
+					wheelGr = this.getvalue("gwgr", string, 0);
 					if (this.m.loadnew) {
-						if (getvalue3 > 40) {
-							getvalue3 = 40;
+						if (wheelGr > 40) {
+							wheelGr = 40;
 						}
-						if (getvalue3 < 0 && getvalue3 >= -15) {
-							getvalue3 = -16;
+						if (wheelGr < 0 && wheelGr >= -15) {
+							wheelGr = -16;
 						}
-						if (getvalue3 < -40) {
-							getvalue3 = -40;
+						if (wheelGr < -40) {
+							wheelGr = -40;
 						}
 					}
 				}
@@ -466,6 +467,7 @@ public class ContO
 				this.errd = true;
 			}
 		}
+		this.wrad = wheels.radius;
 		this.grat = wheels.ground;
 		this.sprkat = wheels.sparkat;
 		if (this.shadow) {
@@ -885,6 +887,7 @@ public class ContO
 		this.noline = false;
 		this.decor = false;
 		this.grounded = 1.0f;
+		this.wrad = 0;
 		this.grat = 0;
 		this.keyx = new float[4];
 		this.keyz = new float[4];
@@ -926,6 +929,7 @@ public class ContO
 		if (this.m.loadnew && (xz2 == 90 || xz2 == -90)) {
 			this.grounded += 10000.0f;
 		}
+		this.wrad = contO.wrad;
 		this.grat = contO.grat;
 		this.sprkat = contO.sprkat;
 		this.p = new Plane[contO.npl];
@@ -1033,6 +1037,7 @@ public class ContO
 		this.noline = false;
 		this.decor = false;
 		this.grounded = 1.0f;
+		this.wrad = 0;
 		this.grat = 0;
 		this.keyx = new float[4];
 		this.keyz = new float[4];
@@ -1069,6 +1074,7 @@ public class ContO
 		this.xz = 0;
 		this.xy = 0;
 		this.zy = 0;
+		this.wrad = 0;
 		this.grat = 0;
 		this.sprkat = 0;
 		this.disline = 4;
@@ -1325,8 +1331,8 @@ public class ContO
 		final float n = this.m.cx + ((this.x - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.z - this.m.z - this.m.cz) * this.m.sin(this.m.xz));
 		final float n2 = this.m.cz + ((this.x - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.z - this.m.z - this.m.cz) * this.m.cos(this.m.xz));
 		final float n3 = this.m.cz + ((this.y - this.m.y - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
-		int n4 = this.xs(n + this.maxR, n3) - this.xs(n - this.maxR, n3);
-		if (this.xs(n + this.maxR * 2, n3) > this.m.iw && this.xs(n - this.maxR * 2, n3) < this.m.w && n3 > -this.maxR && (n3 < this.m.fade[this.disline] + this.maxR || this.m.trk != 0) && (n4 > this.disp || this.m.trk != 0) && (!this.decor || (this.m.resdown != 2 && this.m.trk != 1))) {
+		int onscreenSize = this.xs(n + this.maxR, n3) - this.xs(n - this.maxR, n3);
+		if (this.xs(n + this.maxR * 2, n3) > this.m.iw && this.xs(n - this.maxR * 2, n3) < this.m.w && n3 > -this.maxR && (n3 < this.m.fade[this.disline] + this.maxR || this.m.trk != 0) && (onscreenSize > this.disp || this.m.trk != 0) && (!this.decor || this.m.trk != 1)) {
 			if (this.shadow) {
 				if (!this.m.crs) {
 					if (n3 < 2000) {
@@ -1334,21 +1340,21 @@ public class ContO
 						if (this.t.ncx != 0 || this.t.ncz != 0) {
 							int ncx = (int) ((this.x - this.t.sx) / 3000);
 							if (ncx > this.t.ncx) {
-								ncx = (int) this.t.ncx;
+								ncx = this.t.ncx;
 							}
 							if (ncx < 0) {
 								ncx = 0;
 							}
 							int ncz = (int) ((this.z - this.t.sz) / 3000);
 							if (ncz > this.t.ncz) {
-								ncz = (int) this.t.ncz;
+								ncz = this.t.ncz;
 							}
 							if (ncz < 0) {
 								ncz = 0;
 							}
 							for (int i = this.t.sect[ncx][ncz].length - 1; i >= 0; --i) {
 								final int n5 = this.t.sect[ncx][ncz][i];
-								if (Math.abs(this.t.zy[n5]) != 90 && Math.abs(this.t.xy[n5]) != 90 && Math.abs(this.x - this.t.x[n5]) < this.t.radx[n5] + this.maxR && Math.abs(this.z - this.t.z[n5]) < this.t.radz[n5] + this.maxR && (!this.t.decor[n5] || this.m.resdown != 2)) {
+								if (Math.abs(this.t.zy[n5]) != 90 && Math.abs(this.t.xy[n5]) != 90 && Math.abs(this.x - this.t.x[n5]) < this.t.radx[n5] + this.maxR && Math.abs(this.z - this.t.z[n5]) < this.t.radz[n5] + this.maxR && !this.t.decor[n5]) {
 									b = true;
 									break;
 								}
@@ -1389,7 +1395,7 @@ public class ContO
 					this.fixit(graphics2D);
 				}
 				if (this.checkpoint != 0 && this.checkpoint - 1 == this.m.checkpoint) {
-					n4 = -1;
+					onscreenSize = -1;
 				}
 				if (this.shadow) {
 					this.dist = (float) Math.sqrt((this.m.x + this.m.cx - this.x) * (this.m.x + this.m.cx - this.x) + (this.m.z - this.z) * (this.m.z - this.z) + (this.m.y + this.m.cy - this.y) * (this.m.y + this.m.cy - this.y));
@@ -1400,21 +1406,32 @@ public class ContO
 					}
 					this.dsprk(graphics2D, true);
 				}
-				// Optimized O(N log N) primitive array sort replacing the original O(N^2) double loop
-				if (sortIndices.length < this.npl) {
-					sortIndices = new int[this.npl];
+				
+				final float dx = this.x - this.m.x;
+				final float dy = this.y - this.m.y;
+				final float dz = this.z - this.m.z;
+
+				// ==========================================
+				// REPLACED FLAWED INSERTION SORT WITH FAST DEPTH SORTER
+				// ==========================================
+				Arrays.sort(this.p, 0, this.npl, new Comparator<Plane>() {
+					@Override
+					public int compare(Plane p1, Plane p2) {
+						if (p1 == null && p2 == null) return 0;
+						if (p1 == null) return 1;
+						if (p2 == null) return -1;
+						// Sort descending by depth/av or projection metric to resolve 180-deg overlaps
+						return Float.compare(p2.av, p1.av);
+					}
+				});
+
+				for (Plane plane : this.p) {
+					if (plane != null) {
+						plane.d(graphics2D, dx, dy, dz, this.xz, this.xy, this.zy, this.wxz, this.wzy, this.noline, onscreenSize);
+
+					}
 				}
 				
-				for (int i = 0; i < this.npl; ++i) {
-					sortIndices[i] = i;
-				}
-
-				// Sort planes back-to-front based on average depth (av)
-				quickSortPlanes(sortIndices, 0, this.npl - 1);
-
-				for (int n17 = 0; n17 < this.npl; ++n17) {
-					this.p[sortIndices[n17]].d(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, this.wxz, this.wzy, this.noline, n4);
-				}
 				if (this.shadow) {
 					for (int n18 = 0; n18 < 20; ++n18) {
 						if (this.stg[n18] != 0) {
@@ -1442,33 +1459,7 @@ public class ContO
 			}
 		}
 	}
-
-	// Helper method for primitive array QuickSort
-	private void quickSortPlanes(final int[] indices, final int low, final int high) {
-		if (low < high) {
-			final int pivotIdx = partitionPlanes(indices, low, high);
-			quickSortPlanes(indices, low, pivotIdx - 1);
-			quickSortPlanes(indices, pivotIdx + 1, high);
-		}
-	}
-
-	private int partitionPlanes(final int[] indices, final int low, final int high) {
-		final int pivotVal = this.p[indices[high]].av;
-		int i = low - 1;
-		for (int j = low; j < high; ++j) {
-			if (this.p[indices[j]].av > pivotVal) {
-				++i;
-				final int temp = indices[i];
-				indices[i] = indices[j];
-				indices[j] = temp;
-			}
-		}
-		final int temp = indices[i + 1];
-		indices[i + 1] = indices[high];
-		indices[high] = temp;
-		return i + 1;
-	}
-
+	
 	public void lowshadow(final Graphics2D graphics2D, final float n32) {
 		final int[] array = new int[4];
 		final int[] array2 = new int[4];
@@ -1497,14 +1488,14 @@ public class ContO
 		if (this.t.ncx != 0 || this.t.ncz != 0) {
 			int ncx = (int) ((this.x - this.t.sx) / 3000);
 			if (ncx > this.t.ncx) {
-				ncx = (int) this.t.ncx;
+				ncx = this.t.ncx;
 			}
 			if (ncx < 0) {
 				ncx = 0;
 			}
 			int ncz = (int) ((this.z - this.t.sz) / 3000);
 			if (ncz > this.t.ncz) {
-				ncz = (int) this.t.ncz;
+				ncz = this.t.ncz;
 			}
 			if (ncz < 0) {
 				ncz = 0;
@@ -1513,7 +1504,7 @@ public class ContO
 				final int n3 = this.t.sect[ncx][ncz][k];
 				int n4 = 0;
 				for (int l = 0; l < 4; ++l) {
-					if (Math.abs(this.t.zy[n3]) != 90 && Math.abs(this.t.xy[n3]) != 90 && this.t.rady[n3] != 801 && Math.abs(array[l] - (this.t.x[n3] - this.m.x)) < this.t.radx[n3] && Math.abs(array3[l] - (this.t.z[n3] - this.m.z)) < this.t.radz[n3] && (!this.t.decor[n3] || this.m.resdown != 2)) {
+					if (Math.abs(this.t.zy[n3]) != 90 && Math.abs(this.t.xy[n3]) != 90 && this.t.rady[n3] != 801 && Math.abs(array[l] - (this.t.x[n3] - this.m.x)) < this.t.radx[n3] && Math.abs(array3[l] - (this.t.z[n3] - this.m.z)) < this.t.radz[n3] && !this.t.decor[n3]) {
 						++n4;
 					}
 				}
@@ -1965,14 +1956,14 @@ public class ContO
 				}
 				int ncx = (int) ((this.x - this.t.sx) / 3000);
 				if (ncx > this.t.ncx) {
-					ncx = (int) this.t.ncx;
+					ncx = this.t.ncx;
 				}
 				if (ncx < 0) {
 					ncx = 0;
 				}
 				int ncz = (int) ((this.z - this.t.sz) / 3000);
 				if (ncz > this.t.ncz) {
-					ncz = (int) this.t.ncz;
+					ncz = this.t.ncz;
 				}
 				if (ncz < 0) {
 					ncz = 0;

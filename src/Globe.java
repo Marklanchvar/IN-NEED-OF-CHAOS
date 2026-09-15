@@ -650,8 +650,6 @@ public class Globe implements Runnable
         this.bco = bco;
         this.co = co;
         this.gImage = this.gs.createImage(560, 300);
-        (this.rdo = (Graphics2D)this.gImage.getGraphics()).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        this.rdo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (int i = 0; i < 21; ++i) {
             this.ctime[i] = "";
             this.cnames[i] = "";
@@ -1319,7 +1317,6 @@ public class Globe implements Runnable
                                         this.m.cx = 280;
                                         this.m.cy = 150;
                                         this.m.aroundtrack(this.cp);
-                                        this.rdo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
                                         this.m.d(this.rdo);
                                         int n21 = 0;
                                         final int[] array12 = new int[1000];
@@ -1369,7 +1366,6 @@ public class Globe implements Runnable
                                                 }
                                             }
                                         }
-                                        this.rdo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                         this.m.trk = 0;
                                         this.m.h = 450;
                                         this.m.w = 800;
@@ -4503,7 +4499,6 @@ public class Globe implements Runnable
                                 this.m.cx = 280;
                                 this.m.cy = 150;
                                 this.m.aroundtrack(this.cp);
-                                this.rdo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
                                 int n40 = 0;
                                 final int[] array5 = new int[200];
                                 for (int n41 = 0; n41 < this.gs.nob; ++n41) {
@@ -4552,7 +4547,6 @@ public class Globe implements Runnable
                                         }
                                     }
                                 }
-                                this.rdo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                 this.m.trk = 0;
                                 this.m.h = 450;
                                 this.m.w = 800;
@@ -4888,9 +4882,7 @@ public class Globe implements Runnable
                                     final ContO contO2 = this.bco[35 + this.cd.haltload];
                                     contO2.wzy += 45;
                                 }
-                                this.rdo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
                                 this.bco[35 + this.cd.haltload].d(this.rdo);
-                                this.rdo.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                 this.m.cx = 400;
                                 this.m.cy = 225;
                                 int n57 = 137;

@@ -422,7 +422,6 @@ public class CarMaker extends Applet implements Runnable, ActionListener
             this.rd.fillRect(0, 0, 700, 550);
             this.rd.setColor(new Color(0, 0, 0));
             this.btn = 0;
-            int n2 = 50;
             if (this.tab == 0) {
                 if (this.tabed != this.tab) {
                     this.slcar.removeAll();
@@ -2405,56 +2404,45 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                     this.rd.drawString("[ Showing " + this.cntpls + " Polygons Selected ]", 350 - this.ftm.stringWidth("[ Showing " + this.cntpls + " Polygons Selected ]") / 2, 45);
                     this.stringbutton("  Stop  ", 350, 67, 5, false);
                 }
-                n2 = 50;
                 if (this.rotr) {
                     final ContO o8 = this.o;
                     o8.xz -= 5;
-                    n2 = 15;
                 }
                 if (this.rotl) {
                     final ContO o9 = this.o;
                     o9.xz += 5;
-                    n2 = 15;
                 }
                 if (this.left) {
                     final ContO o10 = this.o;
                     o10.xy -= 5;
-                    n2 = 15;
                 }
                 if (this.right) {
                     final ContO o11 = this.o;
                     o11.xy += 5;
-                    n2 = 15;
                 }
                 if (this.up) {
                     final ContO o12 = this.o;
                     o12.zy -= 5;
-                    n2 = 15;
                 }
                 if (this.down) {
                     final ContO o13 = this.o;
                     o13.zy += 5;
-                    n2 = 15;
                 }
                 if (this.plus) {
                     final ContO o14 = this.o;
                     o14.y += 5;
-                    n2 = 15;
                 }
                 if (this.minus) {
                     final ContO o15 = this.o;
                     o15.y -= 5;
-                    n2 = 15;
                 }
                 if (this.in) {
                     final ContO o16 = this.o;
                     o16.z += 10;
-                    n2 = 15;
                 }
                 if (this.out) {
                     final ContO o17 = this.o;
                     o17.z -= 10;
-                    n2 = 15;
                 }
                 this.ox = this.o.x;
                 this.oy = this.o.y;
@@ -2902,7 +2890,7 @@ public class CarMaker extends Applet implements Runnable, ActionListener
             if (!this.exwist) {
                 try {
                     final Thread thredo2 = this.thredo;
-                    Thread.sleep(n2);
+                    Thread.sleep(GameSparker.minimumMilliseconds[0]);
                 }
                 catch (final InterruptedException ex15) {}
             }
@@ -4997,7 +4985,6 @@ public class CarMaker extends Applet implements Runnable, ActionListener
         if (this.offImage != null) {
             this.rd = (Graphics2D)this.offImage.getGraphics();
         }
-        this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         boolean b = true;
         if (System.getProperty("java.vendor").toLowerCase().indexOf("apple") != -1 || System.getProperty("java.vendor").toLowerCase().indexOf("sun") != -1) {
             b = false;

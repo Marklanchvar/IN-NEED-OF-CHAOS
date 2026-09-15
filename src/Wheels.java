@@ -1,6 +1,7 @@
 public class Wheels
 {
     float ground;
+    float radius;
     int mast;
     int sparkat;
     int[] rc;
@@ -35,7 +36,7 @@ public class Wheels
         }
     }
     
-    public void make(final Medium medium, final Trackers trackers, final Plane[] planeArray, int n, final int n2, final int n3, final int n4, final int n5, final int n6, final int n7, final int n8) {
+    public void make(final Medium medium, final Trackers trackers, final Plane[] planeArray, int n, final int n2, final int n3, final int n4, final int n5, final int n6, final int n7, int wheelGr) {
         final float[] planeX = new float[20];
         final float[] planeY = new float[20];
         final float[] planeZ = new float[20];
@@ -47,7 +48,9 @@ public class Wheels
             n9 = (n2 + 4.0f * n10);
         }
         this.sparkat = (int)(n11 * 24.0f);
-        this.ground = (n3 + 13.0f * n11);
+
+        this.radius = (13.0f * n11);
+        this.ground = (n3 + this.radius);
         int n12 = -1;
         if (n2 < 0) {
             n12 = 1;
@@ -95,16 +98,18 @@ public class Wheels
         planeZ[18] = (n4 + 10.0f * this.size);
         planeY[19] = (n3 - 3.3646f * n11);
         planeZ[19] = (n4 + 12.557f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 20, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, false);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 20, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, false);
         planeArray[n].master = 1;
         ++n;
         planeX[2] = (n2 - this.depth * n10);
         planeY[2] = n3;
         planeZ[2] = n4;
-        int n13 = (int)(n8 - this.depth / this.size * 4.0f);
+        int n13 = (int)(wheelGr - this.depth / this.size * 4.0f);
         if (n13 < -16) {
             n13 = -16;
         }
+        n13 = 0;
+        wheelGr = 0;
         planeY[0] = n3;
         planeZ[0] = (n4 + 10.0f * this.size);
         planeY[1] = (n3 + 8.66f * this.size);
@@ -171,7 +176,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 - 12.557f * n11);
         planeZ[3] = (n4 + 3.3646f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 - 9.1923f * n11);
@@ -185,7 +190,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 - 9.1923f * n11);
         planeZ[3] = (n4 - 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 - 9.1923f * n11);
@@ -199,7 +204,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 - 9.1923f * n11);
         planeZ[3] = (n4 - 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 - 3.3646f * n11);
@@ -213,7 +218,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 - 3.3646f * n11);
         planeZ[3] = (n4 - 12.557f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 + 9.1923f * n11);
@@ -227,7 +232,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 + 9.1923f * n11);
         planeZ[3] = (n4 - 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 + 9.1923f * n11);
@@ -241,7 +246,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 + 9.1923f * n11);
         planeZ[3] = (n4 - 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 + 12.557f * n11);
@@ -255,7 +260,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 + 12.557f * n11);
         planeZ[3] = (n4 - 3.3646f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 + 9.1923f * n11);
@@ -269,7 +274,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 + 9.1923f * n11);
         planeZ[3] = (n4 + 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 + 9.1923f * n11);
@@ -283,7 +288,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 + 9.1923f * n11);
         planeZ[3] = (n4 + 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 + 3.3646f * n11);
@@ -297,7 +302,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 + 3.3646f * n11);
         planeZ[3] = (n4 + 12.557f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 - 9.1923f * n11);
@@ -311,7 +316,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 - 9.1923f * n11);
         planeZ[3] = (n4 + 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
         planeX[0] = (n2 - 4.0f * n10);
         planeY[0] = (n3 - 9.1923f * n11);
@@ -325,7 +330,7 @@ public class Wheels
         planeX[3] = (n2 + 4.0f * n10);
         planeY[3] = (n3 - 9.1923f * n11);
         planeZ[3] = (n4 + 9.1923f * n11);
-        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, n8, 0, n9, n3, n4, 7, 0, false, 0, true);
+        planeArray[n] = new Plane(medium, trackers, planeX, planeZ, planeY, 4, planeColor, 0, wheelGr, 0, n9, n3, n4, 7, 0, false, 0, true);
         ++n;
     }
 }

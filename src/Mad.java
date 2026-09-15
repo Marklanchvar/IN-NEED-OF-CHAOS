@@ -542,16 +542,13 @@ public class Mad
                 }
             }
         }
-        float n11 = 20.0f * this.speed / (154.0f * this.cd.simag[this.cn]);
-        if (n11 > 20.0f) {
-            n11 = 20.0f;
-        }
+        float n11 = (float) Math.toDegrees(this.speed / contO.wrad);
         contO.wzy -= n11;
-        if (contO.wzy < -30) {
-            contO.wzy += 30;
+        if (contO.wzy < -180) {
+            contO.wzy += 360;
         }
-        if (contO.wzy > 30) {
-            contO.wzy -= 30;
+        if (contO.wzy > 180) {
+            contO.wzy -= 360;
         }
         if (control.right) {
             contO.wxz -= this.cd.turn[this.cn];
@@ -680,14 +677,14 @@ public class Mad
         }
         int ncx = (int) ((contO.x - trackers.sx) / 3000);
         if (ncx > trackers.ncx) {
-            ncx = (int) trackers.ncx;
+            ncx = trackers.ncx;
         }
         if (ncx < 0) {
             ncx = 0;
         }
         int ncz = (int) ((contO.z - trackers.sz) / 3000);
         if (ncz > trackers.ncz) {
-            ncz = (int) trackers.ncz;
+            ncz = trackers.ncz;
         }
         if (ncz < 0) {
             ncz = 0;
@@ -695,7 +692,7 @@ public class Mad
         int n22 = 1;
         for (int n23 = 0; n23 < trackers.sect[ncx][ncz].length; ++n23) {
             final int n24 = trackers.sect[ncx][ncz][n23];
-            if (Math.abs(trackers.zy[n24]) != 90 && Math.abs(trackers.xy[n24]) != 90 && Math.abs(contO.x - trackers.x[n24]) < trackers.radx[n24] && Math.abs(contO.z - trackers.z[n24]) < trackers.radz[n24] && (!trackers.decor[n24] || this.m.resdown != 2 || this.xt.multion != 0)) {
+            if (Math.abs(trackers.zy[n24]) != 90 && Math.abs(trackers.xy[n24]) != 90 && Math.abs(contO.x - trackers.x[n24]) < trackers.radx[n24] && Math.abs(contO.z - trackers.z[n24]) < trackers.radz[n24] && !trackers.decor[n24]) {
                 n22 = trackers.skd[n24];
             }
         }
@@ -946,7 +943,7 @@ public class Mad
                         this.xt.gscrape(this.scx[n56], this.scy[n56], this.scz[n56]);
                     }
                 }
-                if (!array7[n56] && array[n56] > trackers.x[n53] - trackers.radx[n53] && array[n56] < trackers.x[n53] + trackers.radx[n53] && array2[n56] > trackers.z[n53] - trackers.radz[n53] && array2[n56] < trackers.z[n53] + trackers.radz[n53] && array3[n56] > trackers.y[n53] - trackers.rady[n53] && array3[n56] < trackers.y[n53] + trackers.rady[n53] && (!trackers.decor[n53] || this.m.resdown != 2 || this.xt.multion != 0)) {
+                if (!array7[n56] && array[n56] > trackers.x[n53] - trackers.radx[n53] && array[n56] < trackers.x[n53] + trackers.radx[n53] && array2[n56] > trackers.z[n53] - trackers.radz[n53] && array2[n56] < trackers.z[n53] + trackers.radz[n53] && array3[n56] > trackers.y[n53] - trackers.rady[n53] && array3[n56] < trackers.y[n53] + trackers.rady[n53] && !trackers.decor[n53]) {
                     if (trackers.xy[n53] == 0 && trackers.zy[n53] == 0 && trackers.y[n53] != 250 && array3[n56] > trackers.y[n53] - 5) {
                         ++n55;
                         this.wtouch = true;
