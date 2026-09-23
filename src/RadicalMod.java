@@ -1,204 +1,205 @@
-import ds.nfm.ModuleSlayer;
-import ds.nfm.Module;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
-import ds.nfm.ModuleLoader;
+import java.nio.ByteBuffer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-public class RadicalMod
-{
+import un4seen.bass.BASS;
+
+/**
+ * Module music player backed by BASS.  The old implementation decoded a
+ * complete module into PCM with the in-tree module classes and then sent it
+ * to JavaSound.  BASS keeps the module compressed/decoded natively and also
+ * handles MOD, XM, S3M and IT files consistently.
+ */
+public class RadicalMod {
+    /** Kept for the stage-maker progress widget; playback is performed by BASS. */
     SuperClip sClip;
     boolean playing;
     int loaded;
     int rvol;
     String imod;
     String pmod;
-    
+    private int channel;
+    private byte[] moduleBytes;
+
+    private static boolean bassReady;
+
+    private static synchronized boolean initBass() {
+        if (bassReady) {
+            return true;
+        }
+        try {
+            // The wrapper loads the native BASS library when BASS is first used.
+            if (!BASS.BASS_Init(-1, 44100, 0)) {
+                // BASS_ERROR_ALREADY is harmless when another game component
+                // initialized the device first.
+                if (BASS.BASS_ErrorGetCode() != BASS.BASS_ERROR_ALREADY) {
+                    System.out.println("Unable to initialise BASS. Error: " + BASS.BASS_ErrorGetCode());
+                    return false;
+                }
+            }
+            bassReady = true;
+            return true;
+        } catch (final UnsatisfiedLinkError ex) {
+            System.out.println("Unable to load BASS native library: " + ex);
+            return false;
+        }
+    }
+
     public RadicalMod() {
-        this.playing = false;
-        this.loaded = 0;
-        this.rvol = 0;
-        this.imod = "";
-        this.pmod = "";
-        this.loaded = 0;
-        System.gc();
+        playing = false;
+        loaded = 0;
+        rvol = 3750;
+        imod = "";
+        pmod = "";
+        channel = 0;
     }
-    
-    public RadicalMod(String replace, int n, int n2, final int n3, final boolean b, final boolean b2) {
-        this.playing = false;
-        this.loaded = 0;
-        this.rvol = 0;
-        this.imod = "";
-        this.pmod = "";
-        final int n4 = 22000;
-        n2 = (int)(n2 / 8000.0f * 2.0f * n4);
-        n *= (int)0.8f;
+
+    public RadicalMod(final String replace, final int n, final int n2, final int n3,
+                      final boolean b, final boolean b2) {
+        this();
         try {
-            Module module;
-            if (!b2) {
-                module = ModuleLoader.loadMod("" + Madness.fpath + "" + replace + "");
+            final InputStream input;
+            if (b2) {
+                input = new URL(("http://multiplayer.needformadness.com/tracks/music/" +
+                        replace.replace(' ', '_') + ".zip")).openStream();
+            } else {
+                input = new FileInputStream(new File(Madness.fpath + replace));
             }
-            else {
-                replace = replace.replace(' ', '_');
-                module = ModuleLoader.loadMod(new URL("http://multiplayer.needformadness.com/tracks/music/" + replace + ".zip"));
-            }
-            if (module.isLoaded()) {
-                final ModuleSlayer prepareSlayer = ModuleLoader.prepareSlayer(module, n2, n, n3);
-                final byte[] turnbytesNorm = prepareSlayer.turnbytesNorm(b);
-                if (b) {
-                    this.rvol = prepareSlayer.olav;
-                }
-                this.sClip = new SuperClip(turnbytesNorm, prepareSlayer.oln, n4);
-                this.sClip.rollBackPos = prepareSlayer.rollBackPos;
-                this.sClip.rollBackTrig = prepareSlayer.oln - prepareSlayer.rollBackTrig;
-                this.loaded = 2;
-            }
+            loadBytes(readModule(input, replace));
+        } catch (final Exception ex) {
+            System.out.println("Error loading module with BASS: " + ex);
+            unload();
         }
-        catch (final Exception ex) {
-            System.out.println("Error downloading and making Mod: " + ex.toString());
-            this.loaded = 0;
-        }
-        System.runFinalization();
-        System.gc();
     }
-    
+
     public RadicalMod(final String str) {
-        this.playing = false;
-        this.loaded = 0;
-        this.rvol = 0;
-        this.imod = "";
-        this.pmod = "";
-        this.loaded = 1;
-        this.imod = "" + Madness.fpath + "" + str + "";
+        this();
+        loaded = 1;
+        imod = Madness.fpath + str;
     }
-    
+
     public void loadimod(final boolean b) {
-        if (this.loaded == 1) {
-            final int n = 44000;
-            int n2 = 160;
-            if (b) {
-                n2 = 300;
-            }
-            final int n3 = 125;
+        if (loaded == 1) {
             try {
-                final Module loadMod = ModuleLoader.loadMod(this.imod);
-                if (loadMod.isLoaded()) {
-                    final ModuleSlayer prepareSlayer = ModuleLoader.prepareSlayer(loadMod, n, n2, n3);
-                    final byte[] turnbytesNorm = prepareSlayer.turnbytesNorm(b);
-                    if (b) {
-                        this.rvol = prepareSlayer.olav;
-                    }
-                    this.sClip = new SuperClip(turnbytesNorm, prepareSlayer.oln, 22000);
-                    this.sClip.rollBackPos = prepareSlayer.rollBackPos;
-                    this.sClip.rollBackTrig = prepareSlayer.oln - prepareSlayer.rollBackTrig;
-                    this.loaded = 2;
-                }
+                loadBytes(readModule(new FileInputStream(new File(imod)), imod));
+            } catch (final Exception ex) {
+                System.out.println("Error loading module with BASS: " + ex);
+                loaded = 0;
             }
-            catch (final Exception ex) {
-                System.out.println("Error making a imod: " + ex.toString());
-                this.loaded = 0;
-            }
-            System.runFinalization();
-            System.gc();
         }
     }
-    
+
     public void loadpmod(final boolean b) {
-        if (this.loaded == 1) {
-            final int n = 44000;
-            int n2 = 160;
-            if (b) {
-                n2 = 300;
-            }
-            final int n3 = 125;
+        if (loaded == 1 && pmod != null && !pmod.isEmpty()) {
             try {
-                final Module loadMod = ModuleLoader.loadMod(this.pmod);
-                if (loadMod.isLoaded()) {
-                    final ModuleSlayer prepareSlayer = ModuleLoader.prepareSlayer(loadMod, n, n2, n3);
-                    final byte[] turnbytesNorm = prepareSlayer.turnbytesNorm(b);
-                    if (b) {
-                        this.rvol = prepareSlayer.olav;
+                loadBytes(readModule(new FileInputStream(new File(pmod)), pmod));
+            } catch (final Exception ex) {
+                System.out.println("Error loading module with BASS: " + ex);
+                loaded = 0;
+            }
+        }
+    }
+
+    public RadicalMod(final String pmod, final boolean b) {
+        this();
+        loaded = 1;
+        this.pmod = pmod;
+        loadpmod(b);
+    }
+
+    private void loadBytes(final byte[] bytes) {
+        if (bytes == null || bytes.length == 0 || !initBass()) {
+            loaded = 0;
+            return;
+        }
+        final ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
+        buffer.put(bytes).flip();
+        final int flags = BASS.BASS_MUSIC_LOOP | BASS.BASS_MUSIC_RAMP | BASS.BASS_MUSIC_SINCINTER;
+        channel = BASS.BASS_MusicLoad(buffer, 0, bytes.length, flags, 22000);
+        if (channel == 0) {
+            System.out.println("BASS could not load module. Error: " + BASS.BASS_ErrorGetCode());
+            loaded = 0;
+            return;
+        }
+        moduleBytes = bytes;
+        // Preserve the old field used by the stage maker's progress display.
+        sClip = new SuperClip(bytes, bytes.length, 22000);
+        loaded = 2;
+    }
+
+    private static byte[] readModule(final InputStream input, final String name) throws Exception {
+        try (InputStream in = input) {
+            final byte[] file = readAll(in);
+            if (!name.toLowerCase().endsWith(".zip")) {
+                return file;
+            }
+            try (ZipInputStream zip = new ZipInputStream(new java.io.ByteArrayInputStream(file))) {
+                ZipEntry entry;
+                while ((entry = zip.getNextEntry()) != null) {
+                    if (!entry.isDirectory()) {
+                        return readAll(zip);
                     }
-                    this.sClip = new SuperClip(turnbytesNorm, prepareSlayer.oln, 22000);
-                    this.sClip.rollBackPos = prepareSlayer.rollBackPos;
-                    this.sClip.rollBackTrig = prepareSlayer.oln - prepareSlayer.rollBackTrig;
-                    this.loaded = 2;
                 }
             }
-            catch (final Exception ex) {
-                System.out.println("Error making a imod: " + ex.toString());
-                this.loaded = 0;
-            }
-            System.runFinalization();
-            System.gc();
+            throw new java.io.IOException("ZIP contains no module: " + name);
         }
     }
-    
-    public RadicalMod(final String pmod, final boolean b) {
-        this.playing = false;
-        this.loaded = 0;
-        this.rvol = 0;
-        this.imod = "";
-        this.pmod = "";
-        this.loaded = 1;
-        this.pmod = pmod;
-        this.loadpmod(true);
+
+    private static byte[] readAll(final InputStream input) throws Exception {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final byte[] buf = new byte[8192];
+        int count;
+        while ((count = input.read(buf)) != -1) {
+            out.write(buf, 0, count);
+        }
+        return out.toByteArray();
     }
-    
+
     public void play() {
-        if (!this.playing && this.loaded == 2) {
-            this.sClip.play();
-            if (this.sClip.stoped == 0) {
-                this.playing = true;
-            }
+        if (!playing && loaded == 2 && channel != 0 && BASS.BASS_ChannelPlay(channel, true)) {
+            playing = true;
         }
     }
-    
+
     public void resume() {
-        if (!this.playing && this.loaded == 2) {
-            this.sClip.resume();
-            if (this.sClip.stoped == 0) {
-                this.playing = true;
-            }
+        if (!playing && loaded == 2 && channel != 0 && BASS.BASS_ChannelPlay(channel, false)) {
+            playing = true;
         }
     }
-    
+
     public void stop() {
-        if (this.playing && this.loaded == 2) {
-            this.sClip.stop();
-            this.playing = false;
+        if (channel != 0) {
+            BASS.BASS_ChannelStop(channel);
         }
+        playing = false;
     }
-    
+
     protected void unloadimod() {
-        if (this.loaded == 2) {
-            if (this.playing) {
-                this.sClip.stop();
-                this.playing = false;
-            }
-            try {
-                this.sClip.close();
-                this.sClip = null;
-            }
-            catch (final Exception ex) {}
-            System.gc();
-            this.loaded = 1;
-        }
+        stop();
+        freeChannel();
+        loaded = 1;
     }
-    
+
     protected void unload() {
-        if (this.playing && this.loaded == 2) {
-            this.sClip.stop();
-            this.playing = false;
+        stop();
+        freeChannel();
+        moduleBytes = null;
+        imod = null;
+        pmod = null;
+        loaded = 0;
+    }
+
+    private void freeChannel() {
+        if (channel != 0) {
+            BASS.BASS_MusicFree(channel);
+            channel = 0;
         }
-        try {
-            this.sClip.close();
-            this.sClip = null;
-        }
-        catch (final Exception ex) {}
-        try {
-            this.imod = null;
-        }
-        catch (final Exception ex2) {}
-        System.gc();
-        this.loaded = 0;
+        sClip = null;
     }
 }
