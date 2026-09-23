@@ -1199,12 +1199,12 @@ public class StageMaker extends Applet implements Runnable
                                                                     if (Math.abs(this.bco[this.sp].x - this.co[n28].x) < 500) {
                                                                         if (Math.abs(this.bco[this.sp].z - this.co[n28].z) < 3000) {
                                                                             for (int n31 = 0; n31 < array11[this.co[n28].colok - 46]; ++n31) {
-                                                                                for (int n32 = 0; n32 < this.co[n28].p[n31].n; ++n32) {
-                                                                                    if (this.py(this.bco[this.sp].x, this.co[n28].x, this.bco[this.sp].z, this.co[n28].z + this.co[n28].p[n31].oz[n32]) < n27) {
-                                                                                        n27 = this.py(this.bco[this.sp].x, this.co[n28].x, this.bco[this.sp].z, this.co[n28].z + this.co[n28].p[n31].oz[n32]);
-                                                                                        this.flyh = this.co[n28].p[n31].oy[n32] - 28 + this.m.ground;
+                                                                                for (int n32 = 0; n32 < this.co[n28].p.get(n31).n; ++n32) {
+                                                                                    if (this.py(this.bco[this.sp].x, this.co[n28].x, this.bco[this.sp].z, this.co[n28].z + this.co[n28].p.get(n31).oz[n32]) < n27) {
+                                                                                        n27 = this.py(this.bco[this.sp].x, this.co[n28].x, this.bco[this.sp].z, this.co[n28].z + this.co[n28].p.get(n31).oz[n32]);
+                                                                                        this.flyh = this.co[n28].p.get(n31).oy[n32] - 28 + this.m.ground;
                                                                                         n24 = this.co[n28].x - this.bco[this.sp].x;
-                                                                                        n25 = this.co[n28].z + this.co[n28].p[n31].oz[n32] - this.bco[this.sp].z;
+                                                                                        n25 = this.co[n28].z + this.co[n28].p.get(n31).oz[n32] - this.bco[this.sp].z;
                                                                                         this.onfly = true;
                                                                                     }
                                                                                 }
@@ -1218,12 +1218,12 @@ public class StageMaker extends Applet implements Runnable
                                                                     if (Math.abs(this.bco[this.sp].z - this.co[n28].z) < 500) {
                                                                         if (Math.abs(this.bco[this.sp].x - this.co[n28].x) < 3000) {
                                                                             for (int n33 = 0; n33 < array11[this.co[n28].colok - 46]; ++n33) {
-                                                                                for (int n34 = 0; n34 < this.co[n28].p[n33].n; ++n34) {
-                                                                                    if (this.py(this.bco[this.sp].z, this.co[n28].z, this.bco[this.sp].x, this.co[n28].x + this.co[n28].p[n33].ox[n34]) < n27) {
-                                                                                        n27 = this.py(this.bco[this.sp].z, this.co[n28].z, this.bco[this.sp].x, this.co[n28].x + this.co[n28].p[n33].ox[n34]);
-                                                                                        this.flyh = this.co[n28].p[n33].oy[n34] - 28 + this.m.ground;
+                                                                                for (int n34 = 0; n34 < this.co[n28].p.get(n33).n; ++n34) {
+                                                                                    if (this.py(this.bco[this.sp].z, this.co[n28].z, this.bco[this.sp].x, this.co[n28].x + this.co[n28].p.get(n33).ox[n34]) < n27) {
+                                                                                        n27 = this.py(this.bco[this.sp].z, this.co[n28].z, this.bco[this.sp].x, this.co[n28].x + this.co[n28].p.get(n33).ox[n34]);
+                                                                                        this.flyh = this.co[n28].p.get(n33).oy[n34] - 28 + this.m.ground;
                                                                                         n25 = this.co[n28].z - this.bco[this.sp].z;
-                                                                                        n24 = this.co[n28].x + this.co[n28].p[n33].ox[n34] - this.bco[this.sp].x;
+                                                                                        n24 = this.co[n28].x + this.co[n28].p.get(n33).ox[n34] - this.bco[this.sp].x;
                                                                                         this.onfly = true;
                                                                                     }
                                                                                 }
@@ -5077,7 +5077,7 @@ public class StageMaker extends Applet implements Runnable
                     }
                     this.bco[n] = new ContO(b, this.m, this.t);
                     for (int k = 0; k < this.bco[n].npl; ++k) {
-                        this.bco[n].p[k].loadprojf();
+                        this.bco[n].p.get(k).loadprojf();
                     }
                     if (n == 31) {
                         this.bco[n].elec = true;

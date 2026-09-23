@@ -2,7 +2,7 @@ import java.awt.RenderingHints;
 import java.awt.Graphics2D;
 import java.awt.Color;
 
-public class Plane implements Comparable<Plane>
+public class Plane
 {
     Medium m;
     Trackers t;
@@ -49,6 +49,7 @@ public class Plane implements Comparable<Plane>
     int pb;
     int flx;
     int colnum;
+    private PlaneWaster churner;
     
     public Plane(final Medium m,
     		final Trackers t,
@@ -59,6 +60,7 @@ public class Plane implements Comparable<Plane>
     		final int gr, final int fs,
     		final float n92, final float wy, final float wz,
     		final int disline, final int bfase, final boolean road, final int light, final boolean solo) {
+    	this.churner = GameSparker.churner;
         this.c = new int[3];
         this.oc = new int[3];
         this.hsb = new float[3];
@@ -155,13 +157,7 @@ public class Plane implements Comparable<Plane>
         }
         if (glass == 0) {
             for (int n10 = 0; n10 < 3; ++n10) {
-                this.c[n10] = (int)(array4[n10] + array4[n10] * (this.m.snap[n10] / 100.0f));
-                if (this.c[n10] > 255) {
-                    this.c[n10] = 255;
-                }
-                if (this.c[n10] < 0) {
-                    this.c[n10] = 0;
-                }
+                this.c[n10] = clampRGB((int)(array4[n10] + array4[n10] * (this.m.snap[n10] / 100.0f)));
             }
         }
         if (glass == 1) {
@@ -184,12 +180,7 @@ public class Plane implements Comparable<Plane>
         this.glass = glass;
         Color.RGBtoHSB(this.c[0], this.c[1], this.c[2], this.hsb);
         if (glass == 3 && this.m.trk != 2) {
-            final float[] hsb = this.hsb;
-            final int n14 = 1;
-            hsb[n14] += 0.05f;
-            if (this.hsb[1] > 1.0f) {
-                this.hsb[1] = 1.0f;
-            }
+            this.hsb[1] = clampHSB(this.hsb[1] + 0.05f);
         }
         if (!this.nocol && this.glass != 1) {
             if (this.bfase > 20 && this.hsb[1] > 0.25) {
@@ -410,27 +401,9 @@ public class Plane implements Comparable<Plane>
                     array6[n19] = this.xs(array[n19], array2[n19]);
                     array7[n19] = this.ys(array3[n19], array2[n19]);
                 }
-                int r = (int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f));
-                if (r > 255) {
-                    r = 255;
-                }
-                if (r < 0) {
-                    r = 0;
-                }
-                int g = (int)(169.0f + 169.0f * (this.m.snap[1] / 300.0f));
-                if (g > 255) {
-                    g = 255;
-                }
-                if (g < 0) {
-                    g = 0;
-                }
-                int b2 = (int)(89.0f + 89.0f * (this.m.snap[2] / 200.0f));
-                if (b2 > 255) {
-                    b2 = 255;
-                }
-                if (b2 < 0) {
-                    b2 = 0;
-                }
+                int r = clampRGB((int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f)));
+                int g = clampRGB((int)(169.0f + 169.0f * (this.m.snap[1] / 300.0f)));
+                int b2 = clampRGB((int)(89.0f + 89.0f * (this.m.snap[2] / 200.0f)));
                 graphics2D.setColor(new Color(r, g, b2));
                 graphics2D.fillPolygon(array6, array7, 3);
                 array[0] = this.ox[this.pa] + f;
@@ -475,27 +448,9 @@ public class Plane implements Comparable<Plane>
                     array6[n24] = this.xs(array[n24], array2[n24]);
                     array7[n24] = this.ys(array3[n24], array2[n24]);
                 }
-                int r2 = (int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f));
-                if (r2 > 255) {
-                    r2 = 255;
-                }
-                if (r2 < 0) {
-                    r2 = 0;
-                }
-                int g2 = (int)(207.0f + 207.0f * (this.m.snap[1] / 300.0f));
-                if (g2 > 255) {
-                    g2 = 255;
-                }
-                if (g2 < 0) {
-                    g2 = 0;
-                }
-                int b3 = (int)(136.0f + 136.0f * (this.m.snap[2] / 200.0f));
-                if (b3 > 255) {
-                    b3 = 255;
-                }
-                if (b3 < 0) {
-                    b3 = 0;
-                }
+                int r2 = clampRGB((int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f)));
+                int g2 = clampRGB((int)(207.0f + 207.0f * (this.m.snap[1] / 300.0f)));
+                int b3 = clampRGB((int)(136.0f + 136.0f * (this.m.snap[2] / 200.0f)));
                 graphics2D.setColor(new Color(r2, g2, b3));
                 graphics2D.fillPolygon(array6, array7, 3);
             }
@@ -943,27 +898,9 @@ public class Plane implements Comparable<Plane>
             int green = color.getGreen();
             int blue = color.getBlue();
             if (this.m.lightson && (this.light != 0 || ((this.gr == -11 || this.gr == -12) && maxR == -1))) {
-                red = this.oc[0];
-                if (red > 255) {
-                    red = 255;
-                }
-                if (red < 0) {
-                    red = 0;
-                }
-                green = this.oc[1];
-                if (green > 255) {
-                    green = 255;
-                }
-                if (green < 0) {
-                    green = 0;
-                }
-                blue = this.oc[2];
-                if (blue > 255) {
-                    blue = 255;
-                }
-                if (blue < 0) {
-                    blue = 0;
-                }
+                red = clampRGB(this.oc[0]);
+                green = clampRGB(this.oc[1]);
+                blue = clampRGB(this.oc[2]);
             }
             if (this.m.trk == 0) {
                 for (int n67 = 0; n67 < 16; ++n67) {
@@ -986,27 +923,9 @@ public class Plane implements Comparable<Plane>
                         int g3 = 0;
                         int b6 = 0;
                         if (this.m.lightson && this.light != 0) {
-                            r3 = this.oc[0] / 2;
-                            if (r3 > 255) {
-                                r3 = 255;
-                            }
-                            if (r3 < 0) {
-                                r3 = 0;
-                            }
-                            g3 = this.oc[1] / 2;
-                            if (g3 > 255) {
-                                g3 = 255;
-                            }
-                            if (g3 < 0) {
-                                g3 = 0;
-                            }
-                            b6 = this.oc[2] / 2;
-                            if (b6 > 255) {
-                                b6 = 255;
-                            }
-                            if (b6 < 0) {
-                                b6 = 0;
-                            }
+                            r3 = clampRGB(this.oc[0] / 2);
+                            g3 = clampRGB(this.oc[1] / 2);
+                            b6 = clampRGB(this.oc[2] / 2);
                         }
                         graphics2D.setColor(new Color(r3, g3, b6));
                         graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
@@ -1027,18 +946,9 @@ public class Plane implements Comparable<Plane>
                     int g6 = this.c[1];
                     int b9 = this.c[2];
                     if (maxR == -1 && this.m.cpflik) {
-                        r6 *= (int)1.6;
-                        if (r6 > 255) {
-                            r6 = 255;
-                        }
-                        g6 *= (int)1.6;
-                        if (g6 > 255) {
-                            g6 = 255;
-                        }
-                        b9 *= (int)1.6;
-                        if (b9 > 255) {
-                            b9 = 255;
-                        }
+                        r6 = clampRGB((int)(r6 * 1.6));
+                        g6 = clampRGB((int)(g6 * 1.6));
+                        b9 = clampRGB((int)(b9 * 1.6));
                     }
                     for (int n68 = 0; n68 < 16; ++n68) {
                         if (this.av > this.m.fade[n68]) {
@@ -1052,27 +962,9 @@ public class Plane implements Comparable<Plane>
                 }
                 else if (this.m.cpflik && this.m.hit == 5000) {
                     int g7 = (int)(Math.random() * 115.0);
-                    int r7 = g7 * 2 - 54;
-                    if (r7 < 0) {
-                        r7 = 0;
-                    }
-                    if (r7 > 255) {
-                        r7 = 255;
-                    }
-                    int b10 = 202 + g7 * 2;
-                    if (b10 < 0) {
-                        b10 = 0;
-                    }
-                    if (b10 > 255) {
-                        b10 = 255;
-                    }
-                    g7 += 101;
-                    if (g7 < 0) {
-                        g7 = 0;
-                    }
-                    if (g7 > 255) {
-                        g7 = 255;
-                    }
+                    int r7 = clampRGB(g7 * 2 - 54);
+                    int b10 = clampRGB(202 + g7 * 2);
+                    g7 = clampRGB(g7 + 101);
                     graphics2D.setColor(new Color(r7, g7, b10));
                     graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
                 }
@@ -1082,14 +974,8 @@ public class Plane implements Comparable<Plane>
                 int g8 = this.c[1];
                 int b11 = this.c[2];
                 if (this.m.cpflik && this.m.elecr >= 0.0f) {
-                    r8 = (int)(25.5f * this.m.elecr);
-                    if (r8 > 255) {
-                        r8 = 255;
-                    }
-                    g8 = (int)(128.0f + 12.8f * this.m.elecr);
-                    if (g8 > 255) {
-                        g8 = 255;
-                    }
+                    r8 = clampRGB((int)(25.5f * this.m.elecr));
+                    g8 = clampRGB((int)(128.0f + 12.8f * this.m.elecr));
                     b11 = 255;
                 }
                 for (int n69 = 0; n69 < 16; ++n69) {
@@ -1112,19 +998,7 @@ public class Plane implements Comparable<Plane>
 	 * @param blue
 	 */
 	public void roadColor(final Graphics2D graphics2D, int red, int green, int blue) {
-		red -= 10;
-		if (red < 0) {
-			red = 0;
-		}
-		green -= 10;
-		if (green < 0) {
-			green = 0;
-		}
-		blue -= 10;
-		if (blue < 0) {
-			blue = 0;
-		}
-		graphics2D.setColor(new Color(red, green, blue));
+		graphics2D.setColor(new Color(clampRGB(red - 10), clampRGB(green - 10), clampRGB(blue - 10)));
 	}
 
 	/**
@@ -1137,39 +1011,15 @@ public class Plane implements Comparable<Plane>
     		break;
     	case 1:
     		final int r4 = 0;
-    		int g4 = (int)(223.0f + 223.0f * (this.m.snap[1] / 100.0f));
-    		if (g4 > 255) {
-    			g4 = 255;
-    		}
-    		if (g4 < 0) {
-    			g4 = 0;
-    		}
-    		int b7 = (int)(255.0f + 255.0f * (this.m.snap[2] / 100.0f));
-    		if (b7 > 255) {
-    			b7 = 255;
-    		}
-    		if (b7 < 0) {
-    			b7 = 0;
-    		}
+    		int g4 = clampRGB((int)(223.0f + 223.0f * (this.m.snap[1] / 100.0f)));
+    		int b7 = clampRGB((int)(255.0f + 255.0f * (this.m.snap[2] / 100.0f)));
     		graphics2D.setColor(new Color(r4, g4, b7));
     		this.flx = 2;
     		break;
     	case 3:
     		final int r5 = 0;
-    		int g5 = (int)(255.0f + 255.0f * (this.m.snap[1] / 100.0f));
-    		if (g5 > 255) {
-    			g5 = 255;
-    		}
-    		if (g5 < 0) {
-    			g5 = 0;
-    		}
-    		int b8 = (int)(223.0f + 223.0f * (this.m.snap[2] / 100.0f));
-    		if (b8 > 255) {
-    			b8 = 255;
-    		}
-    		if (b8 < 0) {
-    			b8 = 0;
-    		}
+    		int g5 = clampRGB((int)(255.0f + 255.0f * (this.m.snap[1] / 100.0f)));
+    		int b8 = clampRGB((int)(223.0f + 223.0f * (this.m.snap[2] / 100.0f)));
     		graphics2D.setColor(new Color(r5, g5, b8));
     		this.flx = 2;
     		break;
@@ -1337,10 +1187,7 @@ public class Plane implements Comparable<Plane>
     }
 	
 	public static void HSBtoRGB (float hue, float saturation, float brightness, int[] rgb) {
-        // Convert HSB to a packed RGB integer
         int rgbInt = Color.HSBtoRGB(hue, saturation, brightness);
-        
-        // Extract individual RGB components (0-255)
         rgb[0] = (rgbInt >> 16) & 0xFF;
         rgb[1] = (rgbInt >> 8) & 0xFF;
         rgb[2] = rgbInt & 0xFF;
@@ -1376,28 +1223,38 @@ public class Plane implements Comparable<Plane>
     }
     
     public int clampRGB(int a) {
-    	return a = (a < 0) ? 0 :
-    		(a > 255) ? 255 : a;
+    	return (a < 0) ? 0 : (a > 255) ? 255 : a;
     }
     
     public float clampHSB(float a) {
-    	return a = (a < 0) ? 0F :
-    		(a > 1) ? 1F : a;
+    	return (a < 0.0f) ? 0.0f : (a > 1.0f) ? 1.0f : a;
     }
     
-    public void AABB3D (int iteraitons,
-    		float[] x, float[] y, float[] z) {
-    	
-    }
-    
-	@Override
-	public int compareTo(Plane arg0) {
-		if (av != arg0.av) {
-            if (av < arg0.av)
-                return 1;
-            else
-                return -1;
+    public void AABB3D(int iterations, float[] x, float[] y, float[] z) {
+        if (this.n == 0 || x == null || y == null || z == null || x.length < 2 || y.length < 2 || z.length < 2) {
+            return;
         }
-        return 0;
-	}
+        float minX = this.ox[0];
+        float maxX = this.ox[0];
+        float minY = this.oy[0];
+        float maxY = this.oy[0];
+        float minZ = this.oz[0];
+        float maxZ = this.oz[0];
+
+        for (int i = 1; i < this.n; ++i) {
+            if (this.ox[i] < minX) minX = this.ox[i];
+            if (this.ox[i] > maxX) maxX = this.ox[i];
+            if (this.oy[i] < minY) minY = this.oy[i];
+            if (this.oy[i] > maxY) maxY = this.oy[i];
+            if (this.oz[i] < minZ) minZ = this.oz[i];
+            if (this.oz[i] > maxZ) maxZ = this.oz[i];
+        }
+
+        x[0] = minX;
+        x[1] = maxX;
+        y[0] = minY;
+        y[1] = maxY;
+        z[0] = minZ;
+        z[1] = maxZ;
+    }
 }

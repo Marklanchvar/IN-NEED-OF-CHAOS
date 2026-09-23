@@ -1168,15 +1168,15 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                             this.shsb[1] = 0.2f;
                         }
                         for (int n32 = 0; n32 < this.o.npl; ++n32) {
-                            if (this.o.p[n32].colnum == 1) {
-                                this.o.p[n32].hsb[0] = this.fhsb[0];
-                                this.o.p[n32].hsb[1] = this.fhsb[2];
-                                this.o.p[n32].hsb[2] = this.fhsb[1];
+                            if (this.o.p.get(n32).colnum == 1) {
+                                this.o.p.get(n32).hsb[0] = this.fhsb[0];
+                                this.o.p.get(n32).hsb[1] = this.fhsb[2];
+                                this.o.p.get(n32).hsb[2] = this.fhsb[1];
                             }
-                            if (this.o.p[n32].colnum == 2) {
-                                this.o.p[n32].hsb[0] = this.shsb[0];
-                                this.o.p[n32].hsb[1] = this.shsb[2];
-                                this.o.p[n32].hsb[2] = this.shsb[1];
+                            if (this.o.p.get(n32).colnum == 2) {
+                                this.o.p.get(n32).hsb[0] = this.shsb[0];
+                                this.o.p.get(n32).hsb[1] = this.shsb[2];
+                                this.o.p.get(n32).hsb[2] = this.shsb[1];
                             }
                         }
                         final String string = "(" + Color.getHSBColor(this.fhsb[0], this.fhsb[2], this.fhsb[1]).getRed() + "," + Color.getHSBColor(this.fhsb[0], this.fhsb[2], this.fhsb[1]).getGreen() + "," + Color.getHSBColor(this.fhsb[0], this.fhsb[2], this.fhsb[1]).getBlue() + ")";
@@ -1956,8 +1956,8 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                             this.crashok = true;
                             this.hitmag = 17000;
                             for (int n74 = 0; n74 < this.o.npl; ++n74) {
-                                if ((this.o.p[n74].wz == 0 || this.o.p[n74].gr == -17 || this.o.p[n74].gr == -16) && this.o.p[n74].embos == 0) {
-                                    this.o.p[n74].embos = 1;
+                                if ((this.o.p.get(n74).wz == 0 || this.o.p.get(n74).gr == -17 || this.o.p.get(n74).gr == -16) && this.o.p.get(n74).embos == 0) {
+                                    this.o.p.get(n74).embos = 1;
                                 }
                             }
                         }
@@ -2371,23 +2371,23 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                     for (int n110 = 0; n110 < this.o.npl; ++n110) {
                         if (n110 >= this.polynum && n110 < this.polynum + this.cntpls) {
                             if (this.pflk) {
-                                this.o.p[n110].hsb[2] = 1.0f;
+                                this.o.p.get(n110).hsb[2] = 1.0f;
                             }
                             else {
-                                this.o.p[n110].hsb[2] = 0.0f;
-                                this.o.p[n110].hsb[0] = Math.abs(0.5f - this.o.p[n110].hsb[0]);
-                                while (this.o.p[n110].hsb[0] > 1.0f) {
-                                    final float[] hsb = this.o.p[n110].hsb;
+                                this.o.p.get(n110).hsb[2] = 0.0f;
+                                this.o.p.get(n110).hsb[0] = Math.abs(0.5f - this.o.p.get(n110).hsb[0]);
+                                while (this.o.p.get(n110).hsb[0] > 1.0f) {
+                                    final float[] hsb = this.o.p.get(n110).hsb;
                                     final int n111 = 0;
                                     --hsb[n111];
                                 }
                             }
                         }
                         else if (this.prflk > 6 && this.prflk < 20) {
-                            this.o.p[n110].gr = -13;
+                            this.o.p.get(n110).gr = -13;
                         }
                         else {
-                            this.o.p[n110].gr = 1;
+                            this.o.p.get(n110).gr = 1;
                         }
                     }
                     if (this.pflk) {
@@ -3145,17 +3145,17 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                             int n7 = 0;
                             String str = "";
                             for (int l = 0; l < this.o.npl; ++l) {
-                                for (int n8 = 0; n8 < this.o.p[l].n; ++n8) {
+                                for (int n8 = 0; n8 < this.o.p.get(l).n; ++n8) {
                                     boolean b3 = false;
                                     for (int n9 = 0; n9 < n7; ++n9) {
-                                        if (array7[n9] == this.o.p[l].ox[n8] && array8[n9] == this.o.p[l].oy[n8] && array9[n9] == this.o.p[l].oz[n8]) {
+                                        if (array7[n9] == this.o.p.get(l).ox[n8] && array8[n9] == this.o.p.get(l).oy[n8] && array9[n9] == this.o.p.get(l).oz[n8]) {
                                             b3 = true;
                                         }
                                     }
                                     if (!b3 && n7 < 6000) {
-                                        array7[n7] = this.o.p[l].ox[n8];
-                                        array8[n7] = this.o.p[l].oy[n8];
-                                        array9[n7] = this.o.p[l].oz[n8];
+                                        array7[n7] = this.o.p.get(l).ox[n8];
+                                        array8[n7] = this.o.p.get(l).oy[n8];
+                                        array9[n7] = this.o.p.get(l).oz[n8];
                                         ++n7;
                                     }
                                 }
@@ -3164,12 +3164,12 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                                 str = str + "v " + array7[n10] / 10.0f + " " + -array8[n10] / 10.0f + " " + array9[n10] / 10.0f + "\n";
                             }
                             for (int n11 = 0; n11 < this.o.npl; ++n11) {
-                                if (this.o.p[n11].wz == 0) {
+                                if (this.o.p.get(n11).wz == 0) {
                                     String str2 = str + "f";
-                                    for (int n12 = 0; n12 < this.o.p[n11].n; ++n12) {
+                                    for (int n12 = 0; n12 < this.o.p.get(n11).n; ++n12) {
                                         str2 += " ";
                                         for (int n13 = 0; n13 < n7; ++n13) {
-                                            if (array7[n13] == this.o.p[n11].ox[n12] && array8[n13] == this.o.p[n11].oy[n12] && array9[n13] == this.o.p[n11].oz[n12]) {
+                                            if (array7[n13] == this.o.p.get(n11).ox[n12] && array8[n13] == this.o.p.get(n11).oy[n12] && array9[n13] == this.o.p.get(n11).oz[n12]) {
                                                 str2 = str2 + "" + (n13 + 1);
                                             }
                                         }
@@ -4137,9 +4137,9 @@ public class CarMaker extends Applet implements Runnable, ActionListener
             }
             if (n == n17) {
                 for (int n71 = 0; n71 < this.o.npl; ++n71) {
-                    Color.RGBtoHSB(this.o.p[n71].c[0], this.o.p[n71].c[1], this.o.p[n71].c[2], this.o.p[n71].hsb);
-                    if (this.o.p[n71].gr == -13) {
-                        this.o.p[n71].gr = 1;
+                    Color.RGBtoHSB(this.o.p.get(n71).c[0], this.o.p.get(n71).c[1], this.o.p.get(n71).c[2], this.o.p.get(n71).hsb);
+                    if (this.o.p.get(n71).gr == -13) {
+                        this.o.p.get(n71).gr = 1;
                     }
                 }
                 this.polynum = -1;
@@ -4682,13 +4682,13 @@ public class CarMaker extends Applet implements Runnable, ActionListener
             }
             for (int i = 0; i < this.o.npl; ++i) {
                 float n3 = 0.0f;
-                for (int j = 0; j < this.o.p[i].n; ++j) {
-                    if (this.o.p[i].wz == 0 && this.py(this.o.keyx[n], this.o.p[i].ox[j], this.o.keyz[n], this.o.p[i].oz[j]) < n2) {
+                for (int j = 0; j < this.o.p.get(i).n; ++j) {
+                    if (this.o.p.get(i).wz == 0 && this.py(this.o.keyx[n], this.o.p.get(i).ox[j], this.o.keyz[n], this.o.p.get(i).oz[j]) < n2) {
                         n3 = a / 20.0f * this.m.random();
-                        final float[] oz = this.o.p[i].oz;
+                        final float[] oz = this.o.p.get(i).oz;
                         final int n4 = j;
                         oz[n4] -= (int)(n3 * this.m.sin(this.o.xz) * this.m.cos(this.o.zy));
-                        final float[] ox = this.o.p[i].ox;
+                        final float[] ox = this.o.p.get(i).ox;
                         final int n5 = j;
                         ox[n5] += (int)(n3 * this.m.cos(this.o.xz) * this.m.cos(this.o.xy));
                         if (b) {
@@ -4698,41 +4698,41 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                 }
                 if (n3 != 0.0f) {
                     if (Math.abs(n3) >= 1.0f) {
-                        this.o.p[i].chip = 1;
-                        this.o.p[i].ctmag = n3;
+                        this.o.p.get(i).chip = 1;
+                        this.o.p.get(i).ctmag = n3;
                     }
-                    if (!this.o.p[i].nocol && this.o.p[i].glass != 1) {
-                        if (this.o.p[i].bfase > 20 && this.o.p[i].hsb[1] > 0.25) {
-                            this.o.p[i].hsb[1] = 0.25f;
+                    if (!this.o.p.get(i).nocol && this.o.p.get(i).glass != 1) {
+                        if (this.o.p.get(i).bfase > 20 && this.o.p.get(i).hsb[1] > 0.25) {
+                            this.o.p.get(i).hsb[1] = 0.25f;
                         }
-                        if (this.o.p[i].bfase > 25 && this.o.p[i].hsb[2] > 0.7) {
-                            this.o.p[i].hsb[2] = 0.7f;
+                        if (this.o.p.get(i).bfase > 25 && this.o.p.get(i).hsb[2] > 0.7) {
+                            this.o.p.get(i).hsb[2] = 0.7f;
                         }
-                        if (this.o.p[i].bfase > 30 && this.o.p[i].hsb[1] > 0.15) {
-                            this.o.p[i].hsb[1] = 0.15f;
+                        if (this.o.p.get(i).bfase > 30 && this.o.p.get(i).hsb[1] > 0.15) {
+                            this.o.p.get(i).hsb[1] = 0.15f;
                         }
-                        if (this.o.p[i].bfase > 35 && this.o.p[i].hsb[2] > 0.6) {
-                            this.o.p[i].hsb[2] = 0.6f;
+                        if (this.o.p.get(i).bfase > 35 && this.o.p.get(i).hsb[2] > 0.6) {
+                            this.o.p.get(i).hsb[2] = 0.6f;
                         }
-                        if (this.o.p[i].bfase > 40) {
-                            this.o.p[i].hsb[0] = 0.075f;
+                        if (this.o.p.get(i).bfase > 40) {
+                            this.o.p.get(i).hsb[0] = 0.075f;
                         }
-                        if (this.o.p[i].bfase > 50 && this.o.p[i].hsb[2] > 0.5) {
-                            this.o.p[i].hsb[2] = 0.5f;
+                        if (this.o.p.get(i).bfase > 50 && this.o.p.get(i).hsb[2] > 0.5) {
+                            this.o.p.get(i).hsb[2] = 0.5f;
                         }
-                        if (this.o.p[i].bfase > 60) {
-                            this.o.p[i].hsb[0] = 0.05f;
+                        if (this.o.p.get(i).bfase > 60) {
+                            this.o.p.get(i).hsb[0] = 0.05f;
                         }
-                        final Plane plane = this.o.p[i];
+                        final Plane plane = this.o.p.get(i);
                         plane.bfase += (int)Math.abs(n3);
-                        new Color(this.o.p[i].c[0], this.o.p[i].c[1], this.o.p[i].c[2]);
-                        final Color hsbColor = Color.getHSBColor(this.o.p[i].hsb[0], this.o.p[i].hsb[1], this.o.p[i].hsb[2]);
-                        this.o.p[i].c[0] = hsbColor.getRed();
-                        this.o.p[i].c[1] = hsbColor.getGreen();
-                        this.o.p[i].c[2] = hsbColor.getBlue();
+                        new Color(this.o.p.get(i).c[0], this.o.p.get(i).c[1], this.o.p.get(i).c[2]);
+                        final Color hsbColor = Color.getHSBColor(this.o.p.get(i).hsb[0], this.o.p.get(i).hsb[1], this.o.p.get(i).hsb[2]);
+                        this.o.p.get(i).c[0] = hsbColor.getRed();
+                        this.o.p.get(i).c[1] = hsbColor.getGreen();
+                        this.o.p.get(i).c[2] = hsbColor.getBlue();
                     }
-                    if (this.o.p[i].glass == 1) {
-                        final Plane plane2 = this.o.p[i];
+                    if (this.o.p.get(i).glass == 1) {
+                        final Plane plane2 = this.o.p.get(i);
                         plane2.gr += (int)Math.abs(n3 * 1.5);
                     }
                 }
@@ -4759,13 +4759,13 @@ public class CarMaker extends Applet implements Runnable, ActionListener
             }
             for (int i = 0; i < this.o.npl; ++i) {
                 float n3 = 0.0f;
-                for (int j = 0; j < this.o.p[i].n; ++j) {
-                    if (this.o.p[i].wz == 0 && this.py(this.o.keyx[n], this.o.p[i].ox[j], this.o.keyz[n], this.o.p[i].oz[j]) < n2) {
+                for (int j = 0; j < this.o.p.get(i).n; ++j) {
+                    if (this.o.p.get(i).wz == 0 && this.py(this.o.keyx[n], this.o.p.get(i).ox[j], this.o.keyz[n], this.o.p.get(i).oz[j]) < n2) {
                         n3 = a / 20.0f * this.m.random();
-                        final float[] oz = this.o.p[i].oz;
+                        final float[] oz = this.o.p.get(i).oz;
                         final int n4 = j;
                         oz[n4] += (int)(n3 * this.m.cos(this.o.xz) * this.m.cos(this.o.zy));
-                        final float[] ox = this.o.p[i].ox;
+                        final float[] ox = this.o.p.get(i).ox;
                         final int n5 = j;
                         ox[n5] += (int)(n3 * this.m.sin(this.o.xz) * this.m.cos(this.o.xy));
                         if (b) {
@@ -4775,41 +4775,41 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                 }
                 if (n3 != 0.0f) {
                     if (Math.abs(n3) >= 1.0f) {
-                        this.o.p[i].chip = 1;
-                        this.o.p[i].ctmag = n3;
+                        this.o.p.get(i).chip = 1;
+                        this.o.p.get(i).ctmag = n3;
                     }
-                    if (!this.o.p[i].nocol && this.o.p[i].glass != 1) {
-                        if (this.o.p[i].bfase > 20 && this.o.p[i].hsb[1] > 0.25) {
-                            this.o.p[i].hsb[1] = 0.25f;
+                    if (!this.o.p.get(i).nocol && this.o.p.get(i).glass != 1) {
+                        if (this.o.p.get(i).bfase > 20 && this.o.p.get(i).hsb[1] > 0.25) {
+                            this.o.p.get(i).hsb[1] = 0.25f;
                         }
-                        if (this.o.p[i].bfase > 25 && this.o.p[i].hsb[2] > 0.7) {
-                            this.o.p[i].hsb[2] = 0.7f;
+                        if (this.o.p.get(i).bfase > 25 && this.o.p.get(i).hsb[2] > 0.7) {
+                            this.o.p.get(i).hsb[2] = 0.7f;
                         }
-                        if (this.o.p[i].bfase > 30 && this.o.p[i].hsb[1] > 0.15) {
-                            this.o.p[i].hsb[1] = 0.15f;
+                        if (this.o.p.get(i).bfase > 30 && this.o.p.get(i).hsb[1] > 0.15) {
+                            this.o.p.get(i).hsb[1] = 0.15f;
                         }
-                        if (this.o.p[i].bfase > 35 && this.o.p[i].hsb[2] > 0.6) {
-                            this.o.p[i].hsb[2] = 0.6f;
+                        if (this.o.p.get(i).bfase > 35 && this.o.p.get(i).hsb[2] > 0.6) {
+                            this.o.p.get(i).hsb[2] = 0.6f;
                         }
-                        if (this.o.p[i].bfase > 40) {
-                            this.o.p[i].hsb[0] = 0.075f;
+                        if (this.o.p.get(i).bfase > 40) {
+                            this.o.p.get(i).hsb[0] = 0.075f;
                         }
-                        if (this.o.p[i].bfase > 50 && this.o.p[i].hsb[2] > 0.5) {
-                            this.o.p[i].hsb[2] = 0.5f;
+                        if (this.o.p.get(i).bfase > 50 && this.o.p.get(i).hsb[2] > 0.5) {
+                            this.o.p.get(i).hsb[2] = 0.5f;
                         }
-                        if (this.o.p[i].bfase > 60) {
-                            this.o.p[i].hsb[0] = 0.05f;
+                        if (this.o.p.get(i).bfase > 60) {
+                            this.o.p.get(i).hsb[0] = 0.05f;
                         }
-                        final Plane plane = this.o.p[i];
+                        final Plane plane = this.o.p.get(i);
                         plane.bfase += (int)Math.abs(n3);
-                        new Color(this.o.p[i].c[0], this.o.p[i].c[1], this.o.p[i].c[2]);
-                        final Color hsbColor = Color.getHSBColor(this.o.p[i].hsb[0], this.o.p[i].hsb[1], this.o.p[i].hsb[2]);
-                        this.o.p[i].c[0] = hsbColor.getRed();
-                        this.o.p[i].c[1] = hsbColor.getGreen();
-                        this.o.p[i].c[2] = hsbColor.getBlue();
+                        new Color(this.o.p.get(i).c[0], this.o.p.get(i).c[1], this.o.p.get(i).c[2]);
+                        final Color hsbColor = Color.getHSBColor(this.o.p.get(i).hsb[0], this.o.p.get(i).hsb[1], this.o.p.get(i).hsb[2]);
+                        this.o.p.get(i).c[0] = hsbColor.getRed();
+                        this.o.p.get(i).c[1] = hsbColor.getGreen();
+                        this.o.p.get(i).c[2] = hsbColor.getBlue();
                     }
-                    if (this.o.p[i].glass == 1) {
-                        final Plane plane2 = this.o.p[i];
+                    if (this.o.p.get(i).glass == 1) {
+                        final Plane plane2 = this.o.p.get(i);
                         plane2.gr += (int)Math.abs(n3 * 1.5);
                     }
                 }
@@ -4829,10 +4829,10 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                 if (Math.random() > 0.9) {
                     ctmag = n / 15.0f * this.m.random();
                 }
-                for (int j = 0; j < this.o.p[i].n; ++j) {
-                    if (this.o.p[i].wz == 0 && (Math.abs(this.o.p[i].oy[j] - this.o.roofat - this.squash) < n2 * 3 || this.o.p[i].oy[j] < this.o.roofat + this.squash) && this.squash < n2) {
+                for (int j = 0; j < this.o.p.get(i).n; ++j) {
+                    if (this.o.p.get(i).wz == 0 && (Math.abs(this.o.p.get(i).oy[j] - this.o.roofat - this.squash) < n2 * 3 || this.o.p.get(i).oy[j] < this.o.roofat + this.squash) && this.squash < n2) {
                         ctmag = n / 15.0f * this.m.random();
-                        final float[] oy = this.o.p[i].oy;
+                        final float[] oy = this.o.p.get(i).oy;
                         final int n5 = j;
                         oy[n5] += (int)ctmag;
                         n3 += (int)ctmag;
@@ -4840,45 +4840,45 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                         this.hitmag += (int)Math.abs(ctmag);
                     }
                 }
-                if (!this.o.p[i].nocol && this.o.p[i].glass != 1) {
+                if (!this.o.p.get(i).nocol && this.o.p.get(i).glass != 1) {
                     if (ctmag != 0.0f) {
-                        if (this.o.p[i].bfase > 20 && this.o.p[i].hsb[1] > 0.25) {
-                            this.o.p[i].hsb[1] = 0.25f;
+                        if (this.o.p.get(i).bfase > 20 && this.o.p.get(i).hsb[1] > 0.25) {
+                            this.o.p.get(i).hsb[1] = 0.25f;
                         }
-                        if (this.o.p[i].bfase > 25 && this.o.p[i].hsb[2] > 0.7) {
-                            this.o.p[i].hsb[2] = 0.7f;
+                        if (this.o.p.get(i).bfase > 25 && this.o.p.get(i).hsb[2] > 0.7) {
+                            this.o.p.get(i).hsb[2] = 0.7f;
                         }
-                        if (this.o.p[i].bfase > 30 && this.o.p[i].hsb[1] > 0.15) {
-                            this.o.p[i].hsb[1] = 0.15f;
+                        if (this.o.p.get(i).bfase > 30 && this.o.p.get(i).hsb[1] > 0.15) {
+                            this.o.p.get(i).hsb[1] = 0.15f;
                         }
-                        if (this.o.p[i].bfase > 35 && this.o.p[i].hsb[2] > 0.6) {
-                            this.o.p[i].hsb[2] = 0.6f;
+                        if (this.o.p.get(i).bfase > 35 && this.o.p.get(i).hsb[2] > 0.6) {
+                            this.o.p.get(i).hsb[2] = 0.6f;
                         }
-                        if (this.o.p[i].bfase > 40) {
-                            this.o.p[i].hsb[0] = 0.075f;
+                        if (this.o.p.get(i).bfase > 40) {
+                            this.o.p.get(i).hsb[0] = 0.075f;
                         }
-                        if (this.o.p[i].bfase > 50 && this.o.p[i].hsb[2] > 0.5) {
-                            this.o.p[i].hsb[2] = 0.5f;
+                        if (this.o.p.get(i).bfase > 50 && this.o.p.get(i).hsb[2] > 0.5) {
+                            this.o.p.get(i).hsb[2] = 0.5f;
                         }
-                        if (this.o.p[i].bfase > 60) {
-                            this.o.p[i].hsb[0] = 0.05f;
+                        if (this.o.p.get(i).bfase > 60) {
+                            this.o.p.get(i).hsb[0] = 0.05f;
                         }
-                        final Plane plane = this.o.p[i];
+                        final Plane plane = this.o.p.get(i);
                         plane.bfase += (int)ctmag;
-                        new Color(this.o.p[i].c[0], this.o.p[i].c[1], this.o.p[i].c[2]);
-                        final Color hsbColor = Color.getHSBColor(this.o.p[i].hsb[0], this.o.p[i].hsb[1], this.o.p[i].hsb[2]);
-                        this.o.p[i].c[0] = hsbColor.getRed();
-                        this.o.p[i].c[1] = hsbColor.getGreen();
-                        this.o.p[i].c[2] = hsbColor.getBlue();
+                        new Color(this.o.p.get(i).c[0], this.o.p.get(i).c[1], this.o.p.get(i).c[2]);
+                        final Color hsbColor = Color.getHSBColor(this.o.p.get(i).hsb[0], this.o.p.get(i).hsb[1], this.o.p.get(i).hsb[2]);
+                        this.o.p.get(i).c[0] = hsbColor.getRed();
+                        this.o.p.get(i).c[1] = hsbColor.getGreen();
+                        this.o.p.get(i).c[2] = hsbColor.getBlue();
                     }
                 }
-                else if (this.o.p[i].glass == 1) {
-                    final Plane plane2 = this.o.p[i];
+                else if (this.o.p.get(i).glass == 1) {
+                    final Plane plane2 = this.o.p.get(i);
                     plane2.gr += 5;
                 }
                 if (Math.abs(ctmag) >= 1.0f) {
-                    this.o.p[i].chip = 1;
-                    this.o.p[i].ctmag = ctmag;
+                    this.o.p.get(i).chip = 1;
+                    this.o.p.get(i).ctmag = ctmag;
                 }
             }
             this.squash += n3 / n4;

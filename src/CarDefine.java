@@ -1,5 +1,6 @@
 import java.io.FileReader;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.net.URL;
@@ -16,7 +17,7 @@ public class CarDefine implements Runnable
 {
     Trackers t;
     GameSparker gs;
-    ContO[] bco;
+    ArrayList<ContO> bco;
     Medium m;
     Thread carloader;
     Thread actionloader;
@@ -79,7 +80,7 @@ public class CarDefine implements Runnable
     int msloaded;
     int[] top20adds;
     
-    public CarDefine(final ContO[] bco, final Medium m, final Trackers t, final GameSparker gs) {
+    public CarDefine(final ArrayList<ContO> array, final Medium m, final Trackers t, final GameSparker gs) {
         this.swits = new int[][] { { 50, 185, 282 }, { 100, 200, 310 }, { 60, 180, 275 }, { 76, 195, 298 }, { 70, 170, 275 }, { 70, 202, 293 }, { 60, 170, 289 }, { 70, 206, 291 }, { 90, 210, 295 }, { 90, 190, 276 }, { 70, 200, 295 }, { 50, 160, 270 }, { 90, 200, 305 }, { 50, 130, 210 }, { 80, 200, 300 }, { 70, 210, 290 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
         this.acelf = new float[][] { { 11.0f, 5.0f, 3.0f }, { 14.0f, 7.0f, 5.0f }, { 10.0f, 5.0f, 3.5f }, { 11.0f, 6.0f, 3.5f }, { 10.0f, 5.0f, 3.5f }, { 12.0f, 6.0f, 3.0f }, { 7.0f, 9.0f, 4.0f }, { 11.0f, 5.0f, 3.0f }, { 12.0f, 7.0f, 4.0f }, { 12.0f, 7.0f, 3.5f }, { 11.5f, 6.5f, 3.5f }, { 9.0f, 5.0f, 3.0f }, { 13.0f, 7.0f, 4.5f }, { 7.5f, 3.5f, 3.0f }, { 11.0f, 7.5f, 4.0f }, { 12.0f, 6.0f, 3.5f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } };
         this.handb = new int[] { 7, 10, 7, 15, 12, 8, 9, 10, 5, 7, 8, 10, 8, 12, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -137,7 +138,7 @@ public class CarDefine implements Runnable
         this.lastcar = "";
         this.msloaded = 0;
         this.top20adds = new int[20];
-        this.bco = bco;
+        this.bco = array;
         this.m = m;
         this.t = t;
         this.gs = gs;
@@ -1283,29 +1284,29 @@ public class CarDefine implements Runnable
                     j -= read;
                 }
                 this.m.loadnew = true;
-                this.bco[n] = new ContO(b, this.m, this.t);
-                if (this.bco[n].errd || this.bco[n].npl <= 60 || this.bco[n].maxR < 120) {
+                this.bco.set(n, new ContO(b, this.m, this.t));
+                if (this.bco.get(n).errd || this.bco.get(n).npl <= 60 || this.bco.get(n).maxR < 120) {
                     n = -1;
                 }
                 if (n != -1) {
-                    this.bco[n].shadow = true;
-                    this.bco[n].noline = false;
-                    this.bco[n].decor = false;
-                    this.bco[n].tnt = 0;
-                    this.bco[n].disp = 0;
-                    this.bco[n].disline = 7;
-                    this.bco[n].grounded = 1.0f;
+                    this.bco.get(n).shadow = true;
+                    this.bco.get(n).noline = false;
+                    this.bco.get(n).decor = false;
+                    this.bco.get(n).tnt = 0;
+                    this.bco.get(n).disp = 0;
+                    this.bco.get(n).disline = 7;
+                    this.bco.get(n).grounded = 1.0f;
                     boolean b2 = true;
-                    if (this.bco[n].keyz[0] < 0 || this.bco[n].keyx[0] > 0) {
+                    if (this.bco.get(n).keyz[0] < 0 || this.bco.get(n).keyx[0] > 0) {
                         b2 = false;
                     }
-                    if (this.bco[n].keyz[1] < 0 || this.bco[n].keyx[1] < 0) {
+                    if (this.bco.get(n).keyz[1] < 0 || this.bco.get(n).keyx[1] < 0) {
                         b2 = false;
                     }
-                    if (this.bco[n].keyz[2] > 0 || this.bco[n].keyx[2] > 0) {
+                    if (this.bco.get(n).keyz[2] > 0 || this.bco.get(n).keyx[2] > 0) {
                         b2 = false;
                     }
-                    if (this.bco[n].keyz[3] > 0 || this.bco[n].keyx[3] < 0) {
+                    if (this.bco.get(n).keyz[3] > 0 || this.bco.get(n).keyx[3] < 0) {
                         b2 = false;
                     }
                     if (!b2) {
@@ -1313,7 +1314,7 @@ public class CarDefine implements Runnable
                     }
                 }
                 if (n != -1) {
-                    this.loadstat(b, str, this.bco[n].maxR, this.bco[n].roofat, this.bco[n].wh, n);
+                    this.loadstat(b, str, this.bco.get(n).maxR, this.bco.get(n).roofat, this.bco.get(n).wh, n);
                     if (this.names[n].equals("")) {
                         n = -1;
                     }
@@ -1598,29 +1599,29 @@ public class CarDefine implements Runnable
                 }
                 bufferedReader.close();
                 this.m.loadnew = true;
-                this.bco[n] = new ContO(string.getBytes(), this.m, this.t);
-                if (this.bco[n].errd || this.bco[n].npl <= 60) {
+                this.bco.set(n, new ContO(string.getBytes(), this.m, this.t));
+                if (this.bco.get(n).errd || this.bco.get(n).npl <= 60) {
                     n = -1;
                 }
                 if (n != -1) {
-                    this.bco[n].shadow = true;
-                    this.bco[n].noline = false;
-                    this.bco[n].decor = false;
-                    this.bco[n].tnt = 0;
-                    this.bco[n].disp = 0;
-                    this.bco[n].disline = 7;
-                    this.bco[n].grounded = 1.0f;
+                    this.bco.get(n).shadow = true;
+                    this.bco.get(n).noline = false;
+                    this.bco.get(n).decor = false;
+                    this.bco.get(n).tnt = 0;
+                    this.bco.get(n).disp = 0;
+                    this.bco.get(n).disline = 7;
+                    this.bco.get(n).grounded = 1.0f;
                     boolean b = true;
-                    if (this.bco[n].keyz[0] < 0 || this.bco[n].keyx[0] > 0) {
+                    if (this.bco.get(n).keyz[0] < 0 || this.bco.get(n).keyx[0] > 0) {
                         b = false;
                     }
-                    if (this.bco[n].keyz[1] < 0 || this.bco[n].keyx[1] < 0) {
+                    if (this.bco.get(n).keyz[1] < 0 || this.bco.get(n).keyx[1] < 0) {
                         b = false;
                     }
-                    if (this.bco[n].keyz[2] > 0 || this.bco[n].keyx[2] > 0) {
+                    if (this.bco.get(n).keyz[2] > 0 || this.bco.get(n).keyx[2] > 0) {
                         b = false;
                     }
-                    if (this.bco[n].keyz[3] > 0 || this.bco[n].keyx[3] < 0) {
+                    if (this.bco.get(n).keyz[3] > 0 || this.bco.get(n).keyx[3] < 0) {
                         b = false;
                     }
                     if (!b) {
@@ -1628,7 +1629,7 @@ public class CarDefine implements Runnable
                     }
                 }
                 if (n != -1) {
-                    this.loadstat(string.getBytes(), str, this.bco[n].maxR, this.bco[n].roofat, this.bco[n].wh, n);
+                    this.loadstat(string.getBytes(), str, this.bco.get(n).maxR, this.bco.get(n).roofat, this.bco.get(n).wh, n);
                     if (this.names[n].equals("")) {
                         n = -1;
                     }

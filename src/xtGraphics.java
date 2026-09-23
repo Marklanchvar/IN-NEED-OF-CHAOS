@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.awt.Component;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
@@ -447,7 +448,7 @@ public class xtGraphics extends Panel implements Runnable
         this.discon = 0;
         this.cntptrys = 5;
         this.delays = new int[] { 600, 600, 600 };
-        this.nplayers = 7;
+        this.nplayers = 8;
         this.im = 0;
         this.plnames = new String[] { "", "", "", "", "", "", "", "" };
         this.osc = 10;
@@ -2487,13 +2488,13 @@ public class xtGraphics extends Panel implements Runnable
                         this.app.gmode.show();
                     }
                     this.app.gmode.move(400 - this.app.gmode.getWidth() / 2, 395);
-                    if (this.app.gmode.getSelectedIndex() == 0 && this.nplayers != 7) {
-                        this.nplayers = 7;
+                    if (this.app.gmode.getSelectedIndex() == 0 && this.nplayers != 8) {
+                        this.nplayers = 8;
                         this.fase = 2;
                         this.app.requestFocus();
                     }
-                    if (this.app.gmode.getSelectedIndex() == 1 && this.nplayers != 1) {
-                        this.nplayers = 1;
+                    if (this.app.gmode.getSelectedIndex() == 1 && this.nplayers != 8) {
+                        this.nplayers = 8;
                         this.fase = 2;
                         this.app.requestFocus();
                     }
@@ -2715,7 +2716,7 @@ public class xtGraphics extends Panel implements Runnable
         this.rd.setComposite(AlphaComposite.getInstance(3, 0.3f));
         this.rd.drawImage(this.bggo, 0, -25, null);
         this.rd.setComposite(AlphaComposite.getInstance(3, 1.0f));
-        this.rd.setColor(Color.BLACK);
+        this.rd.setColor(new Color(0, 0, 0));
         this.rd.fillRect(0, 0, 65, 450);
         this.rd.fillRect(735, 0, 65, 450);
         this.rd.fillRect(65, 0, 670, 25);
@@ -4833,7 +4834,7 @@ public class xtGraphics extends Panel implements Runnable
         this.drawcs(445, "Game lost its focus.   Click screen with mouse to continue.", 100, 100, 100, 3);
     }
     
-    public void inishcarselect(final ContO[] array) {
+    public void inishcarselect(final ArrayList<ContO> array) {
         this.nplayers = 7;
         this.im = 0;
         this.xstart[0] = 0;
@@ -4998,7 +4999,7 @@ public class xtGraphics extends Panel implements Runnable
             this.minsl = this.sc[0];
             this.maxsl = this.sc[0];
         }
-        this.app.mcars.setBackground(Color.BLACK);
+        this.app.mcars.setBackground(new Color(0, 0, 0));
         this.app.mcars.setForeground(new Color(47, 179, 255));
         this.app.mcars.alphad = true;
         this.app.mcars.carsel = true;
@@ -5012,36 +5013,36 @@ public class xtGraphics extends Panel implements Runnable
         if (this.multion == 0) {
             this.app.mycar.setLabel(" Include in this game.");
             this.app.mycar.setBackground(new Color(198, 179, 129));
-            this.app.mycar.setForeground(Color.BLACK);
+            this.app.mycar.setForeground(new Color(0, 0, 0));
             int nlocars = 16;
             if (this.cd.lastload == 2) {
                 nlocars = this.cd.nlocars;
             }
             for (int j = 0; j < nlocars; ++j) {
                 final float[] array2 = new float[3];
-                Color.RGBtoHSB(array[j].fcol[0], array[j].fcol[1], array[j].fcol[2], array2);
-                for (int k = 0; k < array[j].npl; ++k) {
-                    if (array[j].p[k].colnum == 1) {
-                        array[j].p[k].hsb[0] = array2[0];
-                        array[j].p[k].hsb[1] = array2[1];
-                        array[j].p[k].hsb[2] = array2[2];
-                        array[j].p[k].oc[0] = array[j].fcol[0];
-                        array[j].p[k].oc[1] = array[j].fcol[1];
-                        array[j].p[k].oc[2] = array[j].fcol[2];
+                Color.RGBtoHSB(array.get(j).fcol[0], array.get(j).fcol[1], array.get(j).fcol[2], array2);
+                for (int k = 0; k < array.get(j).npl; ++k) {
+                    if (array.get(j).p.get(k).colnum == 1) {
+                        array.get(j).p.get(k).hsb[0] = array2[0];
+                        array.get(j).p.get(k).hsb[1] = array2[1];
+                        array.get(j).p.get(k).hsb[2] = array2[2];
+                        array.get(j).p.get(k).oc[0] = array.get(j).fcol[0];
+                        array.get(j).p.get(k).oc[1] = array.get(j).fcol[1];
+                        array.get(j).p.get(k).oc[2] = array.get(j).fcol[2];
                     }
                 }
-                Color.RGBtoHSB(array[j].scol[0], array[j].scol[1], array[j].scol[2], array2);
-                for (int l = 0; l < array[j].npl; ++l) {
-                    if (array[j].p[l].colnum == 2) {
-                        array[j].p[l].hsb[0] = array2[0];
-                        array[j].p[l].hsb[1] = array2[1];
-                        array[j].p[l].hsb[2] = array2[2];
-                        array[j].p[l].oc[0] = array[j].scol[0];
-                        array[j].p[l].oc[1] = array[j].scol[1];
-                        array[j].p[l].oc[2] = array[j].scol[2];
+                Color.RGBtoHSB(array.get(j).scol[0], array.get(j).scol[1], array.get(j).scol[2], array2);
+                for (int l = 0; l < array.get(j).npl; ++l) {
+                    if (array.get(j).p.get(l).colnum == 2) {
+                        array.get(j).p.get(l).hsb[0] = array2[0];
+                        array.get(j).p.get(l).hsb[1] = array2[1];
+                        array.get(j).p.get(l).hsb[2] = array2[2];
+                        array.get(j).p.get(l).oc[0] = array.get(j).scol[0];
+                        array.get(j).p.get(l).oc[1] = array.get(j).scol[1];
+                        array.get(j).p.get(l).oc[2] = array.get(j).scol[2];
                     }
                 }
-                array[j].xy = 0;
+                array.get(j).xy = 0;
             }
             for (int n2 = 0; n2 < 6; ++n2) {
                 this.arnp[n2] = -1.0f;
@@ -5069,8 +5070,8 @@ public class xtGraphics extends Panel implements Runnable
         }
     }
     
-    public void carselect(final Control control, final ContO[] array, final Mad mad, final int n, final int n2, final boolean b) {
-        this.rd.setColor(Color.BLACK);
+    public void carselect(final Control control, final ArrayList<ContO> array, final Mad mad, final int n, final int n2, final boolean b) {
+        this.rd.setColor(new Color(0, 0, 0));
         this.rd.fillRect(0, 0, 65, 450);
         this.rd.fillRect(735, 0, 65, 450);
         this.rd.fillRect(65, 0, 670, 25);
@@ -5087,7 +5088,7 @@ public class xtGraphics extends Panel implements Runnable
             this.drawSmokeCarsbg();
         }
         else {
-            this.rd.setColor(Color.WHITE);
+            this.rd.setColor(new Color(255, 255, 255));
             this.rd.fillRect(65, 25, 670, 400);
             this.carsbginflex();
             this.flatrstart = 6;
@@ -5145,7 +5146,7 @@ public class xtGraphics extends Panel implements Runnable
             this.drawcs(69, "" + this.cd.viewname + "'s account cars!", 220, 112, 33, 3);
         }
         if (!this.remi) {
-            array[this.sc[0]].d(this.rd);
+            array.get(this.sc[0]).d(this.rd);
         }
         if (this.cfase == 8) {
             this.drawprom(150, 85);
@@ -5163,23 +5164,23 @@ public class xtGraphics extends Panel implements Runnable
             }
         }
         if ((this.multion != 0 || this.testdrive == 1 || this.testdrive == 2) && this.lsc != this.sc[0]) {
-            if (array[this.sc[0]].xy != 0) {
-                array[this.sc[0]].xy = 0;
+            if (array.get(this.sc[0]).xy != 0) {
+                array.get(this.sc[0]).xy = 0;
             }
-            for (int n3 = 0, n4 = 0; n4 < array[this.sc[0]].npl && n3 == 0; ++n4) {
-                if (array[this.sc[0]].p[n4].colnum == 1) {
+            for (int n3 = 0, n4 = 0; n4 < array.get(this.sc[0]).npl && n3 == 0; ++n4) {
+                if (array.get(this.sc[0]).p.get(n4).colnum == 1) {
                     final float[] hsbvals = new float[3];
-                    Color.RGBtoHSB(array[this.sc[0]].p[n4].c[0], array[this.sc[0]].p[n4].c[1], array[this.sc[0]].p[n4].c[2], hsbvals);
+                    Color.RGBtoHSB(array.get(this.sc[0]).p.get(n4).c[0], array.get(this.sc[0]).p.get(n4).c[1], array.get(this.sc[0]).p.get(n4).c[2], hsbvals);
                     this.arnp[0] = hsbvals[0];
                     this.arnp[1] = hsbvals[1];
                     this.arnp[2] = 1.0f - hsbvals[2];
                     n3 = 1;
                 }
             }
-            for (int n5 = 0, n6 = 0; n6 < array[this.sc[0]].npl && n5 == 0; ++n6) {
-                if (array[this.sc[0]].p[n6].colnum == 2) {
+            for (int n5 = 0, n6 = 0; n6 < array.get(this.sc[0]).npl && n5 == 0; ++n6) {
+                if (array.get(this.sc[0]).p.get(n6).colnum == 2) {
                     final float[] hsbvals2 = new float[3];
-                    Color.RGBtoHSB(array[this.sc[0]].p[n6].c[0], array[this.sc[0]].p[n6].c[1], array[this.sc[0]].p[n6].c[2], hsbvals2);
+                    Color.RGBtoHSB(array.get(this.sc[0]).p.get(n6).c[0], array.get(this.sc[0]).p.get(n6).c[1], array.get(this.sc[0]).p.get(n6).c[2], hsbvals2);
                     this.arnp[3] = hsbvals2[0];
                     this.arnp[4] = hsbvals2[1];
                     this.arnp[5] = 1.0f - hsbvals2[2];
@@ -5188,28 +5189,28 @@ public class xtGraphics extends Panel implements Runnable
             }
             final Color hsbColor = Color.getHSBColor(this.arnp[0], this.arnp[1], 1.0f - this.arnp[2]);
             final Color hsbColor2 = Color.getHSBColor(this.arnp[3], this.arnp[4], 1.0f - this.arnp[5]);
-            for (int j = 0; j < array[this.sc[0]].npl; ++j) {
-                if (array[this.sc[0]].p[j].colnum == 1) {
-                    array[this.sc[0]].p[j].hsb[0] = this.arnp[0];
-                    array[this.sc[0]].p[j].hsb[1] = this.arnp[1];
-                    array[this.sc[0]].p[j].hsb[2] = 1.0f - this.arnp[2];
-                    array[this.sc[0]].p[j].c[0] = hsbColor.getRed();
-                    array[this.sc[0]].p[j].c[1] = hsbColor.getGreen();
-                    array[this.sc[0]].p[j].c[2] = hsbColor.getBlue();
-                    array[this.sc[0]].p[j].oc[0] = hsbColor.getRed();
-                    array[this.sc[0]].p[j].oc[1] = hsbColor.getGreen();
-                    array[this.sc[0]].p[j].oc[2] = hsbColor.getBlue();
+            for (int j = 0; j < array.get(this.sc[0]).npl; ++j) {
+                if (array.get(this.sc[0]).p.get(j).colnum == 1) {
+                    array.get(this.sc[0]).p.get(j).hsb[0] = this.arnp[0];
+                    array.get(this.sc[0]).p.get(j).hsb[1] = this.arnp[1];
+                    array.get(this.sc[0]).p.get(j).hsb[2] = 1.0f - this.arnp[2];
+                    array.get(this.sc[0]).p.get(j).c[0] = hsbColor.getRed();
+                    array.get(this.sc[0]).p.get(j).c[1] = hsbColor.getGreen();
+                    array.get(this.sc[0]).p.get(j).c[2] = hsbColor.getBlue();
+                    array.get(this.sc[0]).p.get(j).oc[0] = hsbColor.getRed();
+                    array.get(this.sc[0]).p.get(j).oc[1] = hsbColor.getGreen();
+                    array.get(this.sc[0]).p.get(j).oc[2] = hsbColor.getBlue();
                 }
-                if (array[this.sc[0]].p[j].colnum == 2) {
-                    array[this.sc[0]].p[j].hsb[0] = this.arnp[3];
-                    array[this.sc[0]].p[j].hsb[1] = this.arnp[4];
-                    array[this.sc[0]].p[j].hsb[2] = 1.0f - this.arnp[5];
-                    array[this.sc[0]].p[j].c[0] = hsbColor2.getRed();
-                    array[this.sc[0]].p[j].c[1] = hsbColor2.getGreen();
-                    array[this.sc[0]].p[j].c[2] = hsbColor2.getBlue();
-                    array[this.sc[0]].p[j].oc[0] = hsbColor2.getRed();
-                    array[this.sc[0]].p[j].oc[1] = hsbColor2.getGreen();
-                    array[this.sc[0]].p[j].oc[2] = hsbColor2.getBlue();
+                if (array.get(this.sc[0]).p.get(j).colnum == 2) {
+                    array.get(this.sc[0]).p.get(j).hsb[0] = this.arnp[3];
+                    array.get(this.sc[0]).p.get(j).hsb[1] = this.arnp[4];
+                    array.get(this.sc[0]).p.get(j).hsb[2] = 1.0f - this.arnp[5];
+                    array.get(this.sc[0]).p.get(j).c[0] = hsbColor2.getRed();
+                    array.get(this.sc[0]).p.get(j).c[1] = hsbColor2.getGreen();
+                    array.get(this.sc[0]).p.get(j).c[2] = hsbColor2.getBlue();
+                    array.get(this.sc[0]).p.get(j).oc[0] = hsbColor2.getRed();
+                    array.get(this.sc[0]).p.get(j).oc[1] = hsbColor2.getGreen();
+                    array.get(this.sc[0]).p.get(j).oc[2] = hsbColor2.getBlue();
                 }
             }
             this.lsc = this.sc[0];
@@ -5260,29 +5261,29 @@ public class xtGraphics extends Panel implements Runnable
             else {
                 this.app.mcars.show = false;
             }
-            array[this.sc[0]].z = 950;
+            array.get(this.sc[0]).z = 950;
             if (this.sc[0] == 13) {
-                array[this.sc[0]].z = 1000;
+                array.get(this.sc[0]).z = 1000;
             }
-            array[this.sc[0]].y = -34 - array[this.sc[0]].grat;
-            array[this.sc[0]].x = 0;
+            array.get(this.sc[0]).y = -34 - array.get(this.sc[0]).grat;
+            array.get(this.sc[0]).x = 0;
             if (this.mouson >= 0 && this.mouson <= 3) {
-                final ContO contO = array[this.sc[0]];
+                final ContO contO = array.get(this.sc[0]);
                 contO.xz += 2;
             }
             else {
-                final ContO contO2 = array[this.sc[0]];
+                final ContO contO2 = array.get(this.sc[0]);
                 contO2.xz += 5;
             }
-            if (array[this.sc[0]].xz > 360) {
-                final ContO contO3 = array[this.sc[0]];
+            if (array.get(this.sc[0]).xz > 360) {
+                final ContO contO3 = array.get(this.sc[0]);
                 contO3.xz -= 360;
             }
-            array[this.sc[0]].zy = 0;
-            final ContO contO4 = array[this.sc[0]];
+            array.get(this.sc[0]).zy = 0;
+            final ContO contO4 = array.get(this.sc[0]);
             contO4.wzy -= 10;
-            if (array[this.sc[0]].wzy < -30) {
-                final ContO contO5 = array[this.sc[0]];
+            if (array.get(this.sc[0]).wzy < -30) {
+                final ContO contO5 = array.get(this.sc[0]);
                 contO5.wzy += 30;
             }
             if (!this.remi) {
@@ -5692,7 +5693,7 @@ public class xtGraphics extends Panel implements Runnable
                             }
                             this.rd.setColor(new Color(198, 179, 129));
                             this.rd.fillRoundRect(305, 302, 190, 24, 7, 20);
-                            this.rd.setColor(Color.BLACK);
+                            this.rd.setColor(new Color(0, 0, 0));
                             this.rd.drawRoundRect(305, 302, 190, 24, 7, 20);
                             this.app.movefield(this.app.mycar, 334, 306, 150, 17);
                             if (this.app.mycar.getState() != this.cd.include[this.sc[0] - 16]) {
@@ -5713,7 +5714,7 @@ public class xtGraphics extends Panel implements Runnable
                             }
                             this.rd.setFont(new Font("Arial", 1, 12));
                             this.ftm = this.rd.getFontMetrics();
-                            this.rd.setColor(Color.BLACK);
+                            this.rd.setColor(new Color(0, 0, 0));
                             if (!this.cd.createdby[this.sc[0] - 16].equals(this.nickname)) {
                                 b2 = this.clink(this.cd.createdby[this.sc[0] - 16], n, n2, b);
                             }
@@ -5837,7 +5838,7 @@ public class xtGraphics extends Panel implements Runnable
                         if (this.cd.action == 0) {
                             this.rd.setFont(new Font("Arial", 1, 12));
                             this.ftm = this.rd.getFontMetrics();
-                            this.rd.setColor(Color.BLACK);
+                            this.rd.setColor(new Color(0, 0, 0));
                             if (!this.cd.createdby[this.sc[0] - 16].equals(this.nickname)) {
                                 b2 = this.clink(this.cd.createdby[this.sc[0] - 16], n, n2, b);
                             }
@@ -5966,10 +5967,10 @@ public class xtGraphics extends Panel implements Runnable
                                     if (this.cd.reco != 2) {
                                         this.app.tnick.setText(this.nickname);
                                     }
-                                    this.app.tnick.setForeground(Color.BLACK);
+                                    this.app.tnick.setForeground(new Color(0, 0, 0));
                                 }
                                 else {
-                                    this.app.tnick.setForeground(Color.RED);
+                                    this.app.tnick.setForeground(new Color(255, 0, 0));
                                 }
                                 this.app.tnick.requestFocus();
                                 this.app.tpass.show();
@@ -5978,10 +5979,10 @@ public class xtGraphics extends Panel implements Runnable
                                     if (!this.autolog) {
                                         this.app.tpass.setText("");
                                     }
-                                    this.app.tpass.setForeground(Color.BLACK);
+                                    this.app.tpass.setForeground(new Color(0, 0, 0));
                                 }
                                 else {
-                                    this.app.tpass.setForeground(Color.RED);
+                                    this.app.tpass.setForeground(new Color(255, 0, 0));
                                 }
                                 if (!this.app.tnick.getText().equals("") && this.cd.reco != 1) {
                                     this.app.tpass.requestFocus();
@@ -5998,8 +5999,8 @@ public class xtGraphics extends Panel implements Runnable
                                     if (this.cd.reco == 2) {
                                         this.app.tpass.setText("");
                                     }
-                                    this.app.tnick.setForeground(Color.BLACK);
-                                    this.app.tpass.setForeground(Color.BLACK);
+                                    this.app.tnick.setForeground(new Color(0, 0, 0));
+                                    this.app.tpass.setForeground(new Color(0, 0, 0));
                                 }
                             }
                             if (this.cd.reco != -177) {
@@ -6046,7 +6047,7 @@ public class xtGraphics extends Panel implements Runnable
                     }
                     if (this.cfase == 4) {
                         this.drawprom(145, 150);
-                        this.rd.setColor(Color.BLACK);
+                        this.rd.setColor(new Color(0, 0, 0));
                         this.rd.drawString("Failed to find any ready car in your \u2018mycars\u2019 folder!", 215, 175);
                         this.rd.drawString("Please \u2018Test Drive\u2019 your cars in the Car Maker to make", 215, 215);
                         this.rd.drawString("sure they are ready.", 215, 235);
@@ -6071,7 +6072,7 @@ public class xtGraphics extends Panel implements Runnable
                     }
                     if (this.cfase == 1) {
                         this.drawprom(145, 170);
-                        this.rd.setColor(Color.BLACK);
+                        this.rd.setColor(new Color(0, 0, 0));
                         this.rd.drawString("The game will now load all the cars that can be loaded", 215, 170);
                         this.rd.drawString("from your \u2018mycars\u2019 folder.", 215, 190);
                         this.rd.drawString("If a car is not loaded, then it is not ready (not finished).", 215, 210);
@@ -6096,7 +6097,7 @@ public class xtGraphics extends Panel implements Runnable
                     this.rd.drawImage(this.statb, 536, 352, null);
                     this.rd.drawString("Endurance:", 473, 373);
                     this.rd.drawImage(this.statb, 536, 367, null);
-                    this.rd.setColor(Color.BLACK);
+                    this.rd.setColor(new Color(0, 0, 0));
                     float n19 = (this.cd.swits[this.sc[0]][2] - 220) / 90.0f;
                     if (n19 < 0.2) {
                         n19 = 0.2f;
@@ -6144,7 +6145,7 @@ public class xtGraphics extends Panel implements Runnable
                             str3 = "Class A";
                         }
                         if (this.kbload < 7) {
-                            this.rd.setColor(Color.BLACK);
+                            this.rd.setColor(new Color(0, 0, 0));
                             ++this.kbload;
                         }
                         else {
@@ -6156,7 +6157,7 @@ public class xtGraphics extends Panel implements Runnable
                         }
                         this.rd.setFont(new Font("Arial", 1, 12));
                         this.ftm = this.rd.getFontMetrics();
-                        this.rd.setColor(Color.BLACK);
+                        this.rd.setColor(new Color(0, 0, 0));
                         this.rd.drawString("1st Color", 100, 55);
                         this.rd.drawString("2nd Color", 649, 55);
                         this.rd.setFont(new Font("Arial", 1, 10));
@@ -6193,7 +6194,7 @@ public class xtGraphics extends Panel implements Runnable
                         this.rd.drawImage(this.arn, 145, 71 + (int)(this.arnp[2] * 160.0f), null);
                         this.rd.drawImage(this.arn, 660, 71 + (int)(this.arnp[3] * 160.0f), null);
                         this.rd.drawImage(this.arn, 695, 71 + (int)(this.arnp[5] * 160.0f), null);
-                        this.rd.setColor(Color.BLACK);
+                        this.rd.setColor(new Color(0, 0, 0));
                         this.rd.fillRect(120 + (int)(this.arnp[1] * 40.0f), 222, 3, 3);
                         this.rd.drawLine(121 + (int)(this.arnp[1] * 40.0f), 224, 121 + (int)(this.arnp[1] * 40.0f), 230);
                         this.rd.fillRect(120 + (int)(this.arnp[1] * 40.0f), 230, 3, 3);
@@ -6204,14 +6205,14 @@ public class xtGraphics extends Panel implements Runnable
                             if (this.mouson == -1) {
                                 if (n > 96 && n < 152 && n2 > 248 && n2 < 258) {
                                     final float[] hsbvals3 = new float[3];
-                                    Color.RGBtoHSB(array[this.sc[0]].fcol[0], array[this.sc[0]].fcol[1], array[this.sc[0]].fcol[2], hsbvals3);
+                                    Color.RGBtoHSB(array.get(this.sc[0]).fcol[0], array.get(this.sc[0]).fcol[1], array.get(this.sc[0]).fcol[2], hsbvals3);
                                     this.arnp[0] = hsbvals3[0];
                                     this.arnp[1] = hsbvals3[1];
                                     this.arnp[2] = 1.0f - hsbvals3[2];
                                 }
                                 if (n > 646 && n < 702 && n2 > 248 && n2 < 258) {
                                     final float[] hsbvals4 = new float[3];
-                                    Color.RGBtoHSB(array[this.sc[0]].scol[0], array[this.sc[0]].scol[1], array[this.sc[0]].scol[2], hsbvals4);
+                                    Color.RGBtoHSB(array.get(this.sc[0]).scol[0], array.get(this.sc[0]).scol[1], array.get(this.sc[0]).scol[2], hsbvals4);
                                     this.arnp[3] = hsbvals4[0];
                                     this.arnp[4] = hsbvals4[1];
                                     this.arnp[5] = 1.0f - hsbvals4[2];
@@ -6275,28 +6276,28 @@ public class xtGraphics extends Panel implements Runnable
                         if (this.cfase != 10 && this.cfase != 5 && n7 == -1) {
                             final Color hsbColor3 = Color.getHSBColor(this.arnp[0], this.arnp[1], 1.0f - this.arnp[2]);
                             final Color hsbColor4 = Color.getHSBColor(this.arnp[3], this.arnp[4], 1.0f - this.arnp[5]);
-                            for (int n27 = 0; n27 < array[this.sc[0]].npl; ++n27) {
-                                if (array[this.sc[0]].p[n27].colnum == 1) {
-                                    array[this.sc[0]].p[n27].hsb[0] = this.arnp[0];
-                                    array[this.sc[0]].p[n27].hsb[1] = this.arnp[1];
-                                    array[this.sc[0]].p[n27].hsb[2] = 1.0f - this.arnp[2];
-                                    array[this.sc[0]].p[n27].c[0] = hsbColor3.getRed();
-                                    array[this.sc[0]].p[n27].c[1] = hsbColor3.getGreen();
-                                    array[this.sc[0]].p[n27].c[2] = hsbColor3.getBlue();
-                                    array[this.sc[0]].p[n27].oc[0] = hsbColor3.getRed();
-                                    array[this.sc[0]].p[n27].oc[1] = hsbColor3.getGreen();
-                                    array[this.sc[0]].p[n27].oc[2] = hsbColor3.getBlue();
+                            for (int n27 = 0; n27 < array.get(this.sc[0]).npl; ++n27) {
+                                if (array.get(this.sc[0]).p.get(n27).colnum == 1) {
+                                    array.get(this.sc[0]).p.get(n27).hsb[0] = this.arnp[0];
+                                    array.get(this.sc[0]).p.get(n27).hsb[1] = this.arnp[1];
+                                    array.get(this.sc[0]).p.get(n27).hsb[2] = 1.0f - this.arnp[2];
+                                    array.get(this.sc[0]).p.get(n27).c[0] = hsbColor3.getRed();
+                                    array.get(this.sc[0]).p.get(n27).c[1] = hsbColor3.getGreen();
+                                    array.get(this.sc[0]).p.get(n27).c[2] = hsbColor3.getBlue();
+                                    array.get(this.sc[0]).p.get(n27).oc[0] = hsbColor3.getRed();
+                                    array.get(this.sc[0]).p.get(n27).oc[1] = hsbColor3.getGreen();
+                                    array.get(this.sc[0]).p.get(n27).oc[2] = hsbColor3.getBlue();
                                 }
-                                if (array[this.sc[0]].p[n27].colnum == 2) {
-                                    array[this.sc[0]].p[n27].hsb[0] = this.arnp[3];
-                                    array[this.sc[0]].p[n27].hsb[1] = this.arnp[4];
-                                    array[this.sc[0]].p[n27].hsb[2] = 1.0f - this.arnp[5];
-                                    array[this.sc[0]].p[n27].c[0] = hsbColor4.getRed();
-                                    array[this.sc[0]].p[n27].c[1] = hsbColor4.getGreen();
-                                    array[this.sc[0]].p[n27].c[2] = hsbColor4.getBlue();
-                                    array[this.sc[0]].p[n27].oc[0] = hsbColor4.getRed();
-                                    array[this.sc[0]].p[n27].oc[1] = hsbColor4.getGreen();
-                                    array[this.sc[0]].p[n27].oc[2] = hsbColor4.getBlue();
+                                if (array.get(this.sc[0]).p.get(n27).colnum == 2) {
+                                    array.get(this.sc[0]).p.get(n27).hsb[0] = this.arnp[3];
+                                    array.get(this.sc[0]).p.get(n27).hsb[1] = this.arnp[4];
+                                    array.get(this.sc[0]).p.get(n27).hsb[2] = 1.0f - this.arnp[5];
+                                    array.get(this.sc[0]).p.get(n27).c[0] = hsbColor4.getRed();
+                                    array.get(this.sc[0]).p.get(n27).c[1] = hsbColor4.getGreen();
+                                    array.get(this.sc[0]).p.get(n27).c[2] = hsbColor4.getBlue();
+                                    array.get(this.sc[0]).p.get(n27).oc[0] = hsbColor4.getRed();
+                                    array.get(this.sc[0]).p.get(n27).oc[1] = hsbColor4.getGreen();
+                                    array.get(this.sc[0]).p.get(n27).oc[2] = hsbColor4.getBlue();
                                 }
                             }
                         }
@@ -6353,14 +6354,14 @@ public class xtGraphics extends Panel implements Runnable
             this.pnext = 0;
             this.gatey = 300;
             if (this.flipo > 10) {
-                final ContO contO6 = array[this.sc[0]];
+                final ContO contO6 = array.get(this.sc[0]);
                 contO6.y -= 100;
                 if (this.nextc == 1) {
-                    final ContO contO7 = array[this.sc[0]];
+                    final ContO contO7 = array.get(this.sc[0]);
                     contO7.zy += 20;
                 }
                 if (this.nextc == -1) {
-                    final ContO contO8 = array[this.sc[0]];
+                    final ContO contO8 = array.get(this.sc[0]);
                     contO8.zy -= 20;
                 }
             }
@@ -6413,12 +6414,12 @@ public class xtGraphics extends Panel implements Runnable
                     if (this.cfase == 3 && this.cd.lastload == 2) {
                         this.app.mcars.select(this.cd.names[this.sc[0]]);
                     }
-                    array[this.sc[0]].z = 950;
-                    array[this.sc[0]].y = -34 - array[this.sc[0]].grat - 1100;
-                    array[this.sc[0]].x = 0;
-                    array[this.sc[0]].zy = 0;
+                    array.get(this.sc[0]).z = 950;
+                    array.get(this.sc[0]).y = -34 - array.get(this.sc[0]).grat - 1100;
+                    array.get(this.sc[0]).x = 0;
+                    array.get(this.sc[0]).zy = 0;
                 }
-                final ContO contO9 = array[this.sc[0]];
+                final ContO contO9 = array.get(this.sc[0]);
                 contO9.y += 100;
             }
             --this.flipo;
@@ -6551,33 +6552,33 @@ public class xtGraphics extends Panel implements Runnable
     }
     
     public void colorCar(final ContO contO, final int n) {
-        if (this.plnames[n].indexOf("MadBot") == -1) {
+    	if (this.plnames[n].indexOf("MadBot") == -1) {
             for (int i = 0; i < contO.npl; ++i) {
-                if (contO.p[i].colnum == 1) {
+                if (contO.p.get(i).colnum == 1) {
                     final Color hsbColor = Color.getHSBColor(this.allrnp[n][0], this.allrnp[n][1], 1.0f - this.allrnp[n][2]);
-                    contO.p[i].oc[0] = hsbColor.getRed();
-                    contO.p[i].oc[1] = hsbColor.getGreen();
-                    contO.p[i].oc[2] = hsbColor.getBlue();
+                    contO.p.get(i).oc[0] = hsbColor.getRed();
+                    contO.p.get(i).oc[1] = hsbColor.getGreen();
+                    contO.p.get(i).oc[2] = hsbColor.getBlue();
                 }
-                if (contO.p[i].colnum == 2) {
+                if (contO.p.get(i).colnum == 2) {
                     final Color hsbColor2 = Color.getHSBColor(this.allrnp[n][3], this.allrnp[n][4], 1.0f - this.allrnp[n][5]);
-                    contO.p[i].oc[0] = hsbColor2.getRed();
-                    contO.p[i].oc[1] = hsbColor2.getGreen();
-                    contO.p[i].oc[2] = hsbColor2.getBlue();
+                    contO.p.get(i).oc[0] = hsbColor2.getRed();
+                    contO.p.get(i).oc[1] = hsbColor2.getGreen();
+                    contO.p.get(i).oc[2] = hsbColor2.getBlue();
                 }
             }
         }
         else {
             for (int j = 0; j < contO.npl; ++j) {
-                if (contO.p[j].colnum == 1) {
-                    contO.p[j].oc[0] = contO.fcol[0];
-                    contO.p[j].oc[1] = contO.fcol[1];
-                    contO.p[j].oc[2] = contO.fcol[2];
+                if (contO.p.get(j).colnum == 1) {
+                    contO.p.get(j).oc[0] = contO.fcol[0];
+                    contO.p.get(j).oc[1] = contO.fcol[1];
+                    contO.p.get(j).oc[2] = contO.fcol[2];
                 }
-                if (contO.p[j].colnum == 2) {
-                    contO.p[j].oc[0] = contO.scol[0];
-                    contO.p[j].oc[1] = contO.scol[1];
-                    contO.p[j].oc[2] = contO.scol[2];
+                if (contO.p.get(j).colnum == 2) {
+                    contO.p.get(j).oc[0] = contO.scol[0];
+                    contO.p.get(j).oc[1] = contO.scol[1];
+                    contO.p.get(j).oc[2] = contO.scol[2];
                 }
             }
         }
@@ -6632,7 +6633,7 @@ public class xtGraphics extends Panel implements Runnable
         this.rd.setComposite(AlphaComposite.getInstance(3, 1.0f));
     }
     
-    public void finish(final CheckPoints checkPoints, final ContO[] array, final Control control, final int n, final int n2, final boolean b) {
+    public void finish(final CheckPoints checkPoints, final ArrayList<ContO> array, final Control control, final int n, final int n2, final boolean b) {
         if (!this.badmac) {
             this.rd.drawImage(this.fleximg, 0, 0, null);
         }
@@ -6792,7 +6793,7 @@ public class xtGraphics extends Panel implements Runnable
                     this.rd.fillRect(226, 211, 4, 125);
                     this.rd.fillRect(226, 332, 348, 4);
                     this.rd.fillRect(570, 211, 4, 125);
-                    array[n4].y = y;
+                    array.get(n4).y = y;
                     this.m.crs = true;
                     this.m.x = -400;
                     this.m.y = 0;
@@ -6800,14 +6801,14 @@ public class xtGraphics extends Panel implements Runnable
                     this.m.xz = 0;
                     this.m.zy = 0;
                     this.m.ground = 2470;
-                    array[n4].z = 1000;
-                    array[n4].x = 0;
-                    final ContO contO = array[n4];
+                    array.get(n4).z = 1000;
+                    array.get(n4).x = 0;
+                    final ContO contO = array.get(n4);
                     contO.xz += 5;
-                    array[n4].zy = 0;
-                    final ContO contO2 = array[n4];
+                    array.get(n4).zy = 0;
+                    final ContO contO2 = array.get(n4);
                     contO2.wzy -= 10;
-                    //array[n4].d(this.rd);
+                    //array.get(n4).d(this.rd);
                     if (Math.random() < 0.5) {
                         this.rd.setComposite(AlphaComposite.getInstance(3, 0.4f));
                         this.rd.setColor(new Color(236, 226, 202));
@@ -7042,7 +7043,6 @@ public class xtGraphics extends Panel implements Runnable
             for (int i = 1; i < 7; ++i) {
                 this.sc[i] = -1;
             }
-            final boolean[] array = new boolean[7];
             if (n < 0) {
                 n = 27;
             }
@@ -7088,9 +7088,11 @@ public class xtGraphics extends Panel implements Runnable
             int n4 = 16;
             int n5 = 1;
             int n6 = 2;
+            final ArrayList<Boolean> array = new ArrayList<>(8);
+            for (int i = 0; i < n2; i++) array.add(null);
             for (int j = 1; j < n2; ++j) {
-                array[j] = false;
-                while (!array[j]) {
+                array.set(j, false);
+                while (!array.get(j)) {
                     float n7 = 10.0f;
                     if (b) {
                         n7 = 17.0f;
@@ -7101,10 +7103,10 @@ public class xtGraphics extends Panel implements Runnable
                         final int n8 = j;
                         sc[n8] -= 16;
                     }
-                    array[j] = true;
+                    array.set(j, true);
                     for (int k = 0; k < 7; ++k) {
                         if (j != k && this.sc[j] == this.sc[k]) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                     }
                     if (b) {
@@ -7118,36 +7120,36 @@ public class xtGraphics extends Panel implements Runnable
                         n9 = 0.5f;
                     }
                     if (n9 > Math.random()) {
-                        array[j] = false;
+                        array.set(j, false);
                     }
                     if (this.gmode == 1) {
                         if (this.sc[j] >= 7 && this.sc[j] <= 10) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                         if (this.sc[j] == 12 || this.sc[j] == 13) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                         if (this.sc[j] > 5 && this.unlocked[0] <= 2) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                         if (this.sc[j] > 6 && this.unlocked[0] <= 4) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                         if (this.sc[j] > 11 && this.unlocked[0] <= 6) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                         if (this.sc[j] > 14 && this.unlocked[0] <= 8) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                     }
                     if (this.gmode == 2) {
                         if ((this.sc[j] - 7) * 2 > this.unlocked[1]) {
-                            array[j] = false;
+                            array.set(j, false);
                         }
                         if (n != 16 || this.unlocked[1] != 16 || this.sc[j] >= 9) {
                             continue;
                         }
-                        array[j] = false;
+                        array.set(j, false);
                     }
                 }
                 if (this.sc[j] < n4) {
@@ -7254,13 +7256,13 @@ public class xtGraphics extends Panel implements Runnable
                 for (int n19 = 0; n19 < this.cd.nlcars - 16; ++n19) {
                     if (n18 == 0) {
                         for (int n20 = 1; n20 < n2; ++n20) {
-                            array[n20] = false;
+                        	array.set(n20, true);
                         }
                     }
                     if (this.cd.include[n19] && this.sc[0] != n19 + 16) {
                         int n21;
-                        for (n21 = (int)(1.0 + Math.random() * (n2 - 1)); array[n21]; n21 = (int)(1.0 + Math.random() * (n2 - 1))) {}
-                        array[n21] = true;
+                        for (n21 = (int)(1.0 + Math.random() * (n2 - 1)); array.get(n21); n21 = (int)(1.0 + Math.random() * (n2 - 1))) {}
+                        array.set(n21, true);
                         this.sc[n21] = n19 + 16;
                         if (++n18 == n2 - 1) {
                             n18 = 0;
@@ -7273,13 +7275,13 @@ public class xtGraphics extends Panel implements Runnable
                 for (int n23 = 0; n23 < this.cd.nlocars - 16; ++n23) {
                     if (n22 == 0) {
                         for (int n24 = 1; n24 < n2; ++n24) {
-                            array[n24] = false;
+                            array.set(n24, false);
                         }
                     }
                     if (this.cd.include[n23] && this.sc[0] != n23 + 16) {
                         int n25;
-                        for (n25 = (int)(1.0 + Math.random() * (n2 - 1)); array[n25]; n25 = (int)(1.0 + Math.random() * (n2 - 1))) {}
-                        array[n25] = true;
+                        for (n25 = (int)(1.0 + Math.random() * (n2 - 1)); array.get(n25); n25 = (int)(1.0 + Math.random() * (n2 - 1))) {}
+                        array.set(n25, true);
                         this.sc[n25] = n23 + 16;
                         if (++n22 == n2 - 1) {
                             n22 = 0;
@@ -7983,7 +7985,7 @@ public class xtGraphics extends Panel implements Runnable
                 this.rd.drawImage(this.pwr, 600, 27, null);
                 this.rd.drawImage(this.lap, 19, 7, null);
                 this.rd.setColor(Color.BLACK);
-                this.rd.drawString("" + this.app.remainderTime + "", m.w / 4 - this.getWidth(),  m.h / 4 - this.getHeight());
+                this.rd.drawString("" + this.app.actat + "", m.w / 4 - this.getWidth(),  m.h / 4 - this.getHeight());
                 this.rd.setColor(new Color(0, 0, 100));
                 this.rd.drawString("" + (mad.nlaps + 1) + " / " + checkPoints.nlaps + "", 51, 18);
                 this.rd.drawImage(this.was, 92, 7, null);
@@ -9522,7 +9524,7 @@ public class xtGraphics extends Panel implements Runnable
     public void fleximage(final Image img, final int n, final int n2) {
         if (!this.badmac) {
             if (n == 0) {
-                this.flexpix = new int[360000];
+                this.flexpix = new int[800 * 450];
                 final PixelGrabber pixelGrabber = new PixelGrabber(img, 0, 0, 800, 450, this.flexpix, 0, 800);
                 try {
                     pixelGrabber.grabPixels();
@@ -9535,7 +9537,7 @@ public class xtGraphics extends Panel implements Runnable
             int blue = 0;
             int n4 = (int)(Math.random() * 128.0);
             int n5 = (int)(5.0 + Math.random() * 15.0);
-            for (int i = 0; i < 360000; ++i) {
+            for (int i = 0; i < flexpix.length; ++i) {
                 final Color color = new Color(this.flexpix[i]);
                 int n6;
                 int n7;
@@ -9652,12 +9654,12 @@ public class xtGraphics extends Panel implements Runnable
             }
         }
         for (int j = 0; j < width * height; ++j) {
-            if (array[j] != array[n2]) {
-                final Color color = new Color(array[j]);
+            if (array.length != array[n2]) {
+                final Color color = new Color(array.length);
                 int r;
                 int g;
                 int b;
-                if (n2 == 1 && array[j] == n3) {
+                if (n2 == 1 && array.length == n3) {
                     r = (int)(237.0f - 237.0f * (array2[0] / 150.0f));
                     if (r > 255) {
                         r = 255;
@@ -10027,116 +10029,36 @@ public class xtGraphics extends Panel implements Runnable
     }
     
     private void makecarsbgc(final Image img, final Image img2) {
-        final int[] array = new int[268000];
-        final PixelGrabber pixelGrabber = new PixelGrabber(this.carsbg, 0, 0, 670, 400, array, 0, 670);
-        try {
-            pixelGrabber.grabPixels();
-        }
-        catch (final InterruptedException ex) {}
-        final int[] pix = new int[20700];
-        final PixelGrabber pixelGrabber2 = new PixelGrabber(img, 0, 0, 92, 225, pix, 0, 92);
-        try {
-            pixelGrabber2.grabPixels();
-        }
-        catch (final InterruptedException ex2) {}
-        final int[] pix2 = new int[2112];
-        final PixelGrabber pixelGrabber3 = new PixelGrabber(img2, 0, 0, 88, 24, pix2, 0, 88);
-        try {
-            pixelGrabber3.grabPixels();
-        }
-        catch (final InterruptedException ex3) {}
-        for (int i = 0; i < 670; ++i) {
-            for (int j = 0; j < 400; ++j) {
-                if (i > 14 && i < 106 && j > 11 && j < 236 && pix[i - 14 + (j - 11) * 92] != pix[0]) {
-                    final Color color = new Color(array[i + j * 670]);
-                    final Color color2 = new Color(pix[i - 14 + (j - 11) * 92]);
-                    int r = (int)(color.getRed() * 0.33 + color2.getRed() * 0.67);
-                    if (r > 255) {
-                        r = 255;
-                    }
-                    if (r < 0) {
-                        r = 0;
-                    }
-                    int g = (int)(color.getGreen() * 0.33 + color2.getGreen() * 0.67);
-                    if (g > 255) {
-                        g = 255;
-                    }
-                    if (g < 0) {
-                        g = 0;
-                    }
-                    int b = (int)(color.getBlue() * 0.33 + color2.getBlue() * 0.67);
-                    if (b > 255) {
-                        b = 255;
-                    }
-                    if (b < 0) {
-                        b = 0;
-                    }
-                    array[i + j * 670] = new Color(r, g, b).getRGB();
-                }
-                if (i > 564 && i < 656 && j > 11 && j < 236 && pix[i - 564 + (j - 11) * 92] != pix[0]) {
-                    final Color color3 = new Color(array[i + j * 670]);
-                    final Color color4 = new Color(pix[i - 564 + (j - 11) * 92]);
-                    int r2 = (int)(color3.getRed() * 0.33 + color4.getRed() * 0.67);
-                    if (r2 > 255) {
-                        r2 = 255;
-                    }
-                    if (r2 < 0) {
-                        r2 = 0;
-                    }
-                    int g2 = (int)(color3.getGreen() * 0.33 + color4.getGreen() * 0.67);
-                    if (g2 > 255) {
-                        g2 = 255;
-                    }
-                    if (g2 < 0) {
-                        g2 = 0;
-                    }
-                    int b2 = (int)(color3.getBlue() * 0.33 + color4.getBlue() * 0.67);
-                    if (b2 > 255) {
-                        b2 = 255;
-                    }
-                    if (b2 < 0) {
-                        b2 = 0;
-                    }
-                    array[i + j * 670] = new Color(r2, g2, b2).getRGB();
-                }
-                if (i > 440 && i < 528 && j > 53 && j < 77 && pix2[i - 440 + (j - 53) * 88] != pix2[0]) {
-                    final Color color5 = new Color(array[i + j * 670]);
-                    final Color color6 = new Color(pix2[i - 440 + (j - 53) * 88]);
-                    int r3 = (int)(color5.getRed() * 0.33 + color6.getRed() * 0.67);
-                    if (r3 > 255) {
-                        r3 = 255;
-                    }
-                    if (r3 < 0) {
-                        r3 = 0;
-                    }
-                    int g3 = (int)(color5.getGreen() * 0.33 + color6.getGreen() * 0.67);
-                    if (g3 > 255) {
-                        g3 = 255;
-                    }
-                    if (g3 < 0) {
-                        g3 = 0;
-                    }
-                    int b3 = (int)(color5.getBlue() * 0.33 + color6.getBlue() * 0.67);
-                    if (b3 > 255) {
-                        b3 = 255;
-                    }
-                    if (b3 < 0) {
-                        b3 = 0;
-                    }
-                    array[i + j * 670] = new Color(r3, g3, b3).getRGB();
-                }
-            }
-        }
-        this.carsbgc = this.createImage(new MemoryImageSource(670, 400, array, 0, 670));
-    }
+    // 1. Create a modifiable BufferedImage from the background
+    BufferedImage combined = new BufferedImage(670, 400, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2d = combined.createGraphics();
     
+    // Draw the base background
+    g2d.drawImage(this.carsbg, 0, 0, null);
+    
+    // Set transparency/blending mode if needed (e.g., 67% opacity to match your 0.67 weight)
+    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.67f));
+    
+    // Draw img at the first two locations (adjust coordinates to match your original logic)
+    g2d.drawImage(img, 14, 11, null);
+    g2d.drawImage(img, 564, 11, null);
+    
+    // Draw img2 at its location
+    g2d.drawImage(img2, 440, 53, null);
+    
+    // Clean up graphics context
+    g2d.dispose();
+    
+    // Store the result
+    this.carsbgc = combined;
+}
     public void carsbginflex() {
         if (!this.badmac) {
             this.flatr = 0;
             this.flyr = (int)(this.m.random() * 160.0f - 80.0f);
             this.flyrdest = (int)(this.flyr + this.m.random() * 160.0f - 80.0f);
             this.flang = 1;
-            this.flexpix = new int[268000];
+            this.flexpix = new int[this.carsbg.getWidth(null) * this.carsbg.getHeight(null)];
             final PixelGrabber pixelGrabber = new PixelGrabber(this.carsbg, 0, 0, 670, 400, this.flexpix, 0, 670);
             try {
                 pixelGrabber.grabPixels();
@@ -10146,6 +10068,8 @@ public class xtGraphics extends Panel implements Runnable
     }
     
     public void drawSmokeCarsbg() {
+        if (this.flexpix == null)
+        	return;
         if (!this.badmac) {
             if (Math.abs(this.flyr - this.flyrdest) > 20) {
                 if (this.flyr > this.flyrdest) {
@@ -10259,7 +10183,7 @@ public class xtGraphics extends Panel implements Runnable
         }
         if (n2 == 0) {
             for (int j = 0; j < array.length; ++j) {
-                if (string.indexOf(array[j]) != -1) {
+                if (string.indexOf(array.length) != -1) {
                     b = true;
                 }
             }

@@ -2804,24 +2804,24 @@ public class Lobby implements Runnable {
                               this.rd.drawString("Loading...", 339, 77 + var77 * 42);
                            } else {
                               for(var24 = 0; var24 < var7[this.pcars[var58]].npl; ++var24) {
-                                 var7[this.pcars[var58]].p[var24].flx = 0;
-                                 if (var7[this.pcars[var58]].p[var24].colnum == 1) {
-                                    var7[this.pcars[var58]].p[var24].hsb[0] = this.pcols[var58][0];
-                                    var7[this.pcars[var58]].p[var24].hsb[1] = this.pcols[var58][1];
-                                    var7[this.pcars[var58]].p[var24].hsb[2] = 1.0F - this.pcols[var58][2];
+                                 var7[this.pcars[var58]].p.get(var24).flx = 0;
+                                 if (var7[this.pcars[var58]].p.get(var24).colnum == 1) {
+                                    var7[this.pcars[var58]].p.get(var24).hsb[0] = this.pcols[var58][0];
+                                    var7[this.pcars[var58]].p.get(var24).hsb[1] = this.pcols[var58][1];
+                                    var7[this.pcars[var58]].p.get(var24).hsb[2] = 1.0F - this.pcols[var58][2];
                                  }
 
-                                 if (var7[this.pcars[var58]].p[var24].colnum == 2) {
-                                    var7[this.pcars[var58]].p[var24].hsb[0] = this.pcols[var58][3];
-                                    var7[this.pcars[var58]].p[var24].hsb[1] = this.pcols[var58][4];
-                                    var7[this.pcars[var58]].p[var24].hsb[2] = 1.0F - this.pcols[var58][5];
+                                 if (var7[this.pcars[var58]].p.get(var24).colnum == 2) {
+                                    var7[this.pcars[var58]].p.get(var24).hsb[0] = this.pcols[var58][3];
+                                    var7[this.pcars[var58]].p.get(var24).hsb[1] = this.pcols[var58][4];
+                                    var7[this.pcars[var58]].p.get(var24).hsb[2] = 1.0F - this.pcols[var58][5];
                                  }
                               }
 
                               if (this.cac[var77] != this.pcars[var58]) {
-                                 var24 = (int) var7[this.pcars[var58]].p[0].oz[0];
+                                 var24 = (int) var7[this.pcars[var58]].p.get(0).oz[0];
                                  var25 = var24;
-                                 var26 = (int) var7[this.pcars[var58]].p[0].oy[0];
+                                 var26 = (int) var7[this.pcars[var58]].p.get(0).oy[0];
                                  var27 = var26;
                                  var28 = 0;
 
@@ -2833,21 +2833,21 @@ public class Lobby implements Runnable {
                                        break;
                                     }
 
-                                    for(var29 = 0; var29 < var7[this.pcars[var58]].p[var28].n; ++var29) {
-                                       if (var7[this.pcars[var58]].p[var28].oz[var29] < var24) {
-                                          var24 = (int) var7[this.pcars[var58]].p[var28].oz[var29];
+                                    for(var29 = 0; var29 < var7[this.pcars[var58]].p.get(var28).n; ++var29) {
+                                       if (var7[this.pcars[var58]].p.get(var28).oz[var29] < var24) {
+                                          var24 = (int) var7[this.pcars[var58]].p.get(var28).oz[var29];
                                        }
 
-                                       if (var7[this.pcars[var58]].p[var28].oz[var29] > var25) {
-                                          var25 = (int) var7[this.pcars[var58]].p[var28].oz[var29];
+                                       if (var7[this.pcars[var58]].p.get(var28).oz[var29] > var25) {
+                                          var25 = (int) var7[this.pcars[var58]].p.get(var28).oz[var29];
                                        }
 
-                                       if (var7[this.pcars[var58]].p[var28].oy[var29] < var26) {
-                                          var26 = (int) var7[this.pcars[var58]].p[var28].oy[var29];
+                                       if (var7[this.pcars[var58]].p.get(var28).oy[var29] < var26) {
+                                          var26 = (int) var7[this.pcars[var58]].p.get(var28).oy[var29];
                                        }
 
-                                       if (var7[this.pcars[var58]].p[var28].oy[var29] > var27) {
-                                          var27 = (int) var7[this.pcars[var58]].p[var28].oy[var29];
+                                       if (var7[this.pcars[var58]].p.get(var28).oy[var29] > var27) {
+                                          var27 = (int) var7[this.pcars[var58]].p.get(var28).oy[var29];
                                        }
                                     }
 
@@ -2860,7 +2860,7 @@ public class Lobby implements Runnable {
                                  var54 = var58;
 
                                  for(var24 = 0; var24 < var7[this.pcars[var58]].npl; ++var24) {
-                                    var7[this.pcars[var58]].p[var24].flx = 77;
+                                    var7[this.pcars[var58]].p.get(var24).flx = 77;
                                  }
                               }
 
@@ -3029,16 +3029,16 @@ public class Lobby implements Runnable {
                            this.rd.drawString(this.cd.names[this.forcar], 561 - this.ftm.stringWidth(this.cd.names[this.forcar]) / 2, 117);
 
                            for(var58 = 0; var58 < this.dispco.npl; ++var58) {
-                              if (var7[this.forcar].p[var58].colnum == 1) {
-                                 this.dispco.p[var58].hsb[0] = this.pcols[this.dispcar][0];
-                                 this.dispco.p[var58].hsb[1] = this.pcols[this.dispcar][1];
-                                 this.dispco.p[var58].hsb[2] = 1.0F - this.pcols[this.dispcar][2];
+                              if (var7[this.forcar].p.get(var58).colnum == 1) {
+                                 this.dispco.p.get(var58).hsb[0] = this.pcols[this.dispcar][0];
+                                 this.dispco.p.get(var58).hsb[1] = this.pcols[this.dispcar][1];
+                                 this.dispco.p.get(var58).hsb[2] = 1.0F - this.pcols[this.dispcar][2];
                               }
 
-                              if (var7[this.forcar].p[var58].colnum == 2) {
-                                 this.dispco.p[var58].hsb[0] = this.pcols[this.dispcar][3];
-                                 this.dispco.p[var58].hsb[1] = this.pcols[this.dispcar][4];
-                                 this.dispco.p[var58].hsb[2] = 1.0F - this.pcols[this.dispcar][5];
+                              if (var7[this.forcar].p.get(var58).colnum == 2) {
+                                 this.dispco.p.get(var58).hsb[0] = this.pcols[this.dispcar][3];
+                                 this.dispco.p.get(var58).hsb[1] = this.pcols[this.dispcar][4];
+                                 this.dispco.p.get(var58).hsb[2] = 1.0F - this.pcols[this.dispcar][5];
                               }
                            }
 

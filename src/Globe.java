@@ -5054,27 +5054,27 @@ public class Globe implements Runnable
                                     final Color hsbColor = Color.getHSBColor(this.xt.arnp[0], this.xt.arnp[1], 1.0f - this.xt.arnp[2]);
                                     final Color hsbColor2 = Color.getHSBColor(this.xt.arnp[3], this.xt.arnp[4], 1.0f - this.xt.arnp[5]);
                                     for (int n71 = 0; n71 < this.bco[36].npl; ++n71) {
-                                        if (this.bco[36].p[n71].colnum == 1) {
-                                            this.bco[36].p[n71].hsb[0] = this.xt.arnp[0];
-                                            this.bco[36].p[n71].hsb[1] = this.xt.arnp[1];
-                                            this.bco[36].p[n71].hsb[2] = 1.0f - this.xt.arnp[2];
-                                            this.bco[36].p[n71].c[0] = hsbColor.getRed();
-                                            this.bco[36].p[n71].c[1] = hsbColor.getGreen();
-                                            this.bco[36].p[n71].c[2] = hsbColor.getBlue();
-                                            this.bco[36].p[n71].oc[0] = hsbColor.getRed();
-                                            this.bco[36].p[n71].oc[1] = hsbColor.getGreen();
-                                            this.bco[36].p[n71].oc[2] = hsbColor.getBlue();
+                                        if (this.bco[36].p.get(n71).colnum == 1) {
+                                            this.bco[36].p.get(n71).hsb[0] = this.xt.arnp[0];
+                                            this.bco[36].p.get(n71).hsb[1] = this.xt.arnp[1];
+                                            this.bco[36].p.get(n71).hsb[2] = 1.0f - this.xt.arnp[2];
+                                            this.bco[36].p.get(n71).c[0] = hsbColor.getRed();
+                                            this.bco[36].p.get(n71).c[1] = hsbColor.getGreen();
+                                            this.bco[36].p.get(n71).c[2] = hsbColor.getBlue();
+                                            this.bco[36].p.get(n71).oc[0] = hsbColor.getRed();
+                                            this.bco[36].p.get(n71).oc[1] = hsbColor.getGreen();
+                                            this.bco[36].p.get(n71).oc[2] = hsbColor.getBlue();
                                         }
-                                        if (this.bco[36].p[n71].colnum == 2) {
-                                            this.bco[36].p[n71].hsb[0] = this.xt.arnp[3];
-                                            this.bco[36].p[n71].hsb[1] = this.xt.arnp[4];
-                                            this.bco[36].p[n71].hsb[2] = 1.0f - this.xt.arnp[5];
-                                            this.bco[36].p[n71].c[0] = hsbColor2.getRed();
-                                            this.bco[36].p[n71].c[1] = hsbColor2.getGreen();
-                                            this.bco[36].p[n71].c[2] = hsbColor2.getBlue();
-                                            this.bco[36].p[n71].oc[0] = hsbColor2.getRed();
-                                            this.bco[36].p[n71].oc[1] = hsbColor2.getGreen();
-                                            this.bco[36].p[n71].oc[2] = hsbColor2.getBlue();
+                                        if (this.bco[36].p.get(n71).colnum == 2) {
+                                            this.bco[36].p.get(n71).hsb[0] = this.xt.arnp[3];
+                                            this.bco[36].p.get(n71).hsb[1] = this.xt.arnp[4];
+                                            this.bco[36].p.get(n71).hsb[2] = 1.0f - this.xt.arnp[5];
+                                            this.bco[36].p.get(n71).c[0] = hsbColor2.getRed();
+                                            this.bco[36].p.get(n71).c[1] = hsbColor2.getGreen();
+                                            this.bco[36].p.get(n71).c[2] = hsbColor2.getBlue();
+                                            this.bco[36].p.get(n71).oc[0] = hsbColor2.getRed();
+                                            this.bco[36].p.get(n71).oc[1] = hsbColor2.getGreen();
+                                            this.bco[36].p.get(n71).oc[2] = hsbColor2.getBlue();
                                         }
                                     }
                                     if (this.stringbutton(this.rdo, "    Play >    ", 280, 220, -1, n, n2, b && !this.gs.openm, 216, 112)) {
@@ -5089,9 +5089,9 @@ public class Globe implements Runnable
                                         if (this.stringbutton(this.rdo, "     Switch to using clan cars     ", 280, 250, -2, n, n2, b && !this.gs.openm, 216, 112)) {
                                             this.xt.sc[0] = 36;
                                             for (int n72 = 0, n73 = 0; n73 < this.bco[36].npl && n72 == 0; ++n73) {
-                                                if (this.bco[36].p[n73].colnum == 1) {
+                                                if (this.bco[36].p.get(n73).colnum == 1) {
                                                     final float[] hsbvals = new float[3];
-                                                    Color.RGBtoHSB(this.bco[36].p[n73].c[0], this.bco[36].p[n73].c[1], this.bco[36].p[n73].c[2], hsbvals);
+                                                    Color.RGBtoHSB(this.bco[36].p.get(n73).c[0], this.bco[36].p.get(n73).c[1], this.bco[36].p.get(n73).c[2], hsbvals);
                                                     this.xt.arnp[0] = hsbvals[0];
                                                     this.xt.arnp[1] = hsbvals[1];
                                                     this.xt.arnp[2] = 1.0f - hsbvals[2];
@@ -5099,9 +5099,9 @@ public class Globe implements Runnable
                                                 }
                                             }
                                             for (int n74 = 0, n75 = 0; n75 < this.bco[36].npl && n74 == 0; ++n75) {
-                                                if (this.bco[36].p[n75].colnum == 2) {
+                                                if (this.bco[36].p.get(n75).colnum == 2) {
                                                     final float[] hsbvals2 = new float[3];
-                                                    Color.RGBtoHSB(this.bco[36].p[n75].c[0], this.bco[36].p[n75].c[1], this.bco[36].p[n75].c[2], hsbvals2);
+                                                    Color.RGBtoHSB(this.bco[36].p.get(n75).c[0], this.bco[36].p.get(n75).c[1], this.bco[36].p.get(n75).c[2], hsbvals2);
                                                     this.xt.arnp[3] = hsbvals2[0];
                                                     this.xt.arnp[4] = hsbvals2[1];
                                                     this.xt.arnp[5] = 1.0f - hsbvals2[2];
@@ -12452,9 +12452,9 @@ public class Globe implements Runnable
                             this.loadedcar = this.cd.loadonlinecar(this.selcar, 35 + this.cd.haltload);
                             if (this.xt.sc[0] == 36 && this.cd.haltload == 1 && this.loadedcar > 0) {
                                 for (int n87 = 0, n88 = 0; n88 < this.bco[36].npl && n87 == 0; ++n88) {
-                                    if (this.bco[36].p[n88].colnum == 1) {
+                                    if (this.bco[36].p.get(n88).colnum == 1) {
                                         final float[] hsbvals = new float[3];
-                                        Color.RGBtoHSB(this.bco[36].p[n88].c[0], this.bco[36].p[n88].c[1], this.bco[36].p[n88].c[2], hsbvals);
+                                        Color.RGBtoHSB(this.bco[36].p.get(n88).c[0], this.bco[36].p.get(n88).c[1], this.bco[36].p.get(n88).c[2], hsbvals);
                                         this.xt.arnp[0] = hsbvals[0];
                                         this.xt.arnp[1] = hsbvals[1];
                                         this.xt.arnp[2] = 1.0f - hsbvals[2];
@@ -12462,9 +12462,9 @@ public class Globe implements Runnable
                                     }
                                 }
                                 for (int n89 = 0, n90 = 0; n90 < this.bco[36].npl && n89 == 0; ++n90) {
-                                    if (this.bco[36].p[n90].colnum == 2) {
+                                    if (this.bco[36].p.get(n90).colnum == 2) {
                                         final float[] hsbvals2 = new float[3];
-                                        Color.RGBtoHSB(this.bco[36].p[n90].c[0], this.bco[36].p[n90].c[1], this.bco[36].p[n90].c[2], hsbvals2);
+                                        Color.RGBtoHSB(this.bco[36].p.get(n90).c[0], this.bco[36].p.get(n90).c[1], this.bco[36].p.get(n90).c[2], hsbvals2);
                                         this.xt.arnp[3] = hsbvals2[0];
                                         this.xt.arnp[4] = hsbvals2[1];
                                         this.xt.arnp[5] = 1.0f - hsbvals2[2];

@@ -6,6 +6,7 @@ import java.awt.RenderingHints;
 import java.awt.Composite;
 import java.awt.AlphaComposite;
 import java.net.DatagramPacket;
+import java.util.ArrayList;
 import java.util.Date;
 import java.awt.Cursor;
 import java.io.Reader;
@@ -805,7 +806,7 @@ public class Login implements Runnable
         this.endcons();
     }
     
-    public void multimode(final ContO[] array) {
+    public void multimode(final ArrayList<ContO> array) {
         this.btn = 0;
         this.xt.mainbg(4);
         for (int i = 0; i < 3; ++i) {
@@ -854,22 +855,22 @@ public class Login implements Runnable
         this.rd.drawRoundRect(173, 83, 132, 32, 20, 20);
         if (!this.gotcai) {
             float n3;
-            float n2 = n3 = array[this.xt.sc[0]].p[0].oz[0];
+            float n2 = n3 = array.get(this.xt.sc[0]).p.get(0).oz[0];
             float n5;
-            float n4 = n5 = array[this.xt.sc[0]].p[0].oy[0];
-            for (int j = 0; j < array[this.xt.sc[0]].npl; ++j) {
-                for (int k = 0; k < array[this.xt.sc[0]].p[j].n; ++k) {
-                    if (array[this.xt.sc[0]].p[j].oz[k] < n2) {
-                        n2 = array[this.xt.sc[0]].p[j].oz[k];
+            float n4 = n5 = array.get(this.xt.sc[0]).p.get(0).oy[0];
+            for (int j = 0; j < array.get(this.xt.sc[0]).npl; ++j) {
+                for (int k = 0; k < array.get(this.xt.sc[0]).p.get(j).n; ++k) {
+                    if (array.get(this.xt.sc[0]).p.get(j).oz[k] < n2) {
+                        n2 = array.get(this.xt.sc[0]).p.get(j).oz[k];
                     }
-                    if (array[this.xt.sc[0]].p[j].oz[k] > n3) {
-                        n3 = array[this.xt.sc[0]].p[j].oz[k];
+                    if (array.get(this.xt.sc[0]).p.get(j).oz[k] > n3) {
+                        n3 = array.get(this.xt.sc[0]).p.get(j).oz[k];
                     }
-                    if (array[this.xt.sc[0]].p[j].oy[k] < n4) {
-                        n4 = array[this.xt.sc[0]].p[j].oy[k];
+                    if (array.get(this.xt.sc[0]).p.get(j).oy[k] < n4) {
+                        n4 = array.get(this.xt.sc[0]).p.get(j).oy[k];
                     }
-                    if (array[this.xt.sc[0]].p[j].oy[k] > n5) {
-                        n5 = array[this.xt.sc[0]].p[j].oy[k];
+                    if (array.get(this.xt.sc[0]).p.get(j).oy[k] > n5) {
+                        n5 = array.get(this.xt.sc[0]).p.get(j).oy[k];
                     }
                 }
             }
@@ -877,13 +878,13 @@ public class Login implements Runnable
             this.cay = (n5 + n4) / 2;
             this.gotcai = true;
         }
-        array[this.xt.sc[0]].z = 1500;
-        array[this.xt.sc[0]].y = 380 - this.cay;
-        array[this.xt.sc[0]].x = 100 - this.cax;
-        array[this.xt.sc[0]].zy = 0;
-        array[this.xt.sc[0]].xz = -90;
-        array[this.xt.sc[0]].xy = this.pend;
-        array[this.xt.sc[0]].d(this.rd);
+        array.get(this.xt.sc[0]).z = 1500;
+        array.get(this.xt.sc[0]).y = 380 - this.cay;
+        array.get(this.xt.sc[0]).x = 100 - this.cax;
+        array.get(this.xt.sc[0]).zy = 0;
+        array.get(this.xt.sc[0]).xz = -90;
+        array.get(this.xt.sc[0]).xy = this.pend;
+        array.get(this.xt.sc[0]).d(this.rd);
         if (!this.pendb) {
             this.pend += 2;
             if (this.pend > 80) {
@@ -1309,7 +1310,7 @@ public class Login implements Runnable
         }
     }
     
-    public void multistart(final ContO[] array, final int oxm, final int oym, final boolean b) {
+    public void multistart(final ArrayList<ContO> array, final int oxm, final int oym, final boolean b) {
         this.btn = 0;
         this.xt.mainbg(4);
         for (int i = 0; i < 3; ++i) {
@@ -1373,22 +1374,22 @@ public class Login implements Runnable
             this.rd.drawRoundRect(246, 83, 180, 96, 20, 20);
             if (!this.gotcai) {
                 float n4;
-                float n3 = n4 = array[this.xt.sc[0]].p[0].oz[0];
+                float n3 = n4 = array.get(this.xt.sc[0]).p.get(0).oz[0];
                 float n6;
-                float n5 = n6 = array[this.xt.sc[0]].p[0].oy[0];
-                for (int j = 0; j < array[this.xt.sc[0]].npl; ++j) {
-                    for (int k = 0; k < array[this.xt.sc[0]].p[j].n; ++k) {
-                        if (array[this.xt.sc[0]].p[j].oz[k] < n3) {
-                            n3 = array[this.xt.sc[0]].p[j].oz[k];
+                float n5 = n6 = array.get(this.xt.sc[0]).p.get(0).oy[0];
+                for (int j = 0; j < array.get(this.xt.sc[0]).npl; ++j) {
+                    for (int k = 0; k < array.get(this.xt.sc[0]).p.get(j).n; ++k) {
+                        if (array.get(this.xt.sc[0]).p.get(j).oz[k] < n3) {
+                            n3 = array.get(this.xt.sc[0]).p.get(j).oz[k];
                         }
-                        if (array[this.xt.sc[0]].p[j].oz[k] > n4) {
-                            n4 = array[this.xt.sc[0]].p[j].oz[k];
+                        if (array.get(this.xt.sc[0]).p.get(j).oz[k] > n4) {
+                            n4 = array.get(this.xt.sc[0]).p.get(j).oz[k];
                         }
-                        if (array[this.xt.sc[0]].p[j].oy[k] < n5) {
-                            n5 = array[this.xt.sc[0]].p[j].oy[k];
+                        if (array.get(this.xt.sc[0]).p.get(j).oy[k] < n5) {
+                            n5 = array.get(this.xt.sc[0]).p.get(j).oy[k];
                         }
-                        if (array[this.xt.sc[0]].p[j].oy[k] > n6) {
-                            n6 = array[this.xt.sc[0]].p[j].oy[k];
+                        if (array.get(this.xt.sc[0]).p.get(j).oy[k] > n6) {
+                            n6 = array.get(this.xt.sc[0]).p.get(j).oy[k];
                         }
                     }
                 }
@@ -1396,13 +1397,13 @@ public class Login implements Runnable
                 this.cay = (n6 + n5) / 2;
                 this.gotcai = true;
             }
-            array[this.xt.sc[0]].z = 1500;
-            array[this.xt.sc[0]].y = 380 - this.cay;
-            array[this.xt.sc[0]].x = -170 - this.cax;
-            array[this.xt.sc[0]].zy = 0;
-            array[this.xt.sc[0]].xz = -90;
-            array[this.xt.sc[0]].xy = this.pend;
-            array[this.xt.sc[0]].d(this.rd);
+            array.get(this.xt.sc[0]).z = 1500;
+            array.get(this.xt.sc[0]).y = 380 - this.cay;
+            array.get(this.xt.sc[0]).x = -170 - this.cax;
+            array.get(this.xt.sc[0]).zy = 0;
+            array.get(this.xt.sc[0]).xz = -90;
+            array.get(this.xt.sc[0]).xy = this.pend;
+            array.get(this.xt.sc[0]).d(this.rd);
             if (!this.pendb) {
                 this.pend += 2;
                 if (this.pend > 80) {

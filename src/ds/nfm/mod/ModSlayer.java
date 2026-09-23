@@ -366,6 +366,7 @@ public class ModSlayer extends ModuleSlayer
                                 break Label_1262;
                             }
                         }
+                        break;
                     }
                     case 15: {
                         if (i_5_ == 0) {

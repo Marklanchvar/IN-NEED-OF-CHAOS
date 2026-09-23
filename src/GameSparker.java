@@ -22,11 +22,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.LayoutManager;
 import java.awt.Composite;
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Cursor;
 import java.awt.image.ImageObserver;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
 import java.util.Date;
 import java.awt.Color;
 import java.awt.Checkbox;
@@ -114,10 +116,14 @@ public class GameSparker extends Applet implements Runnable
     Smenu ilaps;
     Smenu icars;
     Smenu proitem;
-    static byte[] targetMilliseconds = {47, 30};
     static byte[] minimumMilliseconds = {15, 30};
-	byte remainderTime;
-	private PlaneWaster churner;
+    static byte[] targetMilliseconds = {47, 30};
+    static byte[] maximumMilliseconds = {53, 30};
+	public static PlaneWaster churner = new PlaneWaster();
+    long totime = 0;
+    byte nfr = 0;
+    byte actat = 0;
+    long ltime = -1;
     
     public GameSparker() {
         this.mload = 1;
@@ -186,7 +192,8 @@ public class GameSparker extends Applet implements Runnable
     
     @Override
     public void run() {
-        this.rd.setColor(new Color(0, 0, 0));
+    	this.rd.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        this.rd.setColor(Color.BLACK);
         this.rd.fillRect(0, 0, 800, 450);
         this.repaint();
         this.requestFocus();
@@ -196,7 +203,7 @@ public class GameSparker extends Applet implements Runnable
         final Medium medium = new Medium();
         final Trackers trackers = new Trackers();
         final CheckPoints checkPoints = new CheckPoints();
-        final ContO[] array = new ContO[124];
+        final ArrayList<ContO> array = new ArrayList<>(124);
         final CarDefine carDefine = new CarDefine(array, medium, trackers, this);
         final xtGraphics xtGraphics = new xtGraphics(medium, carDefine, this.rd, this);
         this.sizebar = xtGraphics.getImage("data/sizebar.gif");
@@ -252,10 +259,12 @@ public class GameSparker extends Applet implements Runnable
         int n10 = 0;
         int n11 = 0;
         while (true) {
-        	final long startTime = new Date().getTime();
         	if (Madness.anti != 0) {
         		this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         		this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        	} else {
+        		this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        		this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         	}
         	if (xtGraphics.fase == 111) {
         		if (this.mouses == 1) {
@@ -456,438 +465,80 @@ public class GameSparker extends Applet implements Runnable
         		this.mvect = 20;
         	}
         	if (xtGraphics.fase == 1) {
-        		xtGraphics.trackbg(false);
-        		if (checkPoints.stage != -3) {
-        			medium.aroundtrack(checkPoints);
-        			if (medium.hit == 5000 && this.mvect < 40) {
-        				++this.mvect;
-        			}
-        			int n12 = 0;
-        			final int[] array4 = new int[1000];
-        			for (int j = xtGraphics.nplayers; j < this.notb; ++j) {
-        				if (array2[j].dist != 0) {
-        					array4[n12] = j;
-        					++n12;
-        				}
-        				else {
-        					array2[j].d(this.rd);
-        				}
-        			}
-        			final int[] array5 = new int[n12];
-        			for (int k = 0; k < n12; ++k) {
-        				array5[k] = 0;
-        			}
-        			for (int l = 0; l < n12; ++l) {
-        				for (int n13 = l + 1; n13 < n12; ++n13) {
-        					if (array2[array4[l]].dist != array2[array4[n13]].dist) {
-        						if (array2[array4[l]].dist < array2[array4[n13]].dist) {
-        							final int[] array6 = array5;
-        							final int n14 = l;
-        							++array6[n14];
-        						}
-        						else {
-        							final int[] array7 = array5;
-        							final int n15 = n13;
-        							++array7[n15];
-        						}
-        					}
-        					else if (n13 > l) {
-        						final int[] array8 = array5;
-        						final int n16 = l;
-        						++array8[n16];
-        					}
-        					else {
-        						final int[] array9 = array5;
-        						final int n17 = n13;
-        						++array9[n17];
-        					}
-        				}
-        			}
-        			for (int n18 = 0; n18 < n12; ++n18) {
-        				for (int n19 = 0; n19 < n12; ++n19) {
-        					if (array5[n19] == n18) {
-        						array2[array4[n19]].d(this.rd);
-        					}
-        				}
-        			}
-        		}
-        		if (!this.openm) {
-        			xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		}
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        		xtGraphics.stageselect(checkPoints, this.u[0], this.xm, this.ym, this.moused);
-        		this.drawms();
-        	}
-        	if (xtGraphics.fase == 1177) {
-        		this.mvect = 100;
-        		if (n == 0) {
-        			if (xtGraphics.loadedt) {
-        				this.rd.setColor(new Color(0, 0, 0));
-        				this.rd.fillRect(0, 0, 800, 450);
-        				this.repaint();
-        				this.checkmemory(xtGraphics);
-        				xtGraphics.strack.unload();
-        				xtGraphics.strack = null;
-        				xtGraphics.flexpix = null;
-        				xtGraphics.fleximg = null;
-        				System.gc();
-        				xtGraphics.loadedt = false;
-        			}
-        			xtGraphics.intertrack.unloadimod();
-        			this.rd.setColor(new Color(0, 0, 0));
-        			this.rd.fillRect(65, 25, 670, 400);
-        			if (this.mload > 0) {
-        				this.rd.drawImage(xtGraphics.mload, 259, 195, this);
-        			}
-        			this.repaint();
-        			if (this.mload == 2) {
-        				carDefine.loadready();
-        				this.loadbase(array, medium, trackers, xtGraphics, true);
-        				this.readcookies(xtGraphics, carDefine, array);
-        				this.mload = -1;
-        			}
-        			System.gc();
-        			login = new Login(medium, this.rd, xtGraphics, this);
-        			globe = new Globe(this.rd, xtGraphics, medium, login, carDefine, checkPoints, array, array2, this);
-        			lobby = new Lobby(medium, this.rd, login, globe, xtGraphics, carDefine, this);
-        			n = 1;
-        		}
-        		if (login.fase != 18) {
-        			boolean b = false;
-        			if (login.fase == 0) {
-        				login.inishmulti();
-        			}
-        			if (login.fase >= 1 && login.fase <= 11) {
-        				login.multistart(array, this.xm, this.ym, this.moused);
-        			}
-        			if (login.fase >= 12 && login.fase <= 17) {
-        				if (globe.open != 452) {
-        					login.multimode(array);
-        				}
-        				else {
-        					b = true;
-        				}
-        				globe.dome(0, this.xm, this.ym, this.moused, this.u[0]);
-        			}
-        			if (login.justlog) {
-        				if (!xtGraphics.clan.equals("")) {
-        					globe.itab = 2;
-        				}
-        				login.justlog = false;
-        			}
-        			if (!b) {
-        				login.ctachm(this.xm, this.ym, this.mouses, this.u[0], lobby);
-        				this.mvect = 50;
-        			}
-        			else {
-        				this.drawms();
-        				this.mvect = 100;
-        			}
-        			if (this.mouses == 1) {
-        				this.mouses = 11;
-        			}
-        			if (this.mouses <= -1) {
-        				--this.mouses;
-        				if (this.mouses == -4) {
-        					this.mouses = 0;
-        				}
-        			}
-        			if (this.mousew != 0) {
-        				if (this.mousew > 0) {
-        					--this.mousew;
-        				}
-        				else {
-        					++this.mousew;
-        				}
-        			}
-        		}
-        		else {
-        			boolean b2 = false;
-        			if (lobby.fase == 0) {
-        				lobby.inishlobby();
-        				this.mvect = 100;
-        			}
-        			if (lobby.fase == 1) {
-        				if (globe.open >= 2 && globe.open < 452) {
-        					this.openm = true;
-        				}
-        				if (globe.open != 452) {
-        					lobby.lobby(this.xm, this.ym, this.moused, this.mousew, checkPoints, this.u[0], array);
-        				}
-        				else {
-        					b2 = true;
-        				}
-        				globe.dome(lobby.conon, this.xm, this.ym, this.moused, this.u[0]);
-        				if (lobby.loadstage > 0) {
-        					this.setCursor(new Cursor(3));
-        					this.drawms();
-        					this.repaint();
-        					trackers.nt = 0;
-        					if (this.loadstagePreview(lobby.loadstage, "", array2, array, medium, checkPoints)) {
-        						lobby.gstagename = checkPoints.name;
-        						lobby.gstagelaps = checkPoints.nlaps;
-        						lobby.loadstage = -lobby.loadstage;
-        					}
-        					else {
-        						lobby.loadstage = 0;
-        						checkPoints.name = "";
-        					}
-        					this.setCursor(new Cursor(0));
-        				}
-        				if (lobby.msload != 0) {
-        					this.setCursor(new Cursor(3));
-        					this.drawms();
-        					this.repaint();
-        					if (lobby.msload == 1) {
-        						carDefine.loadmystages(checkPoints);
-        					}
-        					if (lobby.msload == 7) {
-        						carDefine.loadclanstages(xtGraphics.clan);
-        					}
-        					if (lobby.msload == 3 || lobby.msload == 4) {
-        						carDefine.loadtop20(lobby.msload);
-        					}
-        					lobby.msload = 0;
-        					this.setCursor(new Cursor(0));
-        				}
-        			}
-        			if (lobby.fase == 3) {
-        				xtGraphics.trackbg(false);
-        				medium.trk = 0;
-        				medium.focus_point = 400;
-        				medium.crs = true;
-        				medium.x = -335;
-        				medium.y = 0;
-        				medium.z = -50;
-        				medium.xz = 0;
-        				medium.zy = 20;
-        				medium.ground = -2000;
-        				this.mvect = 100;
-        				lobby.fase = 1;
-        			}
-        			if (lobby.fase == 4) {
-        				this.mvect = 50;
-        				medium.d(this.rd);
-        				medium.aroundtrack(checkPoints);
-        				int n20 = 0;
-        				final int[] array10 = new int[1000];
-        				for (int n21 = 0; n21 < this.nob; ++n21) {
-        					if (array2[n21].dist != 0) {
-        						array10[n20] = n21;
-        						++n20;
-        					}
-        					else {
-        						array2[n21].d(this.rd);
-        					}
-        				}
-        				final int[] array11 = new int[n20];
-        				for (int n22 = 0; n22 < n20; ++n22) {
-        					array11[n22] = 0;
-        				}
-        				for (int n23 = 0; n23 < n20; ++n23) {
-        					for (int n24 = n23 + 1; n24 < n20; ++n24) {
-        						if (array2[array10[n23]].dist != array2[array10[n24]].dist) {
-        							if (array2[array10[n23]].dist < array2[array10[n24]].dist) {
-        								final int[] array12 = array11;
-        								final int n25 = n23;
-        								++array12[n25];
-        							}
-        							else {
-        								final int[] array13 = array11;
-        								final int n26 = n24;
-        								++array13[n26];
-        							}
-        						}
-        						else if (n24 > n23) {
-        							final int[] array14 = array11;
-        							final int n27 = n23;
-        							++array14[n27];
-        						}
-        						else {
-        							final int[] array15 = array11;
-        							final int n28 = n24;
-        							++array15[n28];
-        						}
-        					}
-        				}
-        				for (int n29 = 0; n29 < n20; ++n29) {
-        					for (int n30 = 0; n30 < n20; ++n30) {
-        						if (array11[n30] == n29) {
-        							array2[array10[n30]].d(this.rd);
-        						}
-        					}
-        				}
-        				lobby.stageselect(checkPoints, this.u[0], this.xm, this.ym, this.moused);
-        				if (lobby.plsndt == 1) {
-        					this.mvect = 70;
-        					this.repaint();
-        					this.setCursor(new Cursor(3));
-        					xtGraphics.loadstrack(checkPoints.stage, checkPoints.trackname, checkPoints.trackvol);
-        					xtGraphics.strack.play();
-        					lobby.plsndt = 2;
-        					this.moused = false;
-        					this.mouses = 0;
-        				}
-        			}
-        			if (lobby.fase == 2) {
-        				int n31 = 0;
-        				for (int n32 = 0; n32 < lobby.ngm; ++n32) {
-        					if (lobby.ongame == lobby.gnum[n32]) {
-        						n31 = n32;
-        					}
-        				}
-        				boolean b3 = false;
-        				if (lobby.gstgn[n31] > 0) {
-        					if (lobby.gstgn[n31] == -lobby.loadstage) {
-        						b3 = true;
-        					}
-        				}
-        				else if (lobby.gstages[n31].equals(checkPoints.name)) {
-        					b3 = true;
-        				}
-        				if (b3) {
-        					lobby.fase = 4;
-        					lobby.addstage = 0;
-        				}
-        				else {
-        					xtGraphics.loadingstage(lobby.gstgn[n31], false);
-        					trackers.nt = 0;
-        					if (this.loadstagePreview(lobby.gstgn[n31], lobby.gstages[n31], array2, array, medium, checkPoints)) {
-        						lobby.loadstage = -lobby.gstgn[n31];
-        						lobby.fase = 4;
-        						lobby.addstage = 0;
-        					}
-        					else {
-        						lobby.loadstage = 0;
-        						checkPoints.name = "";
-        						lobby.fase = 3;
-        					}
-        				}
-        			}
-        			if (lobby.fase == 76) {
-        				checkPoints.nlaps = lobby.laps;
-        				checkPoints.stage = lobby.stage;
-        				checkPoints.name = lobby.stagename;
-        				checkPoints.nfix = lobby.nfix;
-        				checkPoints.notb = lobby.notb;
-        				xtGraphics.fase = 21;
-        				this.u[0].multion = xtGraphics.multion;
-        			}
-        			if (globe.loadwbgames == 7) {
-        				this.repaint();
-        				globe.redogame();
-        			}
-        			if (!this.openm) {
-        				if (!b2) {
-        					lobby.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        				}
-        			}
-        			else {
-        				this.mouses = 0;
-        			}
-        			this.drawms();
-        			if (lobby.fase == 1) {
-        				lobby.preforma(this.xm, this.ym);
-        			}
-        			if (lobby.loadwarb) {
-        				this.repaint();
-        				globe.loadwarb();
-        				lobby.loadwarb = false;
-        			}
-        			if (globe.loadwbgames == 1) {
-        				this.repaint();
-        				globe.loadwgames();
-        			}
-        			if (this.mouses == 1) {
-        				this.mouses = 11;
-        			}
-        			if (this.mouses <= -1) {
-        				--this.mouses;
-        				if (this.mouses == -4) {
-        					this.mouses = 0;
-        				}
-        			}
-        			if (this.mousew != 0) {
-        				if (this.mousew > 0) {
-        					--this.mousew;
-        				}
-        				else {
-        					++this.mousew;
-        				}
-        				if (!lobby.zeromsw) {
-        					this.mousew = 0;
-        				}
-        			}
-        		}
-        	}
-        	if (xtGraphics.fase == 24) {
-        		login.endcons();
-        		login = null;
-        		lobby = null;
-        		globe = null;
-        		n = 0;
-        		System.gc();
-        		System.runFinalization();
-        		if (!xtGraphics.mtop) {
-        			xtGraphics.fase = 102;
-        			xtGraphics.opselect = 2;
-        		}
-        		else {
-        			xtGraphics.fase = 10;
-        			xtGraphics.opselect = 1;
-        		}
-        	}
-        	if (xtGraphics.fase == 23) {
-        		if (login.fase == 18) {
-        			xtGraphics.playingame = -101;
-        		}
-        		login.stopallnow();
-        		lobby.stopallnow();
-        		globe.stopallnow();
-        		login = null;
-        		lobby = null;
-        		globe = null;
-        		this.hidefields();
-        		n = 0;
-        		System.gc();
-        		System.runFinalization();
-        		xtGraphics.fase = -9;
-        	}
-        	if (xtGraphics.fase == 22) {
-        		this.loadstage(array2, array, medium, trackers, checkPoints, xtGraphics, array3, record);
-        		if (checkPoints.stage != -3) {
-        			if (xtGraphics.lan && xtGraphics.im == 0) {
-        				udpMistro.UDPLanServer(xtGraphics.nplayers, xtGraphics.server, xtGraphics.servport, xtGraphics.playingame);
-        			}
-        			this.u[0].falseo(2);
-        			this.requestFocus();
-        		}
-        		else {
-        			xtGraphics.fase = 1177;
-        		}
-        	}
-        	if (xtGraphics.fase == 21) {
-        		login.endcons();
-        		login = null;
-        		lobby = null;
-        		globe = null;
-        		n = 0;
-        		System.gc();
-        		System.runFinalization();
-        		xtGraphics.fase = 22;
-        	}
-        	if (xtGraphics.fase == 0) {
+                xtGraphics.trackbg(false);
+                if (checkPoints.stage != -3) {
+                    medium.aroundtrack(checkPoints);
+                    if (medium.hit == 5000 && this.mvect < 40) {
+                        ++this.mvect;
+                    }
+                    int n12 = 0;
+                    final int[] array4 = new int[1000];
+                    for (int j = xtGraphics.nplayers; j < this.notb; ++j) {
+                        if (array2[j].dist != 0) {
+                            array4[n12] = j;
+                            ++n12;
+                        }
+                        else {
+                            array2[j].d(this.rd);
+                        }
+                    }
+                    final int[] array5 = new int[n12];
+                    for (int k = 0; k < n12; ++k) {
+                        array5[k] = 0;
+                    }
+                    for (int l = 0; l < n12; ++l) {
+                        for (int n13 = l + 1; n13 < n12; ++n13) {
+                            if (array2[array4[l]].dist != array2[array4[n13]].dist) {
+                                if (array2[array4[l]].dist < array2[array4[n13]].dist) {
+                                    final int[] array6 = array5;
+                                    final int n14 = l;
+                                    ++array6[n14];
+                                }
+                                else {
+                                    final int[] array7 = array5;
+                                    final int n15 = n13;
+                                    ++array7[n15];
+                                }
+                            }
+                            else if (n13 > l) {
+                                final int[] array8 = array5;
+                                final int n16 = l;
+                                ++array8[n16];
+                            }
+                            else {
+                                final int[] array9 = array5;
+                                final int n17 = n13;
+                                ++array9[n17];
+                            }
+                        }
+                    }
+                    for (int n18 = 0; n18 < n12; ++n18) {
+                        for (int n19 = 0; n19 < n12; ++n19) {
+                            if (array5[n19] == n18) {
+                                array2[array4[n19]].d(this.rd);
+                            }
+                        }
+                    }
+                }
+                if (!this.openm) {
+                    xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                }
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+                xtGraphics.stageselect(checkPoints, this.u[0], this.xm, this.ym, this.moused);
+                this.drawms();
+            }
+            if (xtGraphics.fase == 0) { //INGAME
         		for (int n33 = 0; n33 < xtGraphics.nplayers; ++n33) {
         			if (array3[n33].newcar) {
         				final float xz = array2[n33].xz;
         				final float xy = array2[n33].xy;
         				final float zy = array2[n33].zy;
-        				array2[n33] = new ContO(array[array3[n33].cn], array2[n33].x, array2[n33].y, array2[n33].z, 0);
+        				array2[n33] = new ContO(array.get(array3[n33].cn), array2[n33].x, array2[n33].y, array2[n33].z, 0);
         				array2[n33].xz = xz;
         				array2[n33].xy = xy;
         				array2[n33].zy = zy;
@@ -896,7 +547,7 @@ public class GameSparker extends Applet implements Runnable
         		}
         		medium.d(this.rd);
         		int n34 = 0;
-        		final int[] array16 = new int[2000]; // 200
+        		final int[] array16 = new int[this.nob];
         		for (int n35 = 0; n35 < this.nob; ++n35) {
         			if (array2[n35].dist != 0) {
         				array16[n34] = n35;
@@ -1022,210 +673,7 @@ public class GameSparker extends Applet implements Runnable
         			}
         		}
         	}
-        	if (xtGraphics.fase == 7001) {
-        		for (int n48 = 0; n48 < xtGraphics.nplayers; ++n48) {
-        			if (array3[n48].newedcar == 0 && array3[n48].newcar) {
-        				final float xz2 = array2[n48].xz;
-        				final float xy2 = array2[n48].xy;
-        				final float zy2 = array2[n48].zy;
-        				xtGraphics.colorCar(array[array3[n48].cn], n48);
-        				array2[n48] = new ContO(array[array3[n48].cn], array2[n48].x, array2[n48].y, array2[n48].z, 0);
-        				array2[n48].xz = xz2;
-        				array2[n48].xy = xy2;
-        				array2[n48].zy = zy2;
-        				array3[n48].newedcar = 20;
-        			}
-        		}
-        		medium.d(this.rd);
-        		int n49 = 0;
-        		final int[] array21 = new int[200];
-        		for (int n50 = 0; n50 < this.nob; ++n50) {
-        			if (array2[n50].dist != 0) {
-        				array21[n49] = n50;
-        				++n49;
-        			}
-        			else {
-        				array2[n50].d(this.rd);
-        			}
-        		}
-        		final int[] array22 = new int[n49];
-        		final int[] array23 = new int[n49];
-        		for (int n51 = 0; n51 < n49; ++n51) {
-        			array22[n51] = 0;
-        		}
-        		for (int n52 = 0; n52 < n49; ++n52) {
-        			for (int n53 = n52 + 1; n53 < n49; ++n53) {
-        				if (array2[array21[n52]].dist < array2[array21[n53]].dist) {
-        					final int[] array24 = array22;
-        					final int n54 = n52;
-        					++array24[n54];
-        				}
-        				else {
-        					final int[] array25 = array22;
-        					final int n55 = n53;
-        					++array25[n55];
-        				}
-        			}
-        			array23[array22[n52]] = n52;
-        		}
-        		for (int n56 = 0; n56 < n49; ++n56) {
-        			if (array21[array23[n56]] < xtGraphics.nplayers && array21[array23[n56]] != xtGraphics.im) {
-        				udpMistro.readContOinfo(array2[array21[array23[n56]]], array21[array23[n56]]);
-        			}
-        			array2[array21[array23[n56]]].d(this.rd);
-        		}
-        		if (xtGraphics.starcnt == 0) {
-
-        			for (int n59 = 0; n59 < xtGraphics.nplayers; ++n59) {
-        				udpMistro.readinfo(array3[n59], array2[n59], this.u[n59], n59, checkPoints.dested);
-        			}
-
-        			for (int n60 = 0; n60 < xtGraphics.nplayers; ++n60) {
-        				for (int n61 = 0; n61 < xtGraphics.nplayers; ++n61) {
-        					if (n61 != n60) {
-        						array3[n60].colide(array2[n60], array3[n61], array2[n61]);
-        					}
-        				}
-        			}
-
-        			for (int n65 = 0; n65 < xtGraphics.nplayers; ++n65) {
-        				array3[n65].drive(this.u[n65], array2[n65], trackers, checkPoints);
-        			}
-
-        			checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, xtGraphics.multion);
-        		}
-        		else {
-        			if (xtGraphics.starcnt == 130) {
-        				medium.adv = 1900;
-        				medium.zy = 40;
-        				medium.vxz = 70;
-        				this.rd.setColor(new Color(255, 255, 255));
-        				this.rd.fillRect(0, 0, 800, 450);
-        				this.repaint();
-        				if (xtGraphics.lan) {
-        					udpMistro.UDPConnectLan(xtGraphics.localserver, xtGraphics.nplayers, xtGraphics.im);
-        					if (xtGraphics.im == 0) {
-        						xtGraphics.setbots(udpMistro.isbot, udpMistro.frame);
-        					}
-        				}
-        				else {
-        					udpMistro.UDPConnectOnline(xtGraphics.server, xtGraphics.gameport, xtGraphics.nplayers, xtGraphics.im);
-        				}
-        				if (xtGraphics.multion >= 2) {
-        					xtGraphics.im = (int)(Math.random() * xtGraphics.nplayers);
-        					xtGraphics.starcnt = 0;
-        				}
-        			}
-        			if (xtGraphics.starcnt == 50) {
-        				udpMistro.frame[udpMistro.im][0] = 0;
-        			}
-        			if (xtGraphics.starcnt != 39 && xtGraphics.starcnt != 0) {
-        				final xtGraphics xtGraphics3 = xtGraphics;
-        				--xtGraphics3.starcnt;
-        			}
-        			if (udpMistro.go && xtGraphics.starcnt >= 39) {
-        				xtGraphics.starcnt = 38;
-        				if (xtGraphics.lan) {
-        					if (checkPoints.stage < 0) {}
-        					if (xtGraphics.loadedt) {
-        						xtGraphics.strack.play();
-        					}
-        				}
-        			}
-        		}
-        		if (xtGraphics.lan && udpMistro.im == 0) {
-        			for (int n66 = 2; n66 < xtGraphics.nplayers; ++n66) {
-        				if (udpMistro.isbot[n66]) {
-        					this.u[n66].preform(array3[n66], array2[n66], checkPoints, trackers);
-        					udpMistro.setinfo(array3[n66], array2[n66], this.u[n66], checkPoints.pos[n66], checkPoints.magperc[n66], false, n66);
-        				}
-        			}
-        		}
-        		if (xtGraphics.starcnt < 38) {
-        			if (xtGraphics.multion == 1) {
-        				udpMistro.setinfo(array3[xtGraphics.im], array2[xtGraphics.im], this.u[0], checkPoints.pos[xtGraphics.im], checkPoints.magperc[xtGraphics.im], xtGraphics.holdit, xtGraphics.im);
-        				if (this.view == 0) {
-        					medium.follow(array2[xtGraphics.im], array3[xtGraphics.im].cxz, this.u[0].lookback);
-        					xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], true);
-        					if (array3[xtGraphics.im].outshakedam > 0) {
-        						this.shaka = array3[xtGraphics.im].outshakedam / 20;
-        						if (this.shaka > 25) {
-        							this.shaka = 25;
-        						}
-        					}
-        					this.mvect = 65 + Math.abs(this.lmxz - medium.xz) / 5 * 100;
-        					if (this.mvect > 90) {
-        						this.mvect = 90;
-        					}
-        					this.lmxz = medium.xz;
-        				}
-        				if (this.view == 1) {
-        					medium.around(array2[xtGraphics.im], false);
-        					xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], false);
-        					this.mvect = 80;
-        				}
-        				if (this.view == 2) {
-        					medium.watch(array2[xtGraphics.im], array3[xtGraphics.im].mxz);
-        					xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], false);
-        					this.mvect = 65 + Math.abs(this.lmxz - medium.xz) / 5 * 100;
-        					if (this.mvect > 90) {
-        						this.mvect = 90;
-        					}
-        					this.lmxz = medium.xz;
-        				}
-        			}
-        			else {
-        				if (this.view == 0) {
-        					medium.getaround(array2[xtGraphics.im]);
-        					this.mvect = 80;
-        				}
-        				if (this.view == 1) {
-        					medium.getfollow(array2[xtGraphics.im], array3[xtGraphics.im].cxz, this.u[0].lookback);
-        					this.mvect = 65 + Math.abs(this.lmxz - medium.xz) / 5 * 100;
-        					if (this.mvect > 90) {
-        						this.mvect = 90;
-        					}
-        					this.lmxz = medium.xz;
-        				}
-        				if (this.view == 2) {
-        					medium.watch(array2[xtGraphics.im], array3[xtGraphics.im].mxz);
-        					this.mvect = 65 + Math.abs(this.lmxz - medium.xz) / 5 * 100;
-        					if (this.mvect > 90) {
-        						this.mvect = 90;
-        					}
-        					this.lmxz = medium.xz;
-        				}
-        				xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], true);
-        			}
-        			if (this.mouses == 1) {
-        				if (xtGraphics.holdit && xtGraphics.exitm != 4 && xtGraphics.multion == 1) {
-        					this.u[0].enter = true;
-        				}
-        				this.mouses = 0;
-        			}
-        		}
-        		else {
-        			medium.around(array2[xtGraphics.im], true);
-        			this.mvect = 80;
-        			if (xtGraphics.starcnt == 39) {
-        				xtGraphics.waitenter();
-        			}
-        			if (xtGraphics.starcnt == 38) {
-        				xtGraphics.forstart = 0;
-        				this.mouses = 0;
-        				medium.vert = false;
-        				medium.adv = 900;
-        				medium.vxz = 180;
-        				checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, xtGraphics.multion);
-        				medium.follow(array2[xtGraphics.im], array3[xtGraphics.im].cxz, 0);
-        				xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], true);
-        				this.rd.setColor(new Color(255, 255, 255));
-        				this.rd.fillRect(0, 0, 800, 450);
-        			}
-        		}
-        		xtGraphics.multistat(this.u[0], checkPoints, this.xm, this.ym, this.moused, udpMistro);
-        	}
-        	if (xtGraphics.fase == -1) {
+        	if (xtGraphics.fase == -1) { //REPLAY
         		if (n7 == 0) {
         			for (int n67 = 0; n67 < xtGraphics.nplayers; ++n67) {
         				record.ocar[n67] = new ContO(array2[n67], 0, 0, 0, 0);
@@ -1234,7 +682,7 @@ public class GameSparker extends Applet implements Runnable
         		}
         		medium.d(this.rd);
         		int n68 = 0;
-        		final int[] array26 = new int[200];
+        		final int[] array26 = new int[this.nob];
         		for (int n69 = 0; n69 < this.nob; ++n69) {
         			if (array2[n69].dist != 0) {
         				array26[n68] = n69;
@@ -1297,7 +745,7 @@ public class GameSparker extends Applet implements Runnable
         				}
         			}
         			if (array2[n79].fcnt == 7 || array2[n79].fcnt == 8) {
-        				array2[n79] = new ContO(array[array3[n79].cn], 0, 0, 0, 0);
+        				array2[n79] = new ContO(array.get(array3[n79].cn), 0, 0, 0, 0);
         				record.cntdest[n79] = 0;
         			}
         			if (n7 == 299) {
@@ -1355,7 +803,7 @@ public class GameSparker extends Applet implements Runnable
         			xtGraphics.fase = -4;
         		}
         	}
-        	if (xtGraphics.fase == -3) {
+        	if (xtGraphics.fase == -3) { //GAME HIGHLIGHT
         		if (n7 == 0) {
         			if (record.wasted == 0) {
         				if (record.whenwasted == 229) {
@@ -1383,7 +831,7 @@ public class GameSparker extends Applet implements Runnable
         		}
         		medium.d(this.rd);
         		int n81 = 0;
-        		final int[] array32 = new int[200];
+        		final int[] array32 = new int[this.nob];
         		for (int n82 = 0; n82 < this.nob; ++n82) {
         			if (array2[n82].dist != 0) {
         				array32[n81] = n82;
@@ -1440,7 +888,7 @@ public class GameSparker extends Applet implements Runnable
         				}
         			}
         			if (array2[n92].fcnt == 7 || array2[n92].fcnt == 8) {
-        				array2[n92] = new ContO(array[array3[n92].cn], 0, 0, 0, 0);
+        				array2[n92] = new ContO(array.get(array3[n92].cn), 0, 0, 0, 0);
         				record.cntdest[n92] = 0;
         			}
         			record.playh(array2[n92], array3[n92], n92, n7, xtGraphics.im);
@@ -1651,11 +1099,9 @@ public class GameSparker extends Applet implements Runnable
         			this.u[0].handb = false;
         		}
         	}
-        	if (this.lostfcs && xtGraphics.fase == 7001) {
+        	if (this.lostfcs) {
         		if (this.fcscnt == 0) {
-        			if (this.u[0].chatup == 0) {
         				this.requestFocus();
-        			}
         			this.fcscnt = 10;
         		}
         		else {
@@ -1663,23 +1109,30 @@ public class GameSparker extends Applet implements Runnable
         		}
         	}
         	this.repaint();
-        	if (this.churner != null) {
-    			churner.render(this.rd);
-    			churner.clear();
-        	}
-        	if (Madness.anti != 0) {
-        		this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        		this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-        	}
-        	
+        	churner.render(rd);
+        	churner.clear();
         	xtGraphics.playsounds(array3[xtGraphics.im], this.u[0], checkPoints.stage);
-        	final long endTime = new Date().getTime();
-            byte elapsedTime = (byte) (endTime - startTime);
-        	byte faseTarget;
-        	byte faseMinimum;
-        	faseTarget = targetMilliseconds[(xtGraphics.fase == 0 || xtGraphics.fase == -1 || xtGraphics.fase == -3) ? 0 : 1];
-        	faseMinimum = minimumMilliseconds[(xtGraphics.fase == 0 || xtGraphics.fase == -1 || xtGraphics.fase == -3) ? 0 : 1];
-            remainderTime = (byte) (faseTarget - elapsedTime);
+        	long ctime = new Date().getTime();
+            if (ltime == -1) {
+                totime = 20;
+            } else {
+                totime += (ctime - ltime);
+            }
+            ltime = ctime;
+            nfr++;
+            if (nfr == 10) {
+                if (totime > 470) {
+                    actat--;
+                    if (actat < 5) {
+                        actat = 5;
+                    }
+                } else {
+                    actat += 2;
+                }
+                medium.adjstfade(actat);
+                totime = 0;
+                nfr = 0;
+            }
             if (this.exwist) {
         		this.rd.dispose();
         		xtGraphics.stopallnow();
@@ -1699,7 +1152,7 @@ public class GameSparker extends Applet implements Runnable
         	}
             try {
                 final Thread gamer = this.gamer;
-                Thread.sleep(Math.max(remainderTime, faseMinimum));
+                Thread.sleep(actat);
             } catch (final InterruptedException ex) {
                 System.out.println("uh oh");
             }
@@ -1802,47 +1255,28 @@ public class GameSparker extends Applet implements Runnable
             if (this.apy < 50) {
                 this.apy = 50;
             }
-            if (this.apmult > 1.0f) {
-                if (this.smooth == 1) {
-                    graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                    if (this.moto == 1) {
-                        graphics2D.setComposite(AlphaComposite.getInstance(3, this.mvect / 100.0f));
-                        this.rd.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-                        graphics2D.drawImage(this.offImage, this.apx + n, this.apy + n2, (int)(800.0f * this.apmult), (int)(450.0f * this.apmult), this);
-                        this.cropit(graphics2D, n, n2);
-                    }
-                    else {
-                        graphics2D.drawImage(this.offImage, this.apx, this.apy, (int)(800.0f * this.apmult), (int)(450.0f * this.apmult), this);
-                    }
-                }
-                else if (this.moto == 1) {
-                    graphics2D.setComposite(AlphaComposite.getInstance(3, this.mvect / 100.0f));
-                    this.rd.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-                    graphics2D.drawImage(this.offImage, this.apx + n, this.apy + n2, (int)(800.0f * this.apmult), (int)(450.0f * this.apmult), this);
-                    this.cropit(graphics2D, n, n2);
-                }
-                else {
-                    graphics2D.drawImage(this.offImage, this.apx, this.apy, (int)(800.0f * this.apmult), (int)(450.0f * this.apmult), this);
-                }
-            }
-            else if (this.moto == 1) {
-                graphics2D.setComposite(AlphaComposite.getInstance(3, this.mvect / 100.0f));
-                this.rd.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-                graphics2D.drawImage(this.offImage, this.apx + n, this.apy + n2, this);
-                this.cropit(graphics2D, n, n2);
-            }
-            else {
-                graphics2D.drawImage(this.offImage, this.apx, this.apy, this);
-            }
         }
-        else if (this.moto == 1) {
+
+        if (this.smooth == 1 && this.apmult > 1.0f && !Madness.fullscreen) {
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        }
+
+        if (this.moto == 1) {
             graphics2D.setComposite(AlphaComposite.getInstance(3, this.mvect / 100.0f));
             this.rd.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-            graphics2D.drawImage(this.offImage, this.apx + n, this.apy + n2, this);
-            this.cropit(graphics2D, n, n2);
         }
-        else {
-            graphics2D.drawImage(this.offImage, this.apx, this.apy, this);
+
+        final int drawX = this.apx + (this.moto == 1 ? n : 0);
+        final int drawY = this.apy + (this.moto == 1 ? n2 : 0);
+
+        if (this.apmult > 1.0f && !Madness.fullscreen) {
+            graphics2D.drawImage(this.offImage, drawX, drawY, (int)(800.0f * this.apmult), (int)(450.0f * this.apmult), this);
+        } else {
+            graphics2D.drawImage(this.offImage, drawX, drawY, this);
+        }
+
+        if (this.moto == 1) {
+            this.cropit(graphics2D, n, n2);
         }
     }
     
@@ -1880,9 +1314,6 @@ public class GameSparker extends Applet implements Runnable
         this.offImage = this.createImage(800, 450);
         if (this.offImage != null) {
             this.rd = (Graphics2D)this.offImage.getGraphics();
-        }
-        if (this.churner != null) {
-            this.churner = new PlaneWaster();
         }
         this.setLayout(null);
         (this.tnick = new TextField("Nickbname")).setFont(new Font("Arial", 1, 13));
@@ -2264,14 +1695,9 @@ public class GameSparker extends Applet implements Runnable
         }
     }
     
-    public void loadstage(final ContO[] array, final ContO[] array2, final Medium medium, final Trackers trackers, final CheckPoints checkPoints, final xtGraphics xtGraphics, final Mad[] array3, final Record record) {
+    public void loadstage(final ContO[] array, final ArrayList<ContO> array2, final Medium medium, final Trackers trackers, final CheckPoints checkPoints, final xtGraphics xtGraphics, final Mad[] array3, final Record record) {
         if (xtGraphics.testdrive == 2 || xtGraphics.testdrive == 4) {
             xtGraphics.nplayers = 1;
-        }
-        if (xtGraphics.gmode == 1) {
-            xtGraphics.nplayers = 5;
-            xtGraphics.xstart[4] = 0;
-            xtGraphics.zstart[4] = 760;
         }
         trackers.nt = 0;
         this.nob = xtGraphics.nplayers;
@@ -2404,7 +1830,7 @@ public class GameSparker extends Applet implements Runnable
                             medium.loadnew = true;
                         }
                         getint5 += 46;
-                        array[this.nob] = new ContO(array2[getint5], this.getint("set", string, 1), medium.ground - array2[getint5].grat, this.getint("set", string, 2), this.getint("set", string, 3));
+                        array[this.nob] = new ContO(array2.get(getint5), this.getint("set", string, 1), medium.ground - array2.get(getint5).grat, this.getint("set", string, 2), this.getint("set", string, 3));
                         if (string.indexOf(")p") != -1) {
                             checkPoints.x[checkPoints.n] = this.getint("set", string, 1);
                             checkPoints.z[checkPoints.n] = this.getint("set", string, 2);
@@ -2437,11 +1863,11 @@ public class GameSparker extends Applet implements Runnable
                 if (string.startsWith("chk")) {
                     int getint6 = this.getint("chk", string, 0);
                     getint6 += 46;
-                    float getint7 = medium.ground - array2[getint6].grat;
+                    float getint7 = medium.ground - array2.get(getint6).grat;
                     if (getint6 == 110) {
                         getint7 = this.getint("chk", string, 4);
                     }
-                    array[this.nob] = new ContO(array2[getint6], this.getint("chk", string, 1), getint7, this.getint("chk", string, 2), this.getint("chk", string, 3));
+                    array[this.nob] = new ContO(array2.get(getint6), this.getint("chk", string, 1), getint7, this.getint("chk", string, 2), this.getint("chk", string, 3));
                     checkPoints.x[checkPoints.n] = this.getint("chk", string, 1);
                     checkPoints.z[checkPoints.n] = this.getint("chk", string, 2);
                     checkPoints.y[checkPoints.n] = getint7;
@@ -2461,7 +1887,7 @@ public class GameSparker extends Applet implements Runnable
                 if (checkPoints.nfix != 5 && string.startsWith("fix")) {
                     int getint8 = this.getint("fix", string, 0);
                     getint8 += 46;
-                    array[this.nob] = new ContO(array2[getint8], this.getint("fix", string, 1), this.getint("fix", string, 3), this.getint("fix", string, 2), this.getint("fix", string, 4));
+                    array[this.nob] = new ContO(array2.get(getint8), this.getint("fix", string, 1), this.getint("fix", string, 3), this.getint("fix", string, 2), this.getint("fix", string, 4));
                     checkPoints.fx[checkPoints.fn] = this.getint("fix", string, 1);
                     checkPoints.fz[checkPoints.fn] = this.getint("fix", string, 2);
                     checkPoints.fy[checkPoints.fn] = this.getint("fix", string, 3);
@@ -2521,7 +1947,7 @@ public class GameSparker extends Applet implements Runnable
                     final int n2 = getint = this.getint("maxr", string, 1);
                     final int getint10 = this.getint("maxr", string, 2);
                     for (int k = 0; k < getint9; ++k) {
-                        array[this.nob] = new ContO(array2[85], n2, medium.ground - array2[85].grat, k * 4800 + getint10, 0);
+                        array[this.nob] = new ContO(array2.get(85), n2, medium.ground - array2.get(85).grat, k * 4800 + getint10, 0);
                         ++this.nob;
                     }
                     trackers.y[trackers.nt] = -5000;
@@ -2542,7 +1968,7 @@ public class GameSparker extends Applet implements Runnable
                     final int n3 = getint2 = this.getint("maxl", string, 1);
                     final int getint12 = this.getint("maxl", string, 2);
                     for (int l = 0; l < getint11; ++l) {
-                        array[this.nob] = new ContO(array2[85], n3, medium.ground - array2[85].grat, l * 4800 + getint12, 180);
+                        array[this.nob] = new ContO(array2.get(85), n3, medium.ground - array2.get(85).grat, l * 4800 + getint12, 180);
                         ++this.nob;
                     }
                     trackers.y[trackers.nt] = -5000;
@@ -2563,7 +1989,7 @@ public class GameSparker extends Applet implements Runnable
                     final int n4 = getint3 = this.getint("maxt", string, 1);
                     final int getint14 = this.getint("maxt", string, 2);
                     for (int n5 = 0; n5 < getint13; ++n5) {
-                        array[this.nob] = new ContO(array2[85], n5 * 4800 + getint14, medium.ground - array2[85].grat, n4, 90);
+                        array[this.nob] = new ContO(array2.get(85), n5 * 4800 + getint14, medium.ground - array2.get(85).grat, n4, 90);
                         ++this.nob;
                     }
                     trackers.y[trackers.nt] = -5000;
@@ -2584,7 +2010,7 @@ public class GameSparker extends Applet implements Runnable
                     final int n6 = getint4 = this.getint("maxb", string, 1);
                     final int getint16 = this.getint("maxb", string, 2);
                     for (int n7 = 0; n7 < getint15; ++n7) {
-                        array[this.nob] = new ContO(array2[85], n7 * 4800 + getint16, medium.ground - array2[85].grat, n6, -90);
+                        array[this.nob] = new ContO(array2.get(85), n7 * 4800 + getint16, medium.ground - array2.get(85).grat, n6, -90);
                         ++this.nob;
                     }
                     trackers.y[trackers.nt] = -5000;
@@ -2640,10 +2066,10 @@ public class GameSparker extends Applet implements Runnable
             xtGraphics.resetstat(checkPoints.stage);
             checkPoints.calprox();
             for (int n9 = 0; n9 < xtGraphics.nplayers; ++n9) {
-                if (xtGraphics.fase == 22) {
-                    xtGraphics.colorCar(array2[xtGraphics.sc[n9]], n9);
+            	if (xtGraphics.fase == 22) {
+                    xtGraphics.colorCar(array2.get(xtGraphics.sc[n9]), n9);
                 }
-                array[n9] = new ContO(array2[xtGraphics.sc[n9]], xtGraphics.xstart[n9], 250 - array2[xtGraphics.sc[n9]].grat, xtGraphics.zstart[n9], 0);
+                array[n9] = new ContO(array2.get(xtGraphics.sc[n9]), xtGraphics.xstart[n9], 250 - array2.get(xtGraphics.sc[n9]).grat, xtGraphics.zstart[n9], 0);
                 array3[n9].reseto(xtGraphics.sc[n9], array[n9], checkPoints);
             }
             if (xtGraphics.fase == 2 || xtGraphics.fase == -22) {
@@ -2661,10 +2087,6 @@ public class GameSparker extends Applet implements Runnable
                 medium.w = 735;
                 xtGraphics.fase = 1;
                 this.mouses = 0;
-            }
-            if (xtGraphics.fase == 22) {
-                medium.crs = false;
-                xtGraphics.fase = 5;
             }
             if (checkPoints.stage > 0) {
                 int stage = checkPoints.stage;
@@ -2944,54 +2366,62 @@ public class GameSparker extends Applet implements Runnable
         return b;
     }
     
-    public void loadbase(final ContO[] array, final Medium medium, final Trackers trackers, final xtGraphics xtGraphics, final boolean b) {
-        final String[] array2 = { "2000tornados", "formula7", "canyenaro", "lescrab", "nimi", "maxrevenge", "leadoxide", "koolkat", "drifter", "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster" };
-        final String[] array3 = { "road", "froad", "twister2", "twister1", "turn", "offroad", "bumproad", "offturn", "nroad", "nturn", "roblend", "noblend", "rnblend", "roadend", "offroadend", "hpground", "ramp30", "cramp35", "dramp15", "dhilo15", "slide10", "takeoff", "sramp22", "offbump", "offramp", "sofframp", "halfpipe", "spikes", "rail", "thewall", "checkpoint", "fixpoint", "offcheckpoint", "sideoff", "bsideoff", "uprise", "riseroad", "sroad", "soffroad", "tside", "launchpad", "thenet", "speedramp", "offhill", "slider", "uphill", "roll1", "roll2", "roll3", "roll4", "roll5", "roll6", "opile1", "opile2", "aircheckpoint", "tree1", "tree2", "tree3", "tree4", "tree5", "tree6", "tree7", "tree8", "cac1", "cac2", "cac3", "8sroad", "8soffroad" };
-        int n = 0;
-        xtGraphics.dnload += 6;
-        try {
-            ZipInputStream zipInputStream;
-            if (!b) {
-                zipInputStream = new ZipInputStream(new FileInputStream(new File("" + Madness.fpath + "data/models.zip")));
-            }
-            else {
-                zipInputStream = new ZipInputStream(new URL("http://multiplayer.needformadness.com/data/models.zip").openStream());
-            }
-            for (ZipEntry zipEntry = zipInputStream.getNextEntry(); zipEntry != null; zipEntry = zipInputStream.getNextEntry()) {
-                int n2 = 0;
-                for (int i = 0; i < 16; ++i) {
-                    if (zipEntry.getName().startsWith(array2[i])) {
-                        n2 = i;
-                    }
-                }
-                for (int j = 0; j < 68; ++j) {
-                    if (zipEntry.getName().startsWith(array3[j])) {
-                        n2 = j + 56;
-                    }
-                }
-                int k = (int)zipEntry.getSize();
-                n += k;
-                final byte[] b2 = new byte[k];
-                int off = 0;
-                while (k > 0) {
-                    final int read = zipInputStream.read(b2, off, k);
-                    off += read;
-                    k -= read;
-                }
-                array[n2] = new ContO(b2, medium, trackers);
-                ++xtGraphics.dnload;
-            }
-            zipInputStream.close();
-        }
-        catch (final Exception obj) {
-            System.out.println("Error Reading Models: " + obj);
-        }
-        System.gc();
-        if (this.mload != -1 && n != 615671) {
-            this.mload = 2;
-        }
+    public void loadbase(final ArrayList<ContO> array, final Medium medium, final Trackers trackers, final xtGraphics xtGraphics, final boolean b) {
+    	final String[] array2 = { "2000tornados", "formula7", "canyenaro", "lescrab", "nimi", "maxrevenge", "leadoxide", "koolkat", "drifter", "policecops", "mustang", "king", "audir8", "masheen", "radicalone", "drmonster" };
+    	final String[] array3 = { "road", "froad", "twister2", "twister1", "turn", "offroad", "bumproad", "offturn", "nroad", "nturn", "roblend", "noblend", "rnblend", "roadend", "offroadend", "hpground", "ramp30", "cramp35", "dramp15", "dhilo15", "slide10", "takeoff", "sramp22", "offbump", "offramp", "sofframp", "halfpipe", "spikes", "rail", "thewall", "checkpoint", "fixpoint", "offcheckpoint", "sideoff", "bsideoff", "uprise", "riseroad", "sroad", "soffroad", "tside", "launchpad", "thenet", "speedramp", "offhill", "slider", "uphill", "roll1", "roll2", "roll3", "roll4", "roll5", "roll6", "opile1", "opile2", "aircheckpoint", "tree1", "tree2", "tree3", "tree4", "tree5", "tree6", "tree7", "tree8", "cac1", "cac2", "cac3", "8sroad", "8soffroad" };
+    	int n = 0;
+    	xtGraphics.dnload += 6;
+
+    	// Ensure the ArrayList is pre-populated with nulls so set(index, element) does not throw IndexOutOfBoundsException
+    	while (array.size() < 124) {
+    		array.add(null);
+    	}
+
+    	try {
+    		ZipInputStream zipInputStream;
+    		if (!b) {
+    			zipInputStream = new ZipInputStream(new FileInputStream(new File("" + Madness.fpath + "data/models.zip")));
+    		}
+    		else {
+    			zipInputStream = new ZipInputStream(new URL("http://multiplayer.needformadness.com/data/models.zip").openStream());
+    		}
+    		for (ZipEntry zipEntry = zipInputStream.getNextEntry(); zipEntry != null; zipEntry = zipInputStream.getNextEntry()) {
+    			int n2 = 0;
+    			for (int i = 0; i < 16; ++i) {
+    				if (zipEntry.getName().startsWith(array2[i])) {
+    					n2 = i;
+    				}
+    			}
+    			for (int j = 0; j < 68; ++j) {
+    				if (zipEntry.getName().startsWith(array3[j])) {
+    					n2 = j + 56;
+    				}
+    			}
+
+    			// Read ZIP entry into a ByteArrayOutputStream to handle unknown sizes safely
+    			java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+    			byte[] data = new byte[1024];
+    			int read;
+    			while ((read = zipInputStream.read(data, 0, data.length)) != -1) {
+    				buffer.write(data, 0, read);
+    			}
+    			byte[] b2 = buffer.toByteArray();
+    			n += b2.length;
+
+    			array.set(n2, new ContO(b2, medium, trackers));
+    			++xtGraphics.dnload;
+    		}
+    		zipInputStream.close();
+    	}
+    	catch (final Exception obj) {
+    		System.out.println("Error Reading Models: " + obj);
+    	}
+    	System.gc();
+    	if (this.mload != -1 && n != 615671) {
+    		this.mload = 2;
+    	}
     }
-    
+
     public int getint(final String s, final String s2, final int n) {
         int n2 = 0;
         String string = "";
@@ -3102,7 +2532,7 @@ public class GameSparker extends Applet implements Runnable
         catch (final Exception ex) {}
     }
     
-    public void readcookies(final xtGraphics xtGraphics, final CarDefine carDefine, final ContO[] array) {
+    public void readcookies(final xtGraphics xtGraphics, final CarDefine carDefine, final ArrayList<ContO> array) {
         xtGraphics.nickname = "";
         try {
             final File file = new File("" + Madness.fpath + "data/user.data");
@@ -3183,18 +2613,18 @@ public class GameSparker extends Applet implements Runnable
                 if (n2 == 6 && xtGraphics.osc >= 0 && xtGraphics.osc <= 15) {
                     final Color hsbColor = Color.getHSBColor(xtGraphics.arnp[0], xtGraphics.arnp[1], 1.0f - xtGraphics.arnp[2]);
                     final Color hsbColor2 = Color.getHSBColor(xtGraphics.arnp[3], xtGraphics.arnp[4], 1.0f - xtGraphics.arnp[5]);
-                    for (int j = 0; j < array[xtGraphics.osc].npl; ++j) {
-                        if (array[xtGraphics.osc].p[j].colnum == 1) {
-                            array[xtGraphics.osc].p[j].c[0] = hsbColor.getRed();
-                            array[xtGraphics.osc].p[j].c[1] = hsbColor.getGreen();
-                            array[xtGraphics.osc].p[j].c[2] = hsbColor.getBlue();
+                    for (int j = 0; j < array.get(xtGraphics.osc).npl; ++j) {
+                        if (array.get(xtGraphics.osc).p.get(j).colnum == 1) {
+                            array.get(xtGraphics.osc).p.get(j).c[0] = hsbColor.getRed();
+                            array.get(xtGraphics.osc).p.get(j).c[1] = hsbColor.getGreen();
+                            array.get(xtGraphics.osc).p.get(j).c[2] = hsbColor.getBlue();
                         }
                     }
-                    for (int k = 0; k < array[xtGraphics.osc].npl; ++k) {
-                        if (array[xtGraphics.osc].p[k].colnum == 2) {
-                            array[xtGraphics.osc].p[k].c[0] = hsbColor2.getRed();
-                            array[xtGraphics.osc].p[k].c[1] = hsbColor2.getGreen();
-                            array[xtGraphics.osc].p[k].c[2] = hsbColor2.getBlue();
+                    for (int k = 0; k < array.get(xtGraphics.osc).npl; ++k) {
+                        if (array.get(xtGraphics.osc).p.get(k).colnum == 2) {
+                            array.get(xtGraphics.osc).p.get(k).c[0] = hsbColor2.getRed();
+                            array.get(xtGraphics.osc).p.get(k).c[1] = hsbColor2.getGreen();
+                            array.get(xtGraphics.osc).p.get(k).c[2] = hsbColor2.getBlue();
                         }
                     }
                 }

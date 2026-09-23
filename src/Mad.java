@@ -1508,11 +1508,11 @@ public class Mad
         }
         if (contO.dist == 0) {
             for (int n109 = 0; n109 < contO.npl; ++n109) {
-                if (contO.p[n109].chip != 0) {
-                    contO.p[n109].chip = 0;
+                if (contO.p.get(n109).chip != 0) {
+                    contO.p.get(n109).chip = 0;
                 }
-                if (contO.p[n109].embos != 0) {
-                    contO.p[n109].embos = 13;
+                if (contO.p.get(n109).embos != 0) {
+                    contO.p.get(n109).embos = 13;
                 }
             }
         }
@@ -1878,8 +1878,8 @@ public class Mad
     
     public void distruct(final ContO contO) {
         for (int i = 0; i < contO.npl; ++i) {
-            if (contO.p[i].wz == 0 || contO.p[i].gr == -17 || contO.p[i].gr == -16) {
-                contO.p[i].embos = 1;
+            if (contO.p.get(i).wz == 0 || contO.p.get(i).gr == -17 || contO.p.get(i).gr == -16) {
+                contO.p.get(i).embos = 1;
             }
         }
     }
@@ -1937,13 +1937,13 @@ public class Mad
             if (n4 * n3 == 0 || this.mtouch) {
                 for (int k = 0; k < contO.npl; ++k) {
                     float n5 = 0.0f;
-                    for (int l = 0; l < contO.p[k].n; ++l) {
-                        if (contO.p[k].wz == 0 && this.py(contO.keyx[n], contO.p[k].ox[l], contO.keyz[n], contO.p[k].oz[l]) < this.cd.clrad[this.cn]) {
+                    for (int l = 0; l < contO.p.get(k).n; ++l) {
+                        if (contO.p.get(k).wz == 0 && this.py(contO.keyx[n], contO.p.get(k).ox[l], contO.keyz[n], contO.p.get(k).oz[l]) < this.cd.clrad[this.cn]) {
                             n5 = a / 20.0f * this.m.random();
-                            final float[] oz = contO.p[k].oz;
+                            final float[] oz = contO.p.get(k).oz;
                             final int n6 = l;
                             oz[n6] += (int)(n5 * this.m.sin(i));
-                            final float[] ox = contO.p[k].ox;
+                            final float[] ox = contO.p.get(k).ox;
                             final int n7 = l;
                             ox[n7] -= (int)(n5 * this.m.sin(j));
                             if (b) {
@@ -1954,41 +1954,41 @@ public class Mad
                     }
                     if (n5 != 0.0f) {
                         if (Math.abs(n5) >= 1.0f) {
-                            contO.p[k].chip = 1;
-                            contO.p[k].ctmag = n5;
+                            contO.p.get(k).chip = 1;
+                            contO.p.get(k).ctmag = n5;
                         }
-                        if (!contO.p[k].nocol && contO.p[k].glass != 1) {
-                            if (contO.p[k].bfase > 20 && contO.p[k].hsb[1] > 0.25) {
-                                contO.p[k].hsb[1] = 0.25f;
+                        if (!contO.p.get(k).nocol && contO.p.get(k).glass != 1) {
+                            if (contO.p.get(k).bfase > 20 && contO.p.get(k).hsb[1] > 0.25) {
+                                contO.p.get(k).hsb[1] = 0.25f;
                             }
-                            if (contO.p[k].bfase > 25 && contO.p[k].hsb[2] > 0.7) {
-                                contO.p[k].hsb[2] = 0.7f;
+                            if (contO.p.get(k).bfase > 25 && contO.p.get(k).hsb[2] > 0.7) {
+                                contO.p.get(k).hsb[2] = 0.7f;
                             }
-                            if (contO.p[k].bfase > 30 && contO.p[k].hsb[1] > 0.15) {
-                                contO.p[k].hsb[1] = 0.15f;
+                            if (contO.p.get(k).bfase > 30 && contO.p.get(k).hsb[1] > 0.15) {
+                                contO.p.get(k).hsb[1] = 0.15f;
                             }
-                            if (contO.p[k].bfase > 35 && contO.p[k].hsb[2] > 0.6) {
-                                contO.p[k].hsb[2] = 0.6f;
+                            if (contO.p.get(k).bfase > 35 && contO.p.get(k).hsb[2] > 0.6) {
+                                contO.p.get(k).hsb[2] = 0.6f;
                             }
-                            if (contO.p[k].bfase > 40) {
-                                contO.p[k].hsb[0] = 0.075f;
+                            if (contO.p.get(k).bfase > 40) {
+                                contO.p.get(k).hsb[0] = 0.075f;
                             }
-                            if (contO.p[k].bfase > 50 && contO.p[k].hsb[2] > 0.5) {
-                                contO.p[k].hsb[2] = 0.5f;
+                            if (contO.p.get(k).bfase > 50 && contO.p.get(k).hsb[2] > 0.5) {
+                                contO.p.get(k).hsb[2] = 0.5f;
                             }
-                            if (contO.p[k].bfase > 60) {
-                                contO.p[k].hsb[0] = 0.05f;
+                            if (contO.p.get(k).bfase > 60) {
+                                contO.p.get(k).hsb[0] = 0.05f;
                             }
-                            final Plane plane = contO.p[k];
+                            final Plane plane = contO.p.get(k);
                             plane.bfase += (int)n5;
-                            new Color(contO.p[k].c[0], contO.p[k].c[1], contO.p[k].c[2]);
-                            final Color hsbColor = Color.getHSBColor(contO.p[k].hsb[0], contO.p[k].hsb[1], contO.p[k].hsb[2]);
-                            contO.p[k].c[0] = hsbColor.getRed();
-                            contO.p[k].c[1] = hsbColor.getGreen();
-                            contO.p[k].c[2] = hsbColor.getBlue();
+                            new Color(contO.p.get(k).c[0], contO.p.get(k).c[1], contO.p.get(k).c[2]);
+                            final Color hsbColor = Color.getHSBColor(contO.p.get(k).hsb[0], contO.p.get(k).hsb[1], contO.p.get(k).hsb[2]);
+                            contO.p.get(k).c[0] = hsbColor.getRed();
+                            contO.p.get(k).c[1] = hsbColor.getGreen();
+                            contO.p.get(k).c[2] = hsbColor.getBlue();
                         }
-                        if (contO.p[k].glass == 1) {
-                            final Plane plane2 = contO.p[k];
+                        if (contO.p.get(k).glass == 1) {
+                            final Plane plane2 = contO.p.get(k);
                             plane2.gr += (int)Math.abs(n5 * 1.5F);
                         }
                     }
@@ -2000,11 +2000,11 @@ public class Mad
                     int n9 = 1;
                     for (int n10 = 0; n10 < contO.npl; ++n10) {
                         float n11 = 0.0f;
-                        for (int n12 = 0; n12 < contO.p[n10].n; ++n12) {
-                            if (contO.p[n10].wz == 0) {
+                        for (int n12 = 0; n12 < contO.p.get(n10).n; ++n12) {
+                            if (contO.p.get(n10).wz == 0) {
                                 n11 = a / 15.0f * this.m.random();
-                                if ((Math.abs(contO.p[n10].oy[n12] - this.cd.flipy[this.cn] - this.squash) < this.cd.msquash[this.cn] * 3 || contO.p[n10].oy[n12] < this.cd.flipy[this.cn] + this.squash) && this.squash < this.cd.msquash[this.cn]) {
-                                    final float[] oy = contO.p[n10].oy;
+                                if ((Math.abs(contO.p.get(n10).oy[n12] - this.cd.flipy[this.cn] - this.squash) < this.cd.msquash[this.cn] * 3 || contO.p.get(n10).oy[n12] < this.cd.flipy[this.cn] + this.squash) && this.squash < this.cd.msquash[this.cn]) {
+                                    final float[] oy = contO.p.get(n10).oy;
                                     final int n13 = n12;
                                     oy[n13] += (int)n11;
                                     n8 += (int)n11;
@@ -2016,17 +2016,17 @@ public class Mad
                                 }
                             }
                         }
-                        if (contO.p[n10].glass == 1) {
-                            final Plane plane3 = contO.p[n10];
+                        if (contO.p.get(n10).glass == 1) {
+                            final Plane plane3 = contO.p.get(n10);
                             plane3.gr += 5;
                         }
                         else if (n11 != 0.0f) {
-                            final Plane plane4 = contO.p[n10];
+                            final Plane plane4 = contO.p.get(n10);
                             plane4.bfase += (int)n11;
                         }
                         if (Math.abs(n11) >= 1.0f) {
-                            contO.p[n10].chip = 1;
-                            contO.p[n10].ctmag = n11;
+                            contO.p.get(n10).chip = 1;
+                            contO.p.get(n10).ctmag = n11;
                         }
                     }
                     this.squash += n8 / n9;
@@ -2067,13 +2067,13 @@ public class Mad
             }
             for (int i = 0; i < contO.npl; ++i) {
                 float a = 0.0f;
-                for (int j = 0; j < contO.p[i].n; ++j) {
-                    if (contO.p[i].wz == 0 && this.py(contO.keyx[n], contO.p[i].ox[j], contO.keyz[n], contO.p[i].oz[j]) < this.cd.clrad[this.cn]) {
+                for (int j = 0; j < contO.p.get(i).n; ++j) {
+                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyz[n], contO.p.get(i).oz[j]) < this.cd.clrad[this.cn]) {
                         a = n2 / 20.0f * this.m.random();
-                        final float[] oz = contO.p[i].oz;
+                        final float[] oz = contO.p.get(i).oz;
                         final int n4 = j;
                         oz[n4] -= (int)(a * this.m.sin(contO.xz) * this.m.cos(contO.zy));
-                        final float[] ox = contO.p[i].ox;
+                        final float[] ox = contO.p.get(i).ox;
                         final int n5 = j;
                         ox[n5] += (int)(a * this.m.cos(contO.xz) * this.m.cos(contO.xy));
                         if (b) {
@@ -2084,41 +2084,41 @@ public class Mad
                 }
                 if (a != 0.0f) {
                     if (Math.abs(a) >= 1.0f) {
-                        contO.p[i].chip = 1;
-                        contO.p[i].ctmag = a;
+                        contO.p.get(i).chip = 1;
+                        contO.p.get(i).ctmag = a;
                     }
-                    if (!contO.p[i].nocol && contO.p[i].glass != 1) {
-                        if (contO.p[i].bfase > 20 && contO.p[i].hsb[1] > 0.25) {
-                            contO.p[i].hsb[1] = 0.25f;
+                    if (!contO.p.get(i).nocol && contO.p.get(i).glass != 1) {
+                        if (contO.p.get(i).bfase > 20 && contO.p.get(i).hsb[1] > 0.25) {
+                            contO.p.get(i).hsb[1] = 0.25f;
                         }
-                        if (contO.p[i].bfase > 25 && contO.p[i].hsb[2] > 0.7) {
-                            contO.p[i].hsb[2] = 0.7f;
+                        if (contO.p.get(i).bfase > 25 && contO.p.get(i).hsb[2] > 0.7) {
+                            contO.p.get(i).hsb[2] = 0.7f;
                         }
-                        if (contO.p[i].bfase > 30 && contO.p[i].hsb[1] > 0.15) {
-                            contO.p[i].hsb[1] = 0.15f;
+                        if (contO.p.get(i).bfase > 30 && contO.p.get(i).hsb[1] > 0.15) {
+                            contO.p.get(i).hsb[1] = 0.15f;
                         }
-                        if (contO.p[i].bfase > 35 && contO.p[i].hsb[2] > 0.6) {
-                            contO.p[i].hsb[2] = 0.6f;
+                        if (contO.p.get(i).bfase > 35 && contO.p.get(i).hsb[2] > 0.6) {
+                            contO.p.get(i).hsb[2] = 0.6f;
                         }
-                        if (contO.p[i].bfase > 40) {
-                            contO.p[i].hsb[0] = 0.075f;
+                        if (contO.p.get(i).bfase > 40) {
+                            contO.p.get(i).hsb[0] = 0.075f;
                         }
-                        if (contO.p[i].bfase > 50 && contO.p[i].hsb[2] > 0.5) {
-                            contO.p[i].hsb[2] = 0.5f;
+                        if (contO.p.get(i).bfase > 50 && contO.p.get(i).hsb[2] > 0.5) {
+                            contO.p.get(i).hsb[2] = 0.5f;
                         }
-                        if (contO.p[i].bfase > 60) {
-                            contO.p[i].hsb[0] = 0.05f;
+                        if (contO.p.get(i).bfase > 60) {
+                            contO.p.get(i).hsb[0] = 0.05f;
                         }
-                        final Plane plane = contO.p[i];
+                        final Plane plane = contO.p.get(i);
                         plane.bfase += (int)Math.abs(a);
-                        new Color(contO.p[i].c[0], contO.p[i].c[1], contO.p[i].c[2]);
-                        final Color hsbColor = Color.getHSBColor(contO.p[i].hsb[0], contO.p[i].hsb[1], contO.p[i].hsb[2]);
-                        contO.p[i].c[0] = hsbColor.getRed();
-                        contO.p[i].c[1] = hsbColor.getGreen();
-                        contO.p[i].c[2] = hsbColor.getBlue();
+                        new Color(contO.p.get(i).c[0], contO.p.get(i).c[1], contO.p.get(i).c[2]);
+                        final Color hsbColor = Color.getHSBColor(contO.p.get(i).hsb[0], contO.p.get(i).hsb[1], contO.p.get(i).hsb[2]);
+                        contO.p.get(i).c[0] = hsbColor.getRed();
+                        contO.p.get(i).c[1] = hsbColor.getGreen();
+                        contO.p.get(i).c[2] = hsbColor.getBlue();
                     }
-                    if (contO.p[i].glass == 1) {
-                        final Plane plane2 = contO.p[i];
+                    if (contO.p.get(i).glass == 1) {
+                        final Plane plane2 = contO.p.get(i);
                         plane2.gr += (int)Math.abs(a * 1.5F);
                     }
                 }
@@ -2154,13 +2154,13 @@ public class Mad
             }
             for (int i = 0; i < contO.npl; ++i) {
                 float a = 0.0f;
-                for (int j = 0; j < contO.p[i].n; ++j) {
-                    if (contO.p[i].wz == 0 && this.py(contO.keyx[n], contO.p[i].ox[j], contO.keyz[n], contO.p[i].oz[j]) < this.cd.clrad[this.cn]) {
+                for (int j = 0; j < contO.p.get(i).n; ++j) {
+                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyz[n], contO.p.get(i).oz[j]) < this.cd.clrad[this.cn]) {
                         a = n2 / 20.0f * this.m.random();
-                        final float[] oz = contO.p[i].oz;
+                        final float[] oz = contO.p.get(i).oz;
                         final int n4 = j;
                         oz[n4] += (int)(a * this.m.cos(contO.xz) * this.m.cos(contO.zy));
-                        final float[] ox = contO.p[i].ox;
+                        final float[] ox = contO.p.get(i).ox;
                         final int n5 = j;
                         ox[n5] += (int)(a * this.m.sin(contO.xz) * this.m.cos(contO.xy));
                         if (b) {
@@ -2171,41 +2171,41 @@ public class Mad
                 }
                 if (a != 0.0f) {
                     if (Math.abs(a) >= 1.0f) {
-                        contO.p[i].chip = 1;
-                        contO.p[i].ctmag = a;
+                        contO.p.get(i).chip = 1;
+                        contO.p.get(i).ctmag = a;
                     }
-                    if (!contO.p[i].nocol && contO.p[i].glass != 1) {
-                        if (contO.p[i].bfase > 20 && contO.p[i].hsb[1] > 0.25) {
-                            contO.p[i].hsb[1] = 0.25f;
+                    if (!contO.p.get(i).nocol && contO.p.get(i).glass != 1) {
+                        if (contO.p.get(i).bfase > 20 && contO.p.get(i).hsb[1] > 0.25) {
+                            contO.p.get(i).hsb[1] = 0.25f;
                         }
-                        if (contO.p[i].bfase > 25 && contO.p[i].hsb[2] > 0.7) {
-                            contO.p[i].hsb[2] = 0.7f;
+                        if (contO.p.get(i).bfase > 25 && contO.p.get(i).hsb[2] > 0.7) {
+                            contO.p.get(i).hsb[2] = 0.7f;
                         }
-                        if (contO.p[i].bfase > 30 && contO.p[i].hsb[1] > 0.15) {
-                            contO.p[i].hsb[1] = 0.15f;
+                        if (contO.p.get(i).bfase > 30 && contO.p.get(i).hsb[1] > 0.15) {
+                            contO.p.get(i).hsb[1] = 0.15f;
                         }
-                        if (contO.p[i].bfase > 35 && contO.p[i].hsb[2] > 0.6) {
-                            contO.p[i].hsb[2] = 0.6f;
+                        if (contO.p.get(i).bfase > 35 && contO.p.get(i).hsb[2] > 0.6) {
+                            contO.p.get(i).hsb[2] = 0.6f;
                         }
-                        if (contO.p[i].bfase > 40) {
-                            contO.p[i].hsb[0] = 0.075f;
+                        if (contO.p.get(i).bfase > 40) {
+                            contO.p.get(i).hsb[0] = 0.075f;
                         }
-                        if (contO.p[i].bfase > 50 && contO.p[i].hsb[2] > 0.5) {
-                            contO.p[i].hsb[2] = 0.5f;
+                        if (contO.p.get(i).bfase > 50 && contO.p.get(i).hsb[2] > 0.5) {
+                            contO.p.get(i).hsb[2] = 0.5f;
                         }
-                        if (contO.p[i].bfase > 60) {
-                            contO.p[i].hsb[0] = 0.05f;
+                        if (contO.p.get(i).bfase > 60) {
+                            contO.p.get(i).hsb[0] = 0.05f;
                         }
-                        final Plane plane = contO.p[i];
+                        final Plane plane = contO.p.get(i);
                         plane.bfase += (int)Math.abs(a);
-                        new Color(contO.p[i].c[0], contO.p[i].c[1], contO.p[i].c[2]);
-                        final Color hsbColor = Color.getHSBColor(contO.p[i].hsb[0], contO.p[i].hsb[1], contO.p[i].hsb[2]);
-                        contO.p[i].c[0] = hsbColor.getRed();
-                        contO.p[i].c[1] = hsbColor.getGreen();
-                        contO.p[i].c[2] = hsbColor.getBlue();
+                        new Color(contO.p.get(i).c[0], contO.p.get(i).c[1], contO.p.get(i).c[2]);
+                        final Color hsbColor = Color.getHSBColor(contO.p.get(i).hsb[0], contO.p.get(i).hsb[1], contO.p.get(i).hsb[2]);
+                        contO.p.get(i).c[0] = hsbColor.getRed();
+                        contO.p.get(i).c[1] = hsbColor.getGreen();
+                        contO.p.get(i).c[2] = hsbColor.getBlue();
                     }
-                    if (contO.p[i].glass == 1) {
-                        final Plane plane2 = contO.p[i];
+                    if (contO.p.get(i).glass == 1) {
+                        final Plane plane2 = contO.p.get(i);
                         plane2.gr += (int)Math.abs(a * 1.5F);
                     }
                 }

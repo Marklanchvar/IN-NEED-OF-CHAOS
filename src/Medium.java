@@ -107,6 +107,8 @@ public class Medium
     boolean[] bst;
     int[] twn;
     int origfade = 3000;
+    int resdown;
+    int rescnt;
     
     public Medium() {
         this.focus_point = 400;
@@ -137,7 +139,7 @@ public class Medium
         this.crs = false;
         this.cx = 400;
         this.cy = 225;
-        this.cz = 1000;
+        this.cz = 50;
         this.xz = 0;
         this.zy = 0;
         this.x = 0;
@@ -2101,24 +2103,25 @@ public class Medium
         }
     }
     
-    public void fadfrom(int n) {
-        if (n > 8000) {
-            n = 8000;
-        }
-        for (int i = 1; i < 17; ++i) {
-            this.fade[i - 1] = n / 2 * (i + 1);
-        }
+    public void fadfrom(final int n) {
+        int n2 = 0;
+        do {
+            this.fade[n2] = (int) ( n * (n2 + 1));
+        } while (++n2 < 16);
     }
     
-    public void adjstfade(float f) {
-        if (f < 15.0f) {
-            this.fade[0] = (int)(this.origfade - 1000.0f * (15.0f - f));
+    public void adjstfade(final int i) {
+        if (i < 15.0f) {
+            this.fade[0] = (int)(this.origfade - 1000.0f * (15.0f - i));
             if (this.fade[0] < 3000) {
                 this.fade[0] = 3000;
             }
             this.fadfrom(this.fade[0]);
-        } else if (this.fade[0] != this.origfade) {
-            this.fade[0] = this.fade[0] + 500;
+        }
+        else if (this.fade[0] != this.origfade) {
+            final int[] fade = this.fade;
+            final int n2 = 0;
+            fade[n2] += 500;
             if (this.fade[0] > this.origfade) {
                 this.fade[0] = this.origfade;
             }

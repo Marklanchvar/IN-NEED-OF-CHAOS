@@ -1,6 +1,7 @@
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
@@ -9,9 +10,32 @@ import java.io.ByteArrayInputStream;
 
 public class ContO
 {
+	// Static comparator to eliminate anonymous inner class allocation during sorting
+	private static final Comparator<Plane> PLANE_COMPARATOR = new Comparator<Plane>() {
+		@Override
+		public int compare(Plane p1, Plane p2) {
+			if (p1 == null && p2 == null) return 0;
+			if (p1 == null) return 1;
+			if (p2 == null) return -1;
+			return Float.compare(p2.av, p1.av);
+		}
+	};
+
+	// Reusable scratch buffers for per-frame rendering calculations
+	private final int[] scratch4_1 = new int[4];
+	private final int[] scratch4_2 = new int[4];
+	private final int[] scratch4_3 = new int[4];
+
+	private final int[] scratch8_1 = new int[8];
+	private final int[] scratch8_2 = new int[8];
+
+	private final float[] scratchF8_1 = new float[8];
+	private final float[] scratchF8_2 = new float[8];
+	private final float[] scratchF8_3 = new float[8];
+
 	Medium m;
 	Trackers t;
-	Plane[] p;
+	ArrayList<Plane> p;
 	int npl;
 	float x;
 	float y;
@@ -139,10 +163,10 @@ public class ContO
 		this.wh = 0;
 		this.m = m;
 		this.t = t;
-		this.p = new Plane[286];
-		final int[] array = new int[286];
-		for (int i = 0; i < 286; ++i) {
-			array[i] = 0;
+		this.p = new ArrayList<Plane>();
+		ArrayList<Integer> array = new ArrayList<>();
+		for (int i : array) {
+			array.set(i, 0);
 		}
 		if (this.m.loadnew) {
 			for (int j = 0; j < 4; ++j) {
@@ -183,7 +207,7 @@ public class ContO
 						gr = 0;
 						fs = 0;
 						lightType = 0;
-						array[this.npl] = 1;
+						array.add(1);
 						if (n9 == 0) {
 							noOutline = false;
 						}
@@ -194,7 +218,7 @@ public class ContO
 						}
 						if (string.startsWith("fs(")) {
 							fs = this.getvalue("fs", string, 0);
-							array[this.npl] = 2;
+							array.set(this.npl, 2);
 						}
 						if (string.startsWith("c(")) {
 							reflectType = 0;
@@ -232,12 +256,12 @@ public class ContO
 						}
 					}
 					if (string.startsWith("</p>")) {
-						this.p[this.npl] = new Plane(this.m, this.t, array3, array5, array4, n3, array6, reflectType, gr, fs, 0, 0, 0, this.disline, 0, isRoad, lightType, noOutline);
+						this.p.add(this.npl, new Plane(this.m, this.t, array3, array5, array4, n3, array6, reflectType, gr, fs, 0, 0, 0, this.disline, 0, isRoad, lightType, noOutline));
 						if (array6[0] == this.fcol[0] && array6[1] == this.fcol[1] && array6[2] == this.fcol[2] && reflectType == 0) {
-							this.p[this.npl].colnum = 1;
+							this.p.get(this.npl).colnum = 1;
 						}
 						if (array6[0] == this.scol[0] && array6[1] == this.scol[1] && array6[2] == this.scol[2] && reflectType == 0) {
-							this.p[this.npl].colnum = 2;
+							this.p.get(this.npl).colnum = 2;
 						}
 						++this.npl;
 						n = 0;
@@ -485,34 +509,24 @@ public class ContO
 				this.wh /= n6;
 			}
 			int n10 = 0;
-			for (int n11 = 0; n11 < this.npl; ++n11) {
-				int n12 = 0;
-				float n13 = this.p[n11].ox[0];
-				float n14 = this.p[n11].ox[0];
-				float n15 = this.p[n11].oy[0];
-				float n16 = this.p[n11].oy[0];
-				float n17 = this.p[n11].oz[0];
-				float n18 = this.p[n11].oz[0];
-				for (int n19 = 0; n19 < this.p[n11].n; ++n19) {
-					if (this.p[n11].ox[n19] > n13) {
-						n13 = this.p[n11].ox[n19];
-					}
-					if (this.p[n11].ox[n19] < n14) {
-						n14 = this.p[n11].ox[n19];
-					}
-					if (this.p[n11].oy[n19] > n15) {
-						n15 = this.p[n11].oy[n19];
-					}
-					if (this.p[n11].oy[n19] < n16) {
-						n16 = this.p[n11].oy[n19];
-					}
-					if (this.p[n11].oz[n19] > n17) {
-						n17 = this.p[n11].oz[n19];
-					}
-					if (this.p[n11].oz[n19] < n18) {
-						n18 = this.p[n11].oz[n19];
-					}
-				}
+			for (int i = 0; i < this.npl; ++i) {
+			    Plane plane = this.p.get(i);
+			    int n12 = 0;
+			    float n13 = plane.ox[0];
+			    float n14 = plane.ox[0];
+			    float n15 = plane.oy[0];
+			    float n16 = plane.oy[0];
+			    float n17 = plane.oz[0];
+			    float n18 = plane.oz[0];
+
+			    for (int j = 1; j < plane.n; ++j) {
+			    	n13 = Math.max(n13, plane.ox[j]);
+			    	n14 = Math.min(n14, plane.ox[j]);
+			    	n15 = Math.max(n15, plane.oy[j]);
+			    	n16 = Math.min(n16, plane.oy[j]);
+			    	n17 = Math.max(n17, plane.oz[j]);
+			    	n18 = Math.min(n18, plane.oz[j]);
+			    }
 				if (Math.abs(n13 - n14) <= Math.abs(n15 - n16) && Math.abs(n13 - n14) <= Math.abs(n17 - n18)) {
 					n12 = 1;
 				}
@@ -526,21 +540,21 @@ public class ContO
 					this.roofat = (n15 + n16) / 2;
 					n10 = 1;
 				}
-				if (array[n11] == 1) {
+				if (array.get(i) == 1) {
 					int n20 = 1000;
 					int n21 = 0;
-					for (int n22 = 0; n22 < this.p[n11].n; ++n22) {
+					for (int n22 = 0; n22 < this.p.get(i).n; ++n22) {
 						int n23 = n22 + 1;
-						if (n23 >= this.p[n11].n) {
-							n23 -= this.p[n11].n;
+						if (n23 >= this.p.get(i).n) {
+							n23 -= this.p.get(i).n;
 						}
 						int n24 = n22 + 2;
-						if (n24 >= this.p[n11].n) {
-							n24 -= this.p[n11].n;
+						if (n24 >= this.p.get(i).n) {
+							n24 -= this.p.get(i).n;
 						}
 						if (n12 == 1) {
-							int abs = Math.abs((int)(Math.atan((this.p[n11].oz[n22] - this.p[n11].oz[n23]) / (double)(this.p[n11].oy[n22] - this.p[n11].oy[n23])) / 0.017453292519943295));
-							int abs2 = Math.abs((int)(Math.atan((this.p[n11].oz[n24] - this.p[n11].oz[n23]) / (double)(this.p[n11].oy[n24] - this.p[n11].oy[n23])) / 0.017453292519943295));
+							int abs = Math.abs((int)(Math.atan((this.p.get(i).oz[n22] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).oy[n22] - this.p.get(i).oy[n23])) / 0.017453292519943295));
+							int abs2 = Math.abs((int)(Math.atan((this.p.get(i).oz[n24] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).oy[n24] - this.p.get(i).oy[n23])) / 0.017453292519943295));
 							if (abs > 45) {
 								abs = 90 - abs;
 							}
@@ -553,8 +567,8 @@ public class ContO
 							}
 						}
 						if (n12 == 2) {
-							int abs3 = Math.abs((int)(Math.atan((this.p[n11].oz[n22] - this.p[n11].oz[n23]) / (double)(this.p[n11].ox[n22] - this.p[n11].ox[n23])) / 0.017453292519943295));
-							int abs4 = Math.abs((int)(Math.atan((this.p[n11].oz[n24] - this.p[n11].oz[n23]) / (double)(this.p[n11].ox[n24] - this.p[n11].ox[n23])) / 0.017453292519943295));
+							int abs3 = Math.abs((int)(Math.atan((this.p.get(i).oz[n22] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).ox[n22] - this.p.get(i).ox[n23])) / 0.017453292519943295));
+							int abs4 = Math.abs((int)(Math.atan((this.p.get(i).oz[n24] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).ox[n24] - this.p.get(i).ox[n23])) / 0.017453292519943295));
 							if (abs3 > 45) {
 								abs3 = 90 - abs3;
 							}
@@ -567,8 +581,8 @@ public class ContO
 							}
 						}
 						if (n12 == 3) {
-							int abs5 = Math.abs((int)(Math.atan((this.p[n11].oy[n22] - this.p[n11].oy[n23]) / (double)(this.p[n11].ox[n22] - this.p[n11].ox[n23])) / 0.017453292519943295));
-							int abs6 = Math.abs((int)(Math.atan((this.p[n11].oy[n24] - this.p[n11].oy[n23]) / (double)(this.p[n11].ox[n24] - this.p[n11].ox[n23])) / 0.017453292519943295));
+							int abs5 = Math.abs((int)(Math.atan((this.p.get(i).oy[n22] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).ox[n22] - this.p.get(i).ox[n23])) / 0.017453292519943295));
+							int abs6 = Math.abs((int)(Math.atan((this.p.get(i).oy[n24] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).ox[n24] - this.p.get(i).ox[n23])) / 0.017453292519943295));
 							if (abs5 > 45) {
 								abs5 = 90 - abs5;
 							}
@@ -582,148 +596,148 @@ public class ContO
 						}
 					}
 					if (n21 != 0) {
-						final float[] array7 = new float[this.p[n11].n];
-						final float[] array8 = new float[this.p[n11].n];
-						final float[] array9 = new float[this.p[n11].n];
-						for (int n25 = 0; n25 < this.p[n11].n; ++n25) {
-							array7[n25] = this.p[n11].ox[n25];
-							array8[n25] = this.p[n11].oy[n25];
-							array9[n25] = this.p[n11].oz[n25];
+						final float[] array7 = new float[this.p.get(i).n];
+						final float[] array8 = new float[this.p.get(i).n];
+						final float[] array9 = new float[this.p.get(i).n];
+						for (int n25 = 0; n25 < this.p.get(i).n; ++n25) {
+							array7[n25] = this.p.get(i).ox[n25];
+							array8[n25] = this.p.get(i).oy[n25];
+							array9[n25] = this.p.get(i).oz[n25];
 						}
-						for (int n26 = 0; n26 < this.p[n11].n; ++n26) {
+						for (int n26 = 0; n26 < this.p.get(i).n; ++n26) {
 							int n27 = n26 + n21;
-							if (n27 >= this.p[n11].n) {
-								n27 -= this.p[n11].n;
+							if (n27 >= this.p.get(i).n) {
+								n27 -= this.p.get(i).n;
 							}
-							this.p[n11].ox[n26] = array7[n27];
-							this.p[n11].oy[n26] = array8[n27];
-							this.p[n11].oz[n26] = array9[n27];
+							this.p.get(i).ox[n26] = array7[n27];
+							this.p.get(i).oy[n26] = array8[n27];
+							this.p.get(i).oz[n26] = array9[n27];
 						}
 					}
 					if (n12 == 1) {
-						if (Math.abs(this.p[n11].oz[0] - this.p[n11].oz[1]) > Math.abs(this.p[n11].oy[0] - this.p[n11].oy[1])) {
-							if (this.p[n11].oz[0] > this.p[n11].oz[1]) {
-								if (this.p[n11].oy[1] > this.p[n11].oy[2]) {
-									this.p[n11].fs = 1;
+						if (Math.abs(this.p.get(i).oz[0] - this.p.get(i).oz[1]) > Math.abs(this.p.get(i).oy[0] - this.p.get(i).oy[1])) {
+							if (this.p.get(i).oz[0] > this.p.get(i).oz[1]) {
+								if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
+									this.p.get(i).fs = 1;
 								}
 								else {
-									this.p[n11].fs = -1;
+									this.p.get(i).fs = -1;
 								}
 							}
-							else if (this.p[n11].oy[1] > this.p[n11].oy[2]) {
-								this.p[n11].fs = -1;
+							else if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
+								this.p.get(i).fs = -1;
 							}
 							else {
-								this.p[n11].fs = 1;
+								this.p.get(i).fs = 1;
 							}
 						}
-						else if (this.p[n11].oy[0] > this.p[n11].oy[1]) {
-							if (this.p[n11].oz[1] > this.p[n11].oz[2]) {
-								this.p[n11].fs = -1;
+						else if (this.p.get(i).oy[0] > this.p.get(i).oy[1]) {
+							if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
+								this.p.get(i).fs = -1;
 							}
 							else {
-								this.p[n11].fs = 1;
+								this.p.get(i).fs = 1;
 							}
 						}
-						else if (this.p[n11].oz[1] > this.p[n11].oz[2]) {
-							this.p[n11].fs = 1;
+						else if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
+							this.p.get(i).fs = 1;
 						}
 						else {
-							this.p[n11].fs = -1;
+							this.p.get(i).fs = -1;
 						}
 					}
 					if (n12 == 2) {
-						if (Math.abs(this.p[n11].oz[0] - this.p[n11].oz[1]) > Math.abs(this.p[n11].ox[0] - this.p[n11].ox[1])) {
-							if (this.p[n11].oz[0] > this.p[n11].oz[1]) {
-								if (this.p[n11].ox[1] > this.p[n11].ox[2]) {
-									this.p[n11].fs = -1;
+						if (Math.abs(this.p.get(i).oz[0] - this.p.get(i).oz[1]) > Math.abs(this.p.get(i).ox[0] - this.p.get(i).ox[1])) {
+							if (this.p.get(i).oz[0] > this.p.get(i).oz[1]) {
+								if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+									this.p.get(i).fs = -1;
 								}
 								else {
-									this.p[n11].fs = 1;
+									this.p.get(i).fs = 1;
 								}
 							}
-							else if (this.p[n11].ox[1] > this.p[n11].ox[2]) {
-								this.p[n11].fs = 1;
+							else if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+								this.p.get(i).fs = 1;
 							}
 							else {
-								this.p[n11].fs = -1;
+								this.p.get(i).fs = -1;
 							}
 						}
-						else if (this.p[n11].ox[0] > this.p[n11].ox[1]) {
-							if (this.p[n11].oz[1] > this.p[n11].oz[2]) {
-								this.p[n11].fs = 1;
+						else if (this.p.get(i).ox[0] > this.p.get(i).ox[1]) {
+							if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
+								this.p.get(i).fs = 1;
 							}
 							else {
-								this.p[n11].fs = -1;
+								this.p.get(i).fs = -1;
 							}
 						}
-						else if (this.p[n11].oz[1] > this.p[n11].oz[2]) {
-							this.p[n11].fs = -1;
+						else if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
+							this.p.get(i).fs = -1;
 						}
 						else {
-							this.p[n11].fs = 1;
+							this.p.get(i).fs = 1;
 						}
 					}
 					if (n12 == 3) {
-						if (Math.abs(this.p[n11].oy[0] - this.p[n11].oy[1]) > Math.abs(this.p[n11].ox[0] - this.p[n11].ox[1])) {
-							if (this.p[n11].oy[0] > this.p[n11].oy[1]) {
-								if (this.p[n11].ox[1] > this.p[n11].ox[2]) {
-									this.p[n11].fs = 1;
+						if (Math.abs(this.p.get(i).oy[0] - this.p.get(i).oy[1]) > Math.abs(this.p.get(i).ox[0] - this.p.get(i).ox[1])) {
+							if (this.p.get(i).oy[0] > this.p.get(i).oy[1]) {
+								if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+									this.p.get(i).fs = 1;
 								}
 								else {
-									this.p[n11].fs = -1;
+									this.p.get(i).fs = -1;
 								}
 							}
-							else if (this.p[n11].ox[1] > this.p[n11].ox[2]) {
-								this.p[n11].fs = -1;
+							else if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+								this.p.get(i).fs = -1;
 							}
 							else {
-								this.p[n11].fs = 1;
+								this.p.get(i).fs = 1;
 							}
 						}
-						else if (this.p[n11].ox[0] > this.p[n11].ox[1]) {
-							if (this.p[n11].oy[1] > this.p[n11].oy[2]) {
-								this.p[n11].fs = -1;
+						else if (this.p.get(i).ox[0] > this.p.get(i).ox[1]) {
+							if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
+								this.p.get(i).fs = -1;
 							}
 							else {
-								this.p[n11].fs = 1;
+								this.p.get(i).fs = 1;
 							}
 						}
-						else if (this.p[n11].oy[1] > this.p[n11].oy[2]) {
-							this.p[n11].fs = 1;
+						else if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
+							this.p.get(i).fs = 1;
 						}
 						else {
-							this.p[n11].fs = -1;
+							this.p.get(i).fs = -1;
 						}
 					}
 					boolean b4 = false;
 					boolean b5 = false;
 					for (int n28 = 0; n28 < this.npl; ++n28) {
-						if (n28 != n11 && array[n28] != 0) {
-							float n29 = this.p[n28].ox[0];
-							float n30 = this.p[n28].ox[0];
-							float n31 = this.p[n28].oy[0];
-							float n32 = this.p[n28].oy[0];
-							float n33 = this.p[n28].oz[0];
-							float n34 = this.p[n28].oz[0];
-							for (int n35 = 0; n35 < this.p[n28].n; ++n35) {
-								if (this.p[n28].ox[n35] > n29) {
-									n29 = this.p[n28].ox[n35];
+						if (n28 != i && array.get(n28) != 0) {
+							float n29 = this.p.get(n28).ox[0];
+							float n30 = this.p.get(n28).ox[0];
+							float n31 = this.p.get(n28).oy[0];
+							float n32 = this.p.get(n28).oy[0];
+							float n33 = this.p.get(n28).oz[0];
+							float n34 = this.p.get(n28).oz[0];
+							for (int n35 = 0; n35 < this.p.get(n28).n; ++n35) {
+								if (this.p.get(n28).ox[n35] > n29) {
+									n29 = this.p.get(n28).ox[n35];
 								}
-								if (this.p[n28].ox[n35] < n30) {
-									n30 = this.p[n28].ox[n35];
+								if (this.p.get(n28).ox[n35] < n30) {
+									n30 = this.p.get(n28).ox[n35];
 								}
-								if (this.p[n28].oy[n35] > n31) {
-									n31 = this.p[n28].oy[n35];
+								if (this.p.get(n28).oy[n35] > n31) {
+									n31 = this.p.get(n28).oy[n35];
 								}
-								if (this.p[n28].oy[n35] < n32) {
-									n32 = this.p[n28].oy[n35];
+								if (this.p.get(n28).oy[n35] < n32) {
+									n32 = this.p.get(n28).oy[n35];
 								}
-								if (this.p[n28].oz[n35] > n33) {
-									n33 = this.p[n28].oz[n35];
+								if (this.p.get(n28).oz[n35] > n33) {
+									n33 = this.p.get(n28).oz[n35];
 								}
-								if (this.p[n28].oz[n35] < n34) {
-									n34 = this.p[n28].oz[n35];
+								if (this.p.get(n28).oz[n35] < n34) {
+									n34 = this.p.get(n28).oz[n35];
 								}
 							}
 							final float n36 = (n29 + n30) / 2;
@@ -766,13 +780,13 @@ public class ContO
 						b6 = true;
 					}
 					if (b5 && !b4) {
-						final Plane plane = this.p[n11];
-						plane.fs *= -1;
+						final Plane plane1 = this.p.get(i);
+						plane1.fs *= -1;
 						b6 = true;
 					}
 					if (b4 && b5) {
-						this.p[n11].fs = 0;
-						this.p[n11].gr = 40;
+						this.p.get(i).fs = 0;
+						this.p.get(i).gr = 40;
 						b6 = true;
 					}
 					if (!b6) {
@@ -788,43 +802,43 @@ public class ContO
 							n42 = (n43 = (n17 + n18) / 2);
 						}
 						for (int n44 = 0; n44 < this.npl; ++n44) {
-							if (n44 != n11) {
+							if (n44 != i) {
 								boolean b7 = false;
-								final boolean[] array10 = new boolean[this.p[n44].n];
-								for (int n45 = 0; n45 < this.p[n44].n; ++n45) {
+								final boolean[] array10 = new boolean[this.p.get(n44).n];
+								for (int n45 = 0; n45 < this.p.get(n44).n; ++n45) {
 									array10[n45] = false;
-									for (int n46 = 0; n46 < this.p[n11].n; ++n46) {
-										if (this.p[n11].ox[n46] == this.p[n44].ox[n45] && this.p[n11].oy[n46] == this.p[n44].oy[n45] && this.p[n11].oz[n46] == this.p[n44].oz[n45]) {
+									for (int n46 = 0; n46 < this.p.get(i).n; ++n46) {
+										if (this.p.get(i).ox[n46] == this.p.get(n44).ox[n45] && this.p.get(i).oy[n46] == this.p.get(n44).oy[n45] && this.p.get(i).oz[n46] == this.p.get(n44).oz[n45]) {
 											array10[n45] = true;
 											b7 = true;
 										}
 									}
 								}
 								if (b7) {
-									for (int n47 = 0; n47 < this.p[n44].n; ++n47) {
+									for (int n47 = 0; n47 < this.p.get(n44).n; ++n47) {
 										if (!array10[n47]) {
 											if (n12 == 1) {
-												if (this.p[n44].ox[n47] > n42) {
-													n42 = this.p[n44].ox[n47];
+												if (this.p.get(n44).ox[n47] > n42) {
+													n42 = this.p.get(n44).ox[n47];
 												}
-												if (this.p[n44].ox[n47] < n43) {
-													n43 = this.p[n44].ox[n47];
+												if (this.p.get(n44).ox[n47] < n43) {
+													n43 = this.p.get(n44).ox[n47];
 												}
 											}
 											if (n12 == 2) {
-												if (this.p[n44].oy[n47] > n42) {
-													n42 = this.p[n44].oy[n47];
+												if (this.p.get(n44).oy[n47] > n42) {
+													n42 = this.p.get(n44).oy[n47];
 												}
-												if (this.p[n44].oy[n47] < n43) {
-													n43 = this.p[n44].oy[n47];
+												if (this.p.get(n44).oy[n47] < n43) {
+													n43 = this.p.get(n44).oy[n47];
 												}
 											}
 											if (n12 == 3) {
-												if (this.p[n44].oz[n47] > n42) {
-													n42 = this.p[n44].oz[n47];
+												if (this.p.get(n44).oz[n47] > n42) {
+													n42 = this.p.get(n44).oz[n47];
 												}
-												if (this.p[n44].oz[n47] < n43) {
-													n43 = this.p[n44].oz[n47];
+												if (this.p.get(n44).oz[n47] < n43) {
+													n43 = this.p.get(n44).oz[n47];
 												}
 											}
 										}
@@ -834,36 +848,36 @@ public class ContO
 						}
 						if (n12 == 1) {
 							if ((n42 + n43) / 2 > (n13 + n14) / 2) {
-								final Plane plane2 = this.p[n11];
+								final Plane plane2 = this.p.get(i);
 								plane2.fs *= -1;
 							}
 							else if ((n42 + n43) / 2 == (n13 + n14) / 2 && (n13 + n14) / 2 < 0) {
-								final Plane plane3 = this.p[n11];
+								final Plane plane3 = this.p.get(i);
 								plane3.fs *= -1;
 							}
 						}
 						if (n12 == 2) {
 							if ((n42 + n43) / 2 > (n15 + n16) / 2) {
-								final Plane plane4 = this.p[n11];
+								final Plane plane4 = this.p.get(i);
 								plane4.fs *= -1;
 							}
 							else if ((n42 + n43) / 2 == (n15 + n16) / 2 && (n15 + n16) / 2 < 0) {
-								final Plane plane5 = this.p[n11];
+								final Plane plane5 = this.p.get(i);
 								plane5.fs *= -1;
 							}
 						}
 						if (n12 == 3) {
 							if ((n42 + n43) / 2 > (n17 + n18) / 2) {
-								final Plane plane6 = this.p[n11];
+								final Plane plane6 = this.p.get(i);
 								plane6.fs *= -1;
 							}
 							else if ((n42 + n43) / 2 == (n17 + n18) / 2 && (n17 + n18) / 2 < 0) {
-								final Plane plane7 = this.p[n11];
+								final Plane plane7 = this.p.get(i);
 								plane7.fs *= -1;
 							}
 						}
 					}
-					this.p[n11].deltafntyp();
+					this.p.get(i).deltafntyp();
 				}
 			}
 		}
@@ -932,12 +946,12 @@ public class ContO
 		this.wrad = contO.wrad;
 		this.grat = contO.grat;
 		this.sprkat = contO.sprkat;
-		this.p = new Plane[contO.npl];
+		this.p = new ArrayList<>();
 		for (int i = 0; i < this.npl; ++i) {
-			if (contO.p[i].master == 1) {
-				contO.p[i].n = 20;
+			if (contO.p.get(i).master == 1) {
+				contO.p.get(i).n = 20;
 			}
-			this.p[i] = new Plane(this.m, this.t, contO.p[i].ox, contO.p[i].oz, contO.p[i].oy, contO.p[i].n, contO.p[i].oc, contO.p[i].glass, contO.p[i].gr, contO.p[i].fs, contO.p[i].wx, contO.p[i].wy, contO.p[i].wz, contO.disline, contO.p[i].bfase, contO.p[i].road, contO.p[i].light, contO.p[i].solo);
+			this.p.add(i, new Plane(this.m, this.t, contO.p.get(i).ox, contO.p.get(i).oz, contO.p.get(i).oy, contO.p.get(i).n, contO.p.get(i).oc, contO.p.get(i).glass, contO.p.get(i).gr, contO.p.get(i).fs, contO.p.get(i).wx, contO.p.get(i).wy, contO.p.get(i).wz, contO.disline, contO.p.get(i).bfase, contO.p.get(i).road, contO.p.get(i).light, contO.p.get(i).solo));
 		}
 		this.x = x2;
 		this.y = y2;
@@ -946,10 +960,10 @@ public class ContO
 		this.xy = 0;
 		this.zy = 0;
 		for (int j = 0; j < this.npl; ++j) {
-			this.p[j].colnum = contO.p[j].colnum;
-			this.p[j].master = contO.p[j].master;
-			this.p[j].rot(this.p[j].ox, this.p[j].oz, 0, 0, xz2, this.p[j].n);
-			this.p[j].loadprojf();
+			this.p.get(j).colnum = contO.p.get(j).colnum;
+			this.p.get(j).master = contO.p.get(j).master;
+			this.p.get(j).rot(this.p.get(j).ox, this.p.get(j).oz, 0, 0, xz2, this.p.get(j).n);
+			this.p.get(j).loadprojf();
 		}
 		if (contO.tnt != 0) {
 			for (int k = 0; k < contO.tnt; ++k) {
@@ -1083,7 +1097,12 @@ public class ContO
 		this.grounded = 115.0f;
 		this.decor = true;
 		this.npl = 5;
-		this.p = new Plane[5];
+		this.p = new ArrayList<Plane>();
+		this.p.add(null);
+		this.p.add(null);
+		this.p.add(null);
+		this.p.add(null);
+		this.p.add(null);
 		final Random random = new Random((long) fgen);
 		final int[] array = new int[8];
 		final int[] array2 = new int[8];
@@ -1204,7 +1223,7 @@ public class ContO
 					array6[l] = (int)((this.m.cpol[l] + this.m.cgrnd[l]) / (2.2f + n20 - n17));
 				}
 			}
-			this.p[k] = new Plane(this.m, this.t, array7, array9, array8, 6, array6, 3, -8, 0, 0, 0, 0, this.disline, 0, true, 0, false);
+			this.p.set(k, new Plane(this.m, this.t, array7, array9, array8, 6, array6, 3, -8, 0, 0, 0, 0, this.disline, 0, true, 0, false));
 		}
 		final float n21 = (float)(0.02 * random.nextDouble());
 		for (int n22 = 0; n22 < 3; ++n22) {
@@ -1215,7 +1234,7 @@ public class ContO
 				array6[n22] = (int)((this.m.cpol[n22] + this.m.cgrnd[n22]) / (2.15f + n21));
 			}
 		}
-		this.p[4] = new Plane(this.m, this.t, array3, array4, array5, 8, array6, 3, -8, 0, 0, 0, 0, this.disline, 0, true, 0, false);
+		this.p.set(4, new Plane(this.m, this.t, array3, array4, array5, 8, array6, 3, -8, 0, 0, 0, 0, this.disline, 0, true, 0, false));
 		final float[] array10 = new float[2];
 		final float[] array11 = new float[2];
 		for (int n23 = 0; n23 < 4; ++n23) {
@@ -1284,7 +1303,7 @@ public class ContO
 			final int nt3 = this.t.nt;
 			y2[nt3] += this.y;
 			for (int n27 = 0; n27 < 3; ++n27) {
-				this.t.c[this.t.nt][n27] = this.p[n23].oc[n27];
+				this.t.c[this.t.nt][n27] = this.p.get(n23).oc[n27];
 			}
 			this.t.skd[this.t.nt] = 2;
 			this.t.dam[this.t.nt] = 1;
@@ -1314,7 +1333,7 @@ public class ContO
 		this.t.zy[this.t.nt] = 0;
 		this.t.xy[this.t.nt] = 0;
 		for (int n29 = 0; n29 < 3; ++n29) {
-			this.t.c[this.t.nt][n29] = this.p[4].oc[n29];
+			this.t.c[this.t.nt][n29] = this.p.get(4).oc[n29];
 		}
 		this.t.skd[this.t.nt] = 4;
 		this.t.dam[this.t.nt] = 1;
@@ -1323,7 +1342,6 @@ public class ContO
 		final Trackers t3 = this.t;
 		++t3.nt;
 	}
-
 	public void d(final Graphics2D graphics2D) {
 		if (this.dist != 0) {
 			this.dist = 0;
@@ -1362,7 +1380,7 @@ public class ContO
 						}
 						if (b) {
 							for (int j = 0; j < this.npl; ++j) {
-								this.p[j].s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 0);
+								this.p.get(j).s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 0);
 							}
 						}
 						else {
@@ -1370,7 +1388,7 @@ public class ContO
 							final float n7 = this.m.cz + ((this.m.ground - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
 							if (this.ys(n6 + this.maxR, n7) > 0 && this.ys(n6 - this.maxR, n7) < this.m.h) {
 								for (int k = 0; k < this.npl; ++k) {
-									this.p[k].s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 1);
+									this.p.get(k).s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 1);
 								}
 							}
 						}
@@ -1382,7 +1400,7 @@ public class ContO
 				}
 				else {
 					for (int l = 0; l < this.npl; ++l) {
-						this.p[l].s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 2);
+						this.p.get(l).s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 2);
 					}
 				}
 			}
@@ -1411,24 +1429,12 @@ public class ContO
 				final float dy = this.y - this.m.y;
 				final float dz = this.z - this.m.z;
 
-				// ==========================================
-				// REPLACED FLAWED INSERTION SORT WITH FAST DEPTH SORTER
-				// ==========================================
-				Arrays.sort(this.p, 0, this.npl, new Comparator<Plane>() {
-					@Override
-					public int compare(Plane p1, Plane p2) {
-						if (p1 == null && p2 == null) return 0;
-						if (p1 == null) return 1;
-						if (p2 == null) return -1;
-						// Sort descending by depth/av or projection metric to resolve 180-deg overlaps
-						return Float.compare(p2.av, p1.av);
-					}
-				});
+				this.p.sort(PLANE_COMPARATOR);
 
-				for (Plane plane : this.p) {
+				for (int i = 0; i < this.p.size(); ++i) {
+					Plane plane = this.p.get(i);
 					if (plane != null) {
 						plane.d(graphics2D, dx, dy, dz, this.xz, this.xy, this.zy, this.wxz, this.wzy, this.noline, onscreenSize);
-
 					}
 				}
 				
@@ -1461,9 +1467,9 @@ public class ContO
 	}
 	
 	public void lowshadow(final Graphics2D graphics2D, final float n32) {
-		final int[] array = new int[4];
-		final int[] array2 = new int[4];
-		final int[] array3 = new int[4];
+		final int[] array = this.scratch4_1;
+		final int[] array2 = this.scratch4_2;
+		final int[] array3 = this.scratch4_3;
 		int n2 = 1;
 		float i;
 		for (i = Math.abs(this.zy); i > 270; i -= 360) {}
@@ -1571,10 +1577,10 @@ public class ContO
 	public void fixit(final Graphics2D graphics2D) {
 		if (this.fcnt == 1) {
 			for (int i = 0; i < this.npl; ++i) {
-				this.p[i].hsb[0] = 0.57f;
-				this.p[i].hsb[2] = 0.8f;
-				this.p[i].hsb[1] = 0.8f;
-				final Color hsbColor = Color.getHSBColor(this.p[i].hsb[0], this.p[i].hsb[1], this.p[i].hsb[2]);
+				this.p.get(i).hsb[0] = 0.57f;
+				this.p.get(i).hsb[2] = 0.8f;
+				this.p.get(i).hsb[1] = 0.8f;
+				final Color hsbColor = Color.getHSBColor(this.p.get(i).hsb[0], this.p.get(i).hsb[1], this.p.get(i).hsb[2]);
 				int r = (int)(hsbColor.getRed() + hsbColor.getRed() * (this.m.snap[0] / 100.0f));
 				if (r > 255) {
 					r = 255;
@@ -1596,24 +1602,24 @@ public class ContO
 				if (b < 0) {
 					b = 0;
 				}
-				Color.RGBtoHSB(r, g, b, this.p[i].hsb);
-				this.p[i].flx = 1;
+				Color.RGBtoHSB(r, g, b, this.p.get(i).hsb);
+				this.p.get(i).flx = 1;
 			}
 		}
 		if (this.fcnt == 2) {
 			for (int j = 0; j < this.npl; ++j) {
-				this.p[j].flx = 1;
+				this.p.get(j).flx = 1;
 			}
 		}
 		if (this.fcnt == 4) {
 			for (int k = 0; k < this.npl; ++k) {
-				this.p[k].flx = 3;
+				this.p.get(k).flx = 3;
 			}
 		}
 		if ((this.fcnt == 1 || this.fcnt > 2) && this.fcnt != 9) {
-			final int[] array = new int[8];
-			final int[] array2 = new int[8];
-			final int[] array3 = new int[4];
+			final int[] array = this.scratch8_1;
+			final int[] array2 = this.scratch8_2;
+			final int[] array3 = this.scratch4_1;
 			for (int l = 0; l < 4; ++l) {
 				array[l] = (int) (this.keyx[l] + this.x - this.m.x);
 				array2[l] = (int) (this.grat + this.y - this.m.y);
@@ -1765,9 +1771,9 @@ public class ContO
 			final int n2 = (int)(this.edr[i] + (190.0f - this.m.random() * 380.0f));
 			final int n3 = (int)(this.m.random() * 126.0f);
 			final int n4 = (int)(this.m.random() * 126.0f);
-			final float[] array = new float[8];
-			final float[] array2 = new float[8];
-			final float[] array3 = new float[8];
+			final float[] array = this.scratchF8_1;
+			final float[] array2 = this.scratchF8_2;
+			final float[] array3 = this.scratchF8_3;
 			for (int j = 0; j < 8; ++j) {
 				array3[j] = this.z - this.m.z;
 			}
@@ -1797,8 +1803,8 @@ public class ContO
 			int n6 = 0;
 			int n7 = 0;
 			int n8 = 0;
-			final int[] array4 = new int[8];
-			final int[] array5 = new int[8];
+			final int[] array4 = this.scratch8_1;
+			final int[] array5 = this.scratch8_2;
 			for (int k = 0; k < 8; ++k) {
 				array4[k] = this.xs(array[k], array3[k]);
 				array5[k] = this.ys(array2[k], array3[k]);
