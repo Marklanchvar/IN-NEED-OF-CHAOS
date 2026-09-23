@@ -80,6 +80,7 @@ public class Madness extends Panel
                 Madness.fpath = "";
             }
         }
+
         Madness.frame.setIconImage(Toolkit.getDefaultToolkit().createImage("" + Madness.fpath + "data/icon.png"));
         Madness.applet = new GameSparker();
         Madness.frame.addWindowListener(new WindowAdapter() {
