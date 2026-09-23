@@ -1114,7 +1114,7 @@ public class GameSparker extends Applet implements Runnable
         	xtGraphics.playsounds(array3[xtGraphics.im], this.u[0], checkPoints.stage);
         	long ctime = new Date().getTime();
             if (ltime == -1) {
-                totime = 20;
+                totime = 47;
             } else {
                 totime += (ctime - ltime);
             }

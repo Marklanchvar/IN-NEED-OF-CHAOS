@@ -47,33 +47,6 @@ public class Madness extends Panel
     static int endadv;
     static long advtime;
     
-    public final static class WindowsArchitecture {
-        public static boolean is64BitJvm() {
-            return "64".equals(System.getProperty("sun.arch.data.model"));
-        }
-
-        public static boolean is64BitWindows() {
-            String arch = System.getenv("PROCESSOR_ARCHITEW6432");
-
-            // Set when a 32-bit JVM runs on 64-bit Windows.
-            if (arch != null && !arch.isEmpty()) {
-                return arch.contains("64");
-            }
-
-            // Used by a native-width JVM.
-            arch = System.getenv("PROCESSOR_ARCHITECTURE");
-            return arch != null && arch.contains("64");
-        }
-
-        public static void main(String[] args) {
-            System.out.println("JVM architecture: "
-                    + System.getProperty("sun.arch.data.model") + "-bit");
-            System.out.println("JVM os.arch: "
-                    + System.getProperty("os.arch"));
-            System.out.println("64-bit Windows: " + is64BitWindows());
-        }
-    }
-    
     public static void main(final String[] array) {
         //System.runFinalizersOnExit(true);
         (Madness.frame = new Frame("Need for Madness")).setBackground(new Color(0, 0, 0));
