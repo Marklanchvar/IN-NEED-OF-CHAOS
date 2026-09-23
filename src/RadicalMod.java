@@ -1,10 +1,9 @@
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -16,11 +15,9 @@ import jouvieje.bass.defines.BASS_MUSIC;
 import jouvieje.bass.defines.BASS_POS;
 import jouvieje.bass.structures.HMUSIC;
 
-/** NativeBass-backed module player used by the game music lifecycle. */
 public class RadicalMod {
     private static final int SAMPLE_RATE = 44100;
-    private static final int MUSIC_FLAGS = BASS_MUSIC.BASS_MUSIC_RAMPS
-            | BASS_MUSIC.BASS_MUSIC_LOOP;
+    private static final int MUSIC_FLAGS = BASS_MUSIC.BASS_MUSIC_RAMPS | BASS_MUSIC.BASS_MUSIC_LOOP;
     private static boolean bassReady;
     private static boolean bassAttempted;
 
@@ -32,11 +29,11 @@ public class RadicalMod {
     String pmod;
 
     public RadicalMod() {
-        this.playing = false;
-        this.loaded = 0;
-        this.rvol = 0;
-        this.imod = "";
-        this.pmod = "";
+        playing = false;
+        loaded = 0;
+        rvol = 0;
+        imod = "";
+        pmod = "";
     }
 
     public RadicalMod(final String replace, final int volume, final int ignoredRate,
@@ -58,51 +55,81 @@ public class RadicalMod {
 
     public RadicalMod(final String str) {
         this();
-        this.loaded = 1;
-        this.imod = Madness.fpath + str;
+        loaded = 1;
+        imod = Madness.fpath + str;
     }
 
     public RadicalMod(final String pmod, final boolean ignoredRemote) {
         this();
-        this.loaded = 1;
+        loaded = 1;
         this.pmod = pmod;
         loadpmod(true);
     }
 
+    private static File nativeDirectory() {
+        final String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        final String arch = System.getProperty("os.arch", "").toLowerCase(Locale.ROOT);
+        final String platform;
+        if (os.contains("win")) platform = arch.contains("64") ? "win64" : "win32";
+        else if (os.contains("mac")) platform = "mac";
+        else if (os.contains("linux")) platform = arch.contains("64") ? "linux64" : "linux32";
+        else throw new IllegalStateException("Unsupported operating system: " + os);
+
+        File root = new File(Madness.fpath == null ? "" : Madness.fpath);
+        if (!root.isDirectory()) root = new File(System.getProperty("user.dir", "."));
+        File dir = new File(root, "lib" + File.separator + platform);
+        if (!dir.isDirectory()) dir = new File(System.getProperty("user.dir", "."), "lib" + File.separator + platform);
+        if (!dir.isDirectory()) throw new IllegalStateException("Missing native directory: " + dir.getAbsolutePath());
+        return dir;
+    }
+
+    private static void loadNative(final File dir, final String... names) {
+        for (final String name : names) {
+            final File file = new File(dir, name);
+            if (file.isFile()) {
+                System.load(file.getAbsolutePath());
+                return;
+            }
+        }
+        throw new IllegalStateException("Native library not found in " + dir.getAbsolutePath());
+    }
+
     private static synchronized void ensureBass() throws BassException {
-        if (bassReady) {
-            return;
-        }
-        if (bassAttempted) {
-            throw new BassException("NativeBass initialization previously failed");
-        }
+        if (bassReady) return;
+        if (bassAttempted) throw new BassException("NativeBass initialization previously failed");
         bassAttempted = true;
-        final File libRoot = new File(Madness.fpath, "lib");
-        final String os = System.getProperty("os.name", "").toLowerCase();
-        final String arch = System.getProperty("os.arch", "").toLowerCase();
-        final String platform = os.contains("win") ? (arch.contains("64") ? "win64" : "win32")
-                : os.contains("mac") ? "mac" : (arch.contains("64") ? "linux64" : "linux32");
-        if (new File(libRoot, platform).isDirectory()) {
-            System.setProperty("org.lwjgl.librarypath", new File(libRoot, platform).getAbsolutePath());
+        final File dir = nativeDirectory();
+        final String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        final String arch = System.getProperty("os.arch", "").toLowerCase(Locale.ROOT);
+        try {
+            if (os.contains("win")) {
+                loadNative(dir, "bass.dll");
+                loadNative(dir, arch.contains("64") ? "NativeBass64.dll" : "NativeBass.dll");
+            } else if (os.contains("mac")) {
+                loadNative(dir, "libbass.dylib");
+                loadNative(dir, "libNativeBass.jnilib");
+            } else {
+                loadNative(dir, "libbass.so");
+                loadNative(dir, arch.contains("64") ? "libNativeBass64.so" : "libNativeBass.so");
+                loadNative(dir, arch.contains("64") ? "libLibLoader64.so" : "libLibLoader.so");
+            }
+            BassInit.loadLibraries();
+            if (!Bass.BASS_Init(-1, SAMPLE_RATE, 0, null, null)) {
+                throw new BassException("BASS_Init failed, error " + Bass.BASS_ErrorGetCode());
+            }
+            bassReady = true;
+        } catch (final UnsatisfiedLinkError ex) {
+            throw new BassException("NativeBass dependency load failed: " + ex.getMessage());
         }
-        BassInit.loadLibraries();
-        if (!Bass.BASS_Init(-1, SAMPLE_RATE, 0, null, null)) {
-            throw new BassException("BASS_Init failed, error " + Bass.BASS_ErrorGetCode());
-        }
-        bassReady = true;
     }
 
     private void load(final File file, final int volume, final int bpm) throws BassException {
         freeMusic();
         music = Bass.BASS_MusicLoad(false, file.getAbsolutePath(), 0, 0, MUSIC_FLAGS, SAMPLE_RATE);
-        if (music == null) {
-            throw new BassException("BASS_MusicLoad failed, error " + Bass.BASS_ErrorGetCode());
-        }
+        if (music == null) throw new BassException("BASS_MusicLoad failed, error " + Bass.BASS_ErrorGetCode());
         Bass.BASS_ChannelSetAttribute(music.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL,
                 Math.max(0.0f, Math.min(1.0f, volume / 300.0f)));
-        if (bpm > 0) {
-            Bass.BASS_ChannelSetAttribute(music.asInt(), BASS_ATTRIB.BASS_ATTRIB_MUSIC_BPM, bpm);
-        }
+        if (bpm > 0) Bass.BASS_ChannelSetAttribute(music.asInt(), BASS_ATTRIB.BASS_ATTRIB_MUSIC_BPM, bpm);
         loaded = 2;
     }
 
@@ -113,17 +140,13 @@ public class RadicalMod {
                 FileOutputStream out = new FileOutputStream(result)) {
             ZipEntry entry;
             while ((entry = zip.getNextEntry()) != null) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                final String name = entry.getName().toLowerCase();
+                if (entry.isDirectory()) continue;
+                final String name = entry.getName().toLowerCase(Locale.ROOT);
                 if (name.endsWith(".mod") || name.endsWith(".xm") || name.endsWith(".s3m")
                         || name.endsWith(".it") || name.endsWith(".mtm") || name.endsWith(".umx")) {
                     final byte[] buffer = new byte[8192];
                     int read;
-                    while ((read = zip.read(buffer)) != -1) {
-                        out.write(buffer, 0, read);
-                    }
+                    while ((read = zip.read(buffer)) != -1) out.write(buffer, 0, read);
                     found = true;
                     break;
                 }
@@ -141,13 +164,11 @@ public class RadicalMod {
         try {
             ensureBass();
             final File file = new File(imod);
-            if (file.getName().toLowerCase().endsWith(".zip")) {
+            if (file.getName().toLowerCase(Locale.ROOT).endsWith(".zip")) {
                 final File extracted = extractModule(new FileInputStream(file));
-                load(extracted, loud ? 1 : 1, 125);
+                load(extracted, loud ? 300 : 160, 125);
                 extracted.delete();
-            } else {
-                load(file, loud ? 300 : 160, 125);
-            }
+            } else load(file, loud ? 300 : 160, 125);
         } catch (final Exception ex) {
             System.out.println("Error loading module: " + ex);
             loaded = 0;
@@ -159,13 +180,11 @@ public class RadicalMod {
         try {
             ensureBass();
             final File file = new File(pmod);
-            if (file.getName().toLowerCase().endsWith(".zip")) {
+            if (file.getName().toLowerCase(Locale.ROOT).endsWith(".zip")) {
                 final File extracted = extractModule(new FileInputStream(file));
                 load(extracted, loud ? 300 : 160, 125);
                 extracted.delete();
-            } else {
-                load(file, loud ? 300 : 160, 125);
-            }
+            } else load(file, loud ? 300 : 160, 125);
         } catch (final Exception ex) {
             System.out.println("Error loading module: " + ex);
             loaded = 0;
@@ -173,15 +192,11 @@ public class RadicalMod {
     }
 
     public void play() {
-        if (loaded == 2 && music != null && Bass.BASS_ChannelPlay(music.asInt(), true)) {
-            playing = true;
-        }
+        if (loaded == 2 && music != null && Bass.BASS_ChannelPlay(music.asInt(), true)) playing = true;
     }
 
     public void resume() {
-        if (loaded == 2 && music != null && Bass.BASS_ChannelPlay(music.asInt(), false)) {
-            playing = true;
-        }
+        if (loaded == 2 && music != null && Bass.BASS_ChannelPlay(music.asInt(), false)) playing = true;
     }
 
     public void stop() {
@@ -210,7 +225,6 @@ public class RadicalMod {
         }
     }
 
-    /** Preserves the old lighting heuristic without exposing Java Sound buffers. */
     int availableBytes() {
         if (music == null) return 0;
         final long length = Bass.BASS_ChannelGetLength(music.asInt(), BASS_POS.BASS_POS_BYTE);
