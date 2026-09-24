@@ -3383,18 +3383,14 @@ public class StageMaker extends Applet implements Runnable
                                 this.rd.drawLine(10, 526, 210, 526);
                                 this.rd.setColor(new Color(255, 255, 255));
                                 this.rd.drawLine(10, 527, 210, 527);
-                                int n129 = (int)((1.0f - this.track.sClip.stream.available() / (float)this.avon) * 200.0f);
+                             // progress (0–200)
+                                int n129 = (int)((1.0f - this.track.available() / (float)this.avon) * 200.0f);
                                 if (this.mouseon == 1) {
                                     n129 = this.xm - 10;
-                                    if (n129 < 0) {
-                                        n129 = 0;
-                                    }
-                                    if (n129 > 200) {
-                                        n129 = 200;
-                                    }
+                                    if (n129 < 0) n129 = 0;
+                                    if (n129 > 200) n129 = 200;
                                     if (this.mouses != 1) {
-                                        this.track.sClip.stream.reset();
-                                        this.track.sClip.stream.skip((long)(n129 / 200.0f * this.avon));
+                                        this.track.seek((int)(n129 / 200.0f * this.avon));
                                         this.mouseon = -1;
                                     }
                                 }
@@ -3415,8 +3411,8 @@ public class StageMaker extends Applet implements Runnable
                                         this.ltrackname = "";
                                     }
                                     else {
-                                        this.avon = this.track.sClip.stream.available();
-                                        this.ltrackname = this.tracks.getSelectedItem();
+                                    	this.avon = this.track.length();
+                                    	this.ltrackname = this.tracks.getSelectedItem();
                                     }
                                 }
                                 if (this.ltrackname.equals("")) {
@@ -3437,8 +3433,8 @@ public class StageMaker extends Applet implements Runnable
                                     this.ltrackname = "";
                                 }
                                 else {
-                                    this.avon = this.track.sClip.stream.available();
-                                    this.ltrackname = this.tracks.getSelectedItem();
+                                	this.avon = this.track.length();
+                                	this.ltrackname = this.tracks.getSelectedItem();
                                 }
                             }
                             if (this.ltrackname.equals("")) {

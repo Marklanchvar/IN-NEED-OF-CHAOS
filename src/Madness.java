@@ -18,6 +18,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.Toolkit;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
@@ -27,6 +28,9 @@ import java.awt.GraphicsDevice;
 import java.applet.Applet;
 import java.awt.Frame;
 import java.awt.Panel;
+
+import jouvieje.bass.BassInit;
+import static jouvieje.bass.Bass.*;
 
 public class Madness extends Panel
 {
@@ -49,6 +53,34 @@ public class Madness extends Panel
     
     public static void main(final String[] array) {
         //System.runFinalizersOnExit(true);
+    	// inside main, first thing after fpath setup:
+    	String os = System.getProperty("os.name").toLowerCase();
+    	String arch = System.getProperty("os.arch").toLowerCase();
+    	String sub;
+    	if (os.contains("win"))
+    	    sub = arch.contains("64") ? "win64" : "win32";
+    	else if (os.contains("mac") || os.contains("darwin"))
+    	    sub = "mac";
+    	else
+    	    sub = arch.contains("64") ? "linux64" : "linux32";
+
+    	String libDir = Madness.fpath + "lib" + File.separator + sub;
+    	try {
+    	    System.setProperty("java.library.path", libDir);
+    	    Field sysPaths = ClassLoader.class.getDeclaredField("sys_paths");
+    	    sysPaths.setAccessible(true);
+    	    sysPaths.set(null, null);
+    	} catch (Exception e) {
+    	    System.out.println("Failed to set library path: " + e);
+    	}
+
+    	try {
+    	    BassInit.loadLibraries();
+    	    if (!BASS_Init(-1, 44100, 0, null, null))
+    	        System.out.println("BASS_Init failed: " + BASS_ErrorGetCode());
+    	} catch (Exception e) {
+    	    System.out.println("NativeBass init error: " + e);
+    	}
         (Madness.frame = new Frame("Need for Madness")).setBackground(new Color(0, 0, 0));
         Madness.frame.setIgnoreRepaint(true);
         Madness.fpath = "";

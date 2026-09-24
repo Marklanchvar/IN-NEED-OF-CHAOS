@@ -8393,7 +8393,7 @@ public class xtGraphics extends Panel implements Runnable
             }
         }
         if (this.m.lightn != -1) {
-            final int available = this.strack.sClip.stream.available();
+            final int available = this.strack.available();
             this.m.lton = false;
             if (available <= 6380001 && available > 5368001) {
                 this.m.lton = true;

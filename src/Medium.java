@@ -2103,32 +2103,21 @@ public class Medium
         }
     }
     
-    public void fadfrom(final int n) {
-        int n2 = 0;
-        do {
-            this.fade[n2] = (int) ( n * (n2 + 1));
-        } while (++n2 < 16);
-    }
-    
-    public void adjstfade(final int i) {
-        if (i < 15.0f) {
-            this.fade[0] = (int)(this.origfade - 1000.0f * (15.0f - i));
-            if (this.fade[0] < 3000) {
-                this.fade[0] = 3000;
-            }
-            this.fadfrom(this.fade[0]);
+    public void fadfrom(int n) {
+        if (n > 8000) {
+            n = 8000;
         }
-        else if (this.fade[0] != this.origfade) {
-            final int[] fade = this.fade;
-            final int n2 = 0;
-            fade[n2] += 500;
-            if (this.fade[0] > this.origfade) {
-                this.fade[0] = this.origfade;
-            }
-            this.fadfrom(this.fade[0]);
+        for (int i = 1; i < 17; ++i) {
+            this.fade[i - 1] = (int) (n * 0.5F * (i + 1));
         }
     }
     
+    public void adjstfade(final float n) {
+            if (n == 5.0f) {
+                    this.fadfrom(this.fade[0] = this.origfade);
+            }
+        
+    }
     public int xs(final float n, float cz) {
         if (cz < this.cz) {
             cz = this.cz;
