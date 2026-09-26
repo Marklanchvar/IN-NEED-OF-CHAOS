@@ -537,7 +537,7 @@ public class UDPMistro implements Runnable
                 }
                 else if (svalue.equals("disco")) {
                     array[n] = 3;
-                    mad.hitmag = mad.cd.maxmag[mad.cn] + 100;
+                    mad.hitmag = mad.cd.maxmag.get(mad.cn) + 100;
                     this.force[n] = 7;
                 }
                 if (this.force[n] != 7) {
@@ -547,19 +547,19 @@ public class UDPMistro implements Runnable
                         contO.x = this.getvalue(s, 1);
                     }
                     if (getncoms > 2) {
-                        contO.y = this.getvalue(s, 0);
-                    }
-                    if (getncoms > 3) {
                         contO.z = this.getvalue(s, 0);
                     }
+                    if (getncoms > 3) {
+                        contO.y = this.getvalue(s, 0);
+                    }
                     if (getncoms > 4) {
-                        contO.xz = this.getvalue(s, 0);
+                        contO.yaw = this.getvalue(s, 0);
                     }
                     if (getncoms > 5) {
-                        contO.xy = this.getvalue(s, 0);
+                        contO.roll = this.getvalue(s, 0);
                     }
                     if (getncoms > 6) {
-                        contO.zy = this.getvalue(s, 0);
+                        contO.pitch = this.getvalue(s, 0);
                     }
                     if (getncoms > 7) {
                         mad.speed = this.getvalue(s, 0) / 100.0f;
@@ -595,7 +595,7 @@ public class UDPMistro implements Runnable
                         mad.nlaps = this.getvalue(s, 0);
                     }
                     if (getncoms > 18) {
-                        mad.hitmag = (int)(this.getvalue(s, 0) / 100.0f * mad.cd.maxmag[mad.cn]);
+                        mad.hitmag = (int)(this.getvalue(s, 0) / 100.0f * mad.cd.maxmag.get(mad.cn));
                     }
                 }
                 this.lframe[n] = this.frame[n][n2];
@@ -633,19 +633,19 @@ public class UDPMistro implements Runnable
                     contO.x = this.getvalue(s, 1);
                 }
                 if (getncoms > 1) {
-                    contO.y = this.getvalue(s, 0);
-                }
-                if (getncoms > 1) {
                     contO.z = this.getvalue(s, 0);
                 }
                 if (getncoms > 1) {
-                    contO.xz = this.getvalue(s, 0);
+                    contO.y = this.getvalue(s, 0);
                 }
                 if (getncoms > 1) {
-                    contO.xy = this.getvalue(s, 0);
+                    contO.yaw = this.getvalue(s, 0);
                 }
                 if (getncoms > 1) {
-                    contO.zy = this.getvalue(s, 0);
+                    contO.roll = this.getvalue(s, 0);
+                }
+                if (getncoms > 1) {
+                    contO.pitch = this.getvalue(s, 0);
                 }
             }
         }
@@ -848,7 +848,7 @@ public class UDPMistro implements Runnable
         final StringBuilder sb33 = new StringBuilder();
         final String[] array33 = this.info[n2];
         final int n35 = 0;
-        array33[n35] = sb33.append(array33[n35]).append(",").append(contO.x).append(",").append(contO.y).append(",").append(contO.z).append(",").append(contO.xz).append(",").append(contO.xy).append(",").append(contO.zy).append(",").append((int)(mad.speed * 100.0f)).append(",").append((int)(mad.power * 100.0f)).append(",").append(mad.mxz).append(",").append(mad.pzy).append(",").append(mad.pxy).append(",").append(mad.txz).append(",").append(mad.loop).append(",").append(contO.wxz).append(",").append(mad.pcleared).append(",").append(mad.clear).append(",").append(mad.nlaps).append(",").append((int)(n * 100.0f)).append(",").append(i).append(",").toString();
+        array33[n35] = sb33.append(array33[n35]).append(",").append(contO.x).append(",").append(contO.z).append(",").append(contO.y).append(",").append(contO.yaw).append(",").append(contO.roll).append(",").append(contO.pitch).append(",").append((int)(mad.speed * 100.0f)).append(",").append((int)(mad.power * 100.0f)).append(",").append(mad.mxz).append(",").append(mad.pzy).append(",").append(mad.pxy).append(",").append(mad.txz).append(",").append(mad.loop).append(",").append(contO.wxz).append(",").append(mad.pcleared).append(",").append(mad.clear).append(",").append(mad.nlaps).append(",").append((int)(n * 100.0f)).append(",").append(i).append(",").toString();
         while (this.info[n2][0].length() < 110) {
             final StringBuilder sb34 = new StringBuilder();
             final String[] array34 = this.info[n2];
@@ -856,7 +856,7 @@ public class UDPMistro implements Runnable
             array34[n36] = sb34.append(array34[n36]).append("|").toString();
         }
         if (this.runon == 2) {
-            mad.hitmag = mad.cd.maxmag[mad.cn] + 100;
+            mad.hitmag = mad.cd.maxmag.get(mad.cn) + 100;
         }
         final int[] array35 = this.frame[n2];
         final int n37 = 0;

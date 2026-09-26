@@ -645,13 +645,13 @@ public class Control
                     if (checkPoints.stage == 20 || checkPoints.stage == 24) {
                         this.usebounce = false;
                     }
-                    if (this.m.random() > mad.hitmag / (float)mad.cd.maxmag[mad.cn]) {
+                    if (this.m.random() > mad.hitmag / (float)mad.cd.maxmag.get(mad.cn)) {
                         this.perfection = false;
                     }
                     else {
                         this.perfection = true;
                     }
-                    if (100.0f * mad.hitmag / mad.cd.maxmag[mad.cn] > 60.0f) {
+                    if (100.0f * mad.hitmag / mad.cd.maxmag.get(mad.cn) > 60.0f) {
                         this.perfection = true;
                     }
                     if (checkPoints.stage == 3 && mad.cn == 6) {
@@ -746,7 +746,7 @@ public class Control
                         }
                         for (int i = 0; i < 7; ++i) {
                             if (i != mad.im && checkPoints.clear[i] != -1) {
-                                float j = contO.xz;
+                                float j = contO.yaw;
                                 if (this.zyinv) {
                                     j += 180;
                                 }
@@ -761,7 +761,7 @@ public class Control
                                     n5 = 180;
                                 }
                                 int k;
-                                for (k = (int)(90 + n5 + Math.atan((checkPoints.opz[i] - contO.z) / (double)(checkPoints.opx[i] - contO.x)) / 0.017453292519943295); k < 0; k += 360) {}
+                                for (k = (int)(90 + n5 + Math.atan((checkPoints.opz[i] - contO.y) / (double)(checkPoints.opx[i] - contO.x)) / 0.017453292519943295); k < 0; k += 360) {}
                                 while (k > 180) {
                                     k -= 360;
                                 }
@@ -845,7 +845,7 @@ public class Control
                                 if (checkPoints.stage == 26 && (mad.cn == 15 || mad.cn == 9 || mad.cn == 11 || mad.cn == 14)) {
                                     n8 = 50 + 70 * Math.abs(checkPoints.clear[i] - mad.clear);
                                 }
-                                if (n6 < n8 && this.py(contO.x / 100, checkPoints.opx[i] / 100, contO.z / 100, checkPoints.opz[i] / 100) < n7 && this.afta && mad.power > n4) {
+                                if (n6 < n8 && this.py(contO.x / 100, checkPoints.opx[i] / 100, contO.y / 100, checkPoints.opz[i] / 100) < n7 && this.afta && mad.power > n4) {
                                     float n9 = (float)(35 - Math.abs(checkPoints.clear[i] - mad.clear) * 10);
                                     if (n9 < 1.0f) {
                                         n9 = 1.0f;
@@ -1063,7 +1063,7 @@ public class Control
                                         this.turntyp = (int)(1.0f + this.m.random() * 2.0f);
                                     }
                                 }
-                                if (afta && n6 > 100 && this.py(contO.x / 100, checkPoints.opx[i] / 100, contO.z / 100, checkPoints.opz[i] / 100) < 300 && this.m.random() > 0.6 - checkPoints.pos[mad.im] / 10.0f) {
+                                if (afta && n6 > 100 && this.py(contO.x / 100, checkPoints.opx[i] / 100, contO.y / 100, checkPoints.opz[i] / 100) < 300 && this.m.random() > 0.6 - checkPoints.pos[mad.im] / 10.0f) {
                                     this.clrnce = 0;
                                     this.acuracy = 0;
                                 }
@@ -1092,7 +1092,7 @@ public class Control
                         if (checkPoints.stage == 26) {
                             n11 = 40;
                         }
-                        if (100.0f * mad.hitmag / mad.cd.maxmag[mad.cn] > n11) {
+                        if (100.0f * mad.hitmag / mad.cd.maxmag.get(mad.cn) > n11) {
                             this.trfix = 1;
                         }
                         if (!b2) {
@@ -1109,7 +1109,7 @@ public class Control
                             if (checkPoints.stage == 26 && checkPoints.clear[mad.im] - checkPoints.clear[0] >= 5 && mad.cn != 10 && mad.cn != 12) {
                                 n12 = 50;
                             }
-                            if (100.0f * mad.hitmag / mad.cd.maxmag[mad.cn] > n12) {
+                            if (100.0f * mad.hitmag / mad.cd.maxmag.get(mad.cn) > n12) {
                                 this.trfix = 2;
                             }
                         }
@@ -1332,7 +1332,7 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 9) {
-                                if (this.py(contO.x / 100, 297, contO.z / 100, 347) < 400) {
+                                if (this.py(contO.x / 100, 297, contO.y / 100, 347) < 400) {
                                     this.oupnt = 1;
                                 }
                                 if (this.oupnt == 1 && n13 < 22) {
@@ -1340,7 +1340,7 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 67) {
-                                if (this.py(contO.x / 100, 28, contO.z / 100, 494) < 4000) {
+                                if (this.py(contO.x / 100, 28, contO.y / 100, 494) < 4000) {
                                     this.oupnt = 2;
                                 }
                                 if (this.oupnt == 2) {
@@ -1348,7 +1348,7 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 76) {
-                                if (this.py(contO.x / 100, -50, contO.z / 100, 0) < 2000) {
+                                if (this.py(contO.x / 100, -50, contO.y / 100, 0) < 2000) {
                                     this.oupnt = 3;
                                 }
                                 if (this.oupnt == 3) {
@@ -1361,7 +1361,7 @@ public class Control
                         }
                         if (checkPoints.stage == 26) {
                             if (mad.pcleared == 128) {
-                                if (this.py(contO.x / 100, 0, contO.z / 100, 229) < 1500 || contO.z > 23000) {
+                                if (this.py(contO.x / 100, 0, contO.y / 100, 229) < 1500 || contO.y > 23000) {
                                     this.oupnt = 128;
                                 }
                                 if (this.oupnt != 128) {
@@ -1369,7 +1369,7 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 8) {
-                                if (this.py(contO.x / 100, -207, contO.z / 100, 549) < 1500 || contO.x < -20700) {
+                                if (this.py(contO.x / 100, -207, contO.y / 100, 549) < 1500 || contO.x < -20700) {
                                     this.oupnt = 8;
                                 }
                                 if (this.oupnt != 8) {
@@ -1377,10 +1377,10 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 33) {
-                                if (this.py(contO.x / 100, -60, contO.z / 100, 168) < 250 || contO.z > 17000) {
+                                if (this.py(contO.x / 100, -60, contO.y / 100, 168) < 250 || contO.y > 17000) {
                                     this.oupnt = 331;
                                 }
-                                if (this.py(contO.x / 100, -112, contO.z / 100, 414) < 10000 || contO.z > 40000) {
+                                if (this.py(contO.x / 100, -112, contO.y / 100, 414) < 10000 || contO.y > 40000) {
                                     this.oupnt = 332;
                                 }
                                 if (this.oupnt != 331 && this.oupnt != 332) {
@@ -1396,7 +1396,7 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 42) {
-                                if (this.py(contO.x / 100, -269, contO.z / 100, 493) < 100 || contO.x < -27000) {
+                                if (this.py(contO.x / 100, -269, contO.y / 100, 493) < 100 || contO.x < -27000) {
                                     this.oupnt = 142;
                                 }
                                 if (this.oupnt != 142) {
@@ -1404,10 +1404,10 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 51) {
-                                if (this.py(contO.x / 100, -352, contO.z / 100, 260) < 100 || contO.z < 25000) {
+                                if (this.py(contO.x / 100, -352, contO.y / 100, 260) < 100 || contO.y < 25000) {
                                     this.oupnt = 511;
                                 }
-                                if (this.py(contO.x / 100, -325, contO.z / 100, 10) < 2000 || contO.x > -32000) {
+                                if (this.py(contO.x / 100, -325, contO.y / 100, 10) < 2000 || contO.x > -32000) {
                                     this.oupnt = 512;
                                 }
                                 if (this.oupnt != 511 && this.oupnt != 512) {
@@ -1418,7 +1418,7 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 77) {
-                                if (this.py(contO.x / 100, -371, contO.z / 100, 319) < 100 || contO.z < 31000) {
+                                if (this.py(contO.x / 100, -371, contO.y / 100, 319) < 100 || contO.y < 31000) {
                                     this.oupnt = 77;
                                 }
                                 if (this.oupnt != 77) {
@@ -1427,7 +1427,7 @@ public class Control
                                 }
                             }
                             if (mad.pcleared == 105) {
-                                if (this.py(contO.x / 100, -179, contO.z / 100, 10) < 2300 || contO.z < 1050) {
+                                if (this.py(contO.x / 100, -179, contO.y / 100, 10) < 2300 || contO.y < 1050) {
                                     this.oupnt = 105;
                                 }
                                 if (this.oupnt != 105) {
@@ -1438,7 +1438,7 @@ public class Control
                                 }
                             }
                             if (this.trfix == 3) {
-                                if (this.py(contO.x / 100, -52, contO.z / 100, 448) < 100 || contO.z > 45000) {
+                                if (this.py(contO.x / 100, -52, contO.y / 100, 448) < 100 || contO.y > 45000) {
                                     this.oupnt = 176;
                                 }
                                 if (this.oupnt != 176) {
@@ -1448,8 +1448,8 @@ public class Control
                                     n13 = 43;
                                 }
                             }
-                            if (checkPoints.clear[mad.im] - checkPoints.clear[0] >= 2 && this.py(contO.x / 100, checkPoints.opx[0] / 100, contO.z / 100, checkPoints.opz[0] / 100) < 1000 + this.avoidnlev) {
-                                float xz = contO.xz;
+                            if (checkPoints.clear[mad.im] - checkPoints.clear[0] >= 2 && this.py(contO.x / 100, checkPoints.opx[0] / 100, contO.y / 100, checkPoints.opz[0] / 100) < 1000 + this.avoidnlev) {
+                                float xz = contO.yaw;
                                 if (this.zyinv) {
                                     xz += 180;
                                 }
@@ -1464,7 +1464,7 @@ public class Control
                                     n21 = 180;
                                 }
                                 int n22;
-                                for (n22 = (int)(90 + n21 + Math.atan((checkPoints.opz[0] - contO.z) / (double)(checkPoints.opx[0] - contO.x)) / 0.017453292519943295); n22 < 0; n22 += 360) {}
+                                for (n22 = (int)(90 + n21 + Math.atan((checkPoints.opz[0] - contO.y) / (double)(checkPoints.opx[0] - contO.x)) / 0.017453292519943295); n22 < 0; n22 += 360) {}
                                 while (n22 > 180) {
                                     n22 -= 360;
                                 }
@@ -1579,10 +1579,10 @@ public class Control
                                 }
                             }
                             if (this.gowait) {
-                                if (this.py(contO.x / 100, this.wtx / 100, contO.z / 100, this.wtz / 100) < 10000 && mad.speed > 50.0f) {
+                                if (this.py(contO.x / 100, this.wtx / 100, contO.y / 100, this.wtz / 100) < 10000 && mad.speed > 50.0f) {
                                     this.up = false;
                                 }
-                                if (this.py(contO.x / 100, this.wtx / 100, contO.z / 100, this.wtz / 100) < 200) {
+                                if (this.py(contO.x / 100, this.wtx / 100, contO.y / 100, this.wtz / 100) < 200) {
                                     this.up = false;
                                     this.handb = true;
                                 }
@@ -1590,7 +1590,7 @@ public class Control
                                     this.afta = true;
                                     this.gowait = false;
                                 }
-                                if (this.py(contO.x / 100, checkPoints.opx[0] / 100, contO.z / 100, checkPoints.opz[0] / 100) < 25) {
+                                if (this.py(contO.x / 100, checkPoints.opx[0] / 100, contO.y / 100, checkPoints.opz[0] / 100) < 25) {
                                     this.afta = true;
                                     this.gowait = false;
                                     this.attack = 200;
@@ -1602,8 +1602,8 @@ public class Control
                             if (this.oupnt == -1) {
                                 float py = -10;
                                 for (int oupnt = 0; oupnt < checkPoints.n; ++oupnt) {
-                                    if ((checkPoints.typ[oupnt] == -2 || checkPoints.typ[oupnt] == -4) && (oupnt < 50 || oupnt > 54) && (this.py(contO.x / 100, checkPoints.x[oupnt] / 100, contO.z / 100, checkPoints.z[oupnt] / 100) < py || py == -10)) {
-                                        py = this.py(contO.x / 100, checkPoints.x[oupnt] / 100, contO.z / 100, checkPoints.z[oupnt] / 100);
+                                    if ((checkPoints.typ[oupnt] == -2 || checkPoints.typ[oupnt] == -4) && (oupnt < 50 || oupnt > 54) && (this.py(contO.x / 100, checkPoints.x[oupnt] / 100, contO.y / 100, checkPoints.z[oupnt] / 100) < py || py == -10)) {
+                                        py = this.py(contO.x / 100, checkPoints.x[oupnt] / 100, contO.y / 100, checkPoints.z[oupnt] / 100);
                                         this.oupnt = oupnt;
                                     }
                                 }
@@ -1614,7 +1614,7 @@ public class Control
                             }
                             if (this.oupnt >= 0 && this.oupnt < checkPoints.n) {
                                 n13 = this.oupnt;
-                                if (this.py(contO.x / 100, checkPoints.x[n13] / 100, contO.z / 100, checkPoints.z[n13] / 100) < 800) {
+                                if (this.py(contO.x / 100, checkPoints.x[n13] / 100, contO.y / 100, checkPoints.z[n13] / 100) < 800) {
                                     this.oupnt = -(int)(75.0f + this.m.random() * 200.0f);
                                     this.runbul = (int)(50.0f + this.m.random() * 100.0f);
                                 }
@@ -1692,10 +1692,10 @@ public class Control
                                     }
                                 }
                                 if (this.gowait) {
-                                    if (this.py(contO.x / 100, this.wtx / 100, contO.z / 100, this.wtz / 100) < 10000 && mad.speed > 50.0f) {
+                                    if (this.py(contO.x / 100, this.wtx / 100, contO.y / 100, this.wtz / 100) < 10000 && mad.speed > 50.0f) {
                                         this.up = false;
                                     }
-                                    if (this.py(contO.x / 100, this.wtx / 100, contO.z / 100, this.wtz / 100) < 200) {
+                                    if (this.py(contO.x / 100, this.wtx / 100, contO.y / 100, this.wtz / 100) < 200) {
                                         this.up = false;
                                         this.handb = true;
                                     }
@@ -1704,7 +1704,7 @@ public class Control
                                         this.afta = true;
                                         this.gowait = false;
                                     }
-                                    if (this.py(contO.x / 100, checkPoints.opx[0] / 100, contO.z / 100, checkPoints.opz[0] / 100) < 25) {
+                                    if (this.py(contO.x / 100, checkPoints.opx[0] / 100, contO.y / 100, checkPoints.opz[0] / 100) < 25) {
                                         this.afta = true;
                                         this.gowait = false;
                                         this.attack = 200;
@@ -1732,8 +1732,8 @@ public class Control
                                 if (this.oupnt == -1) {
                                     float py2 = -10;
                                     for (int oupnt2 = 0; oupnt2 < checkPoints.n; ++oupnt2) {
-                                        if (checkPoints.typ[oupnt2] == -4 && ((this.py(contO.x / 100, checkPoints.x[oupnt2] / 100, contO.z / 100, checkPoints.z[oupnt2] / 100) < py2 && this.m.random() > 0.6) || py2 == -10)) {
-                                            py2 = this.py(contO.x / 100, checkPoints.x[oupnt2] / 100, contO.z / 100, checkPoints.z[oupnt2] / 100);
+                                        if (checkPoints.typ[oupnt2] == -4 && ((this.py(contO.x / 100, checkPoints.x[oupnt2] / 100, contO.y / 100, checkPoints.z[oupnt2] / 100) < py2 && this.m.random() > 0.6) || py2 == -10)) {
+                                            py2 = this.py(contO.x / 100, checkPoints.x[oupnt2] / 100, contO.y / 100, checkPoints.z[oupnt2] / 100);
                                             this.oupnt = oupnt2;
                                         }
                                     }
@@ -1744,7 +1744,7 @@ public class Control
                                 }
                                 if (this.oupnt >= 0 && this.oupnt < checkPoints.n) {
                                     n13 = this.oupnt;
-                                    if (this.py(contO.x / 100, checkPoints.x[n13] / 100, contO.z / 100, checkPoints.z[n13] / 100) < 800) {
+                                    if (this.py(contO.x / 100, checkPoints.x[n13] / 100, contO.y / 100, checkPoints.z[n13] / 100) < 800) {
                                         this.oupnt = -(int)(75.0f + this.m.random() * 200.0f);
                                         this.runbul = (int)(50.0f + this.m.random() * 100.0f);
                                     }
@@ -1772,8 +1772,8 @@ public class Control
                                 float py3 = -10;
                                 int n26 = 0;
                                 for (int n27 = n25; n27 < checkPoints.fn; ++n27) {
-                                    if (this.py(contO.x / 100, checkPoints.x[this.fpnt[n27]] / 100, contO.z / 100, checkPoints.z[this.fpnt[n27]] / 100) < py3 || py3 == -10) {
-                                        py3 = this.py(contO.x / 100, checkPoints.x[this.fpnt[n27]] / 100, contO.z / 100, checkPoints.z[this.fpnt[n27]] / 100);
+                                    if (this.py(contO.x / 100, checkPoints.x[this.fpnt[n27]] / 100, contO.y / 100, checkPoints.z[this.fpnt[n27]] / 100) < py3 || py3 == -10) {
+                                        py3 = this.py(contO.x / 100, checkPoints.x[this.fpnt[n27]] / 100, contO.y / 100, checkPoints.z[this.fpnt[n27]] / 100);
                                         n26 = n27;
                                     }
                                 }
@@ -1789,7 +1789,7 @@ public class Control
                                 }
                             }
                             for (int n28 = n25; n28 < checkPoints.fn; ++n28) {
-                                if (this.py(contO.x / 100, checkPoints.x[this.fpnt[n28]] / 100, contO.z / 100, checkPoints.z[this.fpnt[n28]] / 100) < 2000) {
+                                if (this.py(contO.x / 100, checkPoints.x[this.fpnt[n28]] / 100, contO.y / 100, checkPoints.z[this.fpnt[n28]] / 100) < 2000) {
                                     this.forget = false;
                                     this.actwait = 0;
                                     this.upwait = 0;
@@ -1811,14 +1811,14 @@ public class Control
                             if (checkPoints.x[n13] - contO.x >= 0) {
                                 n29 = 180;
                             }
-                            this.pan = (int)(90 + n29 + Math.atan((checkPoints.z[n13] - contO.z) / (double)(checkPoints.x[n13] - contO.x)) / 0.017453292519943295);
+                            this.pan = (int)(90 + n29 + Math.atan((checkPoints.z[n13] - contO.y) / (double)(checkPoints.x[n13] - contO.x)) / 0.017453292519943295);
                         }
                         else {
                             int n30 = 0;
                             if (this.wtx - contO.x >= 0) {
                                 n30 = 180;
                             }
-                            this.pan = (int)(90 + n30 + Math.atan((this.wtz - contO.z) / (double)(this.wtx - contO.x)) / 0.017453292519943295);
+                            this.pan = (int)(90 + n30 + Math.atan((this.wtz - contO.y) / (double)(this.wtx - contO.x)) / 0.017453292519943295);
                         }
                         this.turncnt = 0;
                         this.randtcnt = (int)(this.acuracy * this.m.random());
@@ -1830,13 +1830,13 @@ public class Control
                 else {
                     this.up = true;
                     int n31 = 0;
-                    final int n32 = (int)(this.pys(contO.x, checkPoints.opx[this.acr], contO.z, checkPoints.opz[this.acr]) / 2.0f * this.aim);
+                    final int n32 = (int)(this.pys(contO.x, checkPoints.opx[this.acr], contO.y, checkPoints.opz[this.acr]) / 2.0f * this.aim);
                     final int n33 = (int)(checkPoints.opx[this.acr] - n32 * this.m.sin(checkPoints.omxz[this.acr]));
                     final int n34 = (int)(checkPoints.opz[this.acr] + n32 * this.m.cos(checkPoints.omxz[this.acr]));
                     if (n33 - contO.x >= 0) {
                         n31 = 180;
                     }
-                    this.pan = (int)(90 + n31 + Math.atan((n34 - contO.z) / (double)(n33 - contO.x)) / 0.017453292519943295);
+                    this.pan = (int)(90 + n31 + Math.atan((n34 - contO.y) / (double)(n33 - contO.x)) / 0.017453292519943295);
                     --this.attack;
                     if (this.attack <= 0) {
                         this.attack = 0;
@@ -1854,7 +1854,7 @@ public class Control
                         this.attack = 0;
                     }
                 }
-                float xz2 = contO.xz;
+                float xz2 = contO.yaw;
                 if (this.zyinv) {
                     xz2 += 180;
                 }
@@ -1884,7 +1884,7 @@ public class Control
                                 this.right = true;
                                 this.lastl = false;
                             }
-                            if (Math.abs(xz2 - this.pan) > 50 && mad.speed > mad.cd.swits[mad.cn][0] && this.turntyp != 0) {
+                            if (Math.abs(xz2 - this.pan) > 50 && mad.speed > mad.cd.swits.get(mad.cn)[0] && this.turntyp != 0) {
                                 if (this.turntyp == 1) {
                                     this.down = true;
                                 }
@@ -1906,7 +1906,7 @@ public class Control
                             this.left = true;
                             this.lastl = true;
                         }
-                        if (Math.abs(xz2 - this.pan) < 310 && mad.speed > mad.cd.swits[mad.cn][0] && this.turntyp != 0) {
+                        if (Math.abs(xz2 - this.pan) < 310 && mad.speed > mad.cd.swits.get(mad.cn)[0] && this.turntyp != 0) {
                             if (this.turntyp == 1) {
                                 this.down = true;
                             }
@@ -1966,7 +1966,7 @@ public class Control
             }
             else {
                 if (this.trickfase == 0) {
-                    final int n36 = (int)((mad.scy[0] + mad.scy[1] + mad.scy[2] + mad.scy[3]) * (contO.y - 300) / 4000.0f);
+                    final int n36 = (int)((mad.scz[0] + mad.scz[1] + mad.scz[2] + mad.scz[3]) * (contO.z - 300) / 4000.0f);
                     int n37 = 3;
                     if (checkPoints.stage == 25) {
                         n37 = 10;
@@ -2152,7 +2152,7 @@ public class Control
                             }
                         }
                     }
-                    if ((mad.scy[0] + mad.scy[1] + mad.scy[2] + mad.scy[3]) * 100.0f / (contO.y - 300) < -this.saftey) {
+                    if ((mad.scz[0] + mad.scz[1] + mad.scz[2] + mad.scz[3]) * 100.0f / (contO.z - 300) < -this.saftey) {
                         this.onceu = false;
                         this.onced = false;
                         this.oncel = false;

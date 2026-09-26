@@ -1,6 +1,7 @@
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -38,11 +39,11 @@ public class ContO
 	ArrayList<Plane> p;
 	int npl;
 	float x;
-	float y;
 	float z;
-	float xz;
-	float xy;
-	float zy;
+	float y;
+	float yaw;
+	float roll;
+	float pitch;
 	float wxz;
 	float wzy;
 	float dist;
@@ -56,7 +57,7 @@ public class ContO
 	float wrad;
 	float grat;
 	float[] keyx;
-	float[] keyz;
+	float[] keyy;
 	int sprkat;
 	int[] txy;
 	int[] tzy;
@@ -117,11 +118,11 @@ public class ContO
 	public ContO(final byte[] buf, final Medium m, final Trackers t) {
 		this.npl = 0;
 		this.x = 0;
-		this.y = 0;
 		this.z = 0;
-		this.xz = 0;
-		this.xy = 0;
-		this.zy = 0;
+		this.y = 0;
+		this.yaw = 0;
+		this.roll = 0;
+		this.pitch = 0;
 		this.wxz = 0;
 		this.wzy = 0;
 		this.dist = 0;
@@ -135,7 +136,7 @@ public class ContO
 		this.wrad = 0;
 		this.grat = 0;
 		this.keyx = new float[4];
-		this.keyz = new float[4];
+		this.keyy = new float[4];
 		this.sprkat = 0;
 		this.tnt = 0;
 		this.ust = 0;
@@ -170,7 +171,7 @@ public class ContO
 		}
 		if (this.m.loadnew) {
 			for (int j = 0; j < 4; ++j) {
-				this.keyz[j] = 0;
+				this.keyy[j] = 0;
 			}
 			this.shadow = true;
 		}
@@ -272,60 +273,61 @@ public class ContO
 				}
 				if (string.startsWith("w(") && n6 < 4) {
 					this.keyx[n6] = (int)(this.getvalue("w", string, 0) * scaler * array2[0]);
-					this.keyz[n6] = (int)(this.getvalue("w", string, 2) * scaler * array2[2]);
+					this.keyy[n6] = (int)(this.getvalue("w", string, 2) * scaler * array2[2]);
 					wheels.make(this.m, this.t, this.p, this.npl, (int)(this.getvalue("w", string, 0) * scaler * n5 * array2[0]), (int)(this.getvalue("w", string, 1) * scaler * array2[1]), (int)(this.getvalue("w", string, 2) * scaler * array2[2]), this.getvalue("w", string, 3), (int)(this.getvalue("w", string, 4) * scaler * n5), (int)(this.getvalue("w", string, 5) * scaler), wheelGr);
 					this.npl += 19;
+					
 					if (this.m.loadnew) {
 						this.wh += (int)(this.getvalue("w", string, 5) * scaler);
 						if (wheels.ground > 140) {
 							String s = "FRONT";
-							if (this.keyz[n6] < 0) {
+							if (this.keyy[n6] < 0) {
 								s = "BACK";
 							}
 							this.err = "Wheels Error:\n" + s + " Wheels floor is too far below the center of Y Axis of the car!    \n\nPlease decrease the Y value of the " + s + " Wheels or decrease its height.     \n \n";
 							this.errd = true;
-							this.keyz[n6] = 0;
+							this.keyy[n6] = 0;
 							this.keyx[n6] = 0;
 						}
 						if (wheels.ground < -100) {
 							String s2 = "FRONT";
-							if (this.keyz[n6] < 0) {
+							if (this.keyy[n6] < 0) {
 								s2 = "BACK";
 							}
 							this.err = "Wheels Error:\n" + s2 + " Wheels floor is too far above the center of Y Axis of the car!    \n\nPlease increase the Y value of the " + s2 + " Wheels or increase its height.     \n \n";
 							this.errd = true;
-							this.keyz[n6] = 0;
+							this.keyy[n6] = 0;
 							this.keyx[n6] = 0;
 						}
 						if (Math.abs(this.keyx[n6]) > 400) {
 							String s3 = "FRONT";
-							if (this.keyz[n6] < 0) {
+							if (this.keyy[n6] < 0) {
 								s3 = "BACK";
 							}
 							this.err = "Wheels Error:\n" + s3 + " Wheels are too far apart!    \n\nPlease decrease the ±X value of the " + s3 + " Wheels.     \n \n";
 							this.errd = true;
-							this.keyz[n6] = 0;
+							this.keyy[n6] = 0;
 							this.keyx[n6] = 0;
 						}
-						if (Math.abs(this.keyz[n6]) > 700) {
-							if (this.keyz[n6] < 0) {
+						if (Math.abs(this.keyy[n6]) > 700) {
+							if (this.keyy[n6] < 0) {
 								this.err = "Wheels Error:\nBACK Wheels are too far backwards from the center of the Z Axis!    \n\nPlease increase the -Z value of the BACK Wheels.     \n \n";
 							}
 							else {
 								this.err = "Wheels Error:\nFRONT Wheels are too far forwards from the center of the Z Axis!    \n\nPlease decrease the +Z value of the FRONT Wheels.     \n \n";
 							}
 							this.errd = true;
-							this.keyz[n6] = 0;
+							this.keyy[n6] = 0;
 							this.keyx[n6] = 0;
 						}
 						if ((int)(this.getvalue("w", string, 4) * scaler * n5) > 300) {
 							String s4 = "FRONT";
-							if (this.keyz[n6] < 0) {
+							if (this.keyy[n6] < 0) {
 								s4 = "BACK";
 							}
 							this.err = "Wheels Error:\nWidth of the " + s4 + " Wheels is too large!    \n\nPlease decrease the width of the " + s4 + " Wheels.     \n \n";
 							this.errd = true;
-							this.keyz[n6] = 0;
+							this.keyy[n6] = 0;
 							this.keyx[n6] = 0;
 						}
 					}
@@ -514,18 +516,18 @@ public class ContO
 			    int n12 = 0;
 			    float n13 = plane.ox[0];
 			    float n14 = plane.ox[0];
-			    float n15 = plane.oy[0];
-			    float n16 = plane.oy[0];
-			    float n17 = plane.oz[0];
-			    float n18 = plane.oz[0];
+			    float n15 = plane.oz[0];
+			    float n16 = plane.oz[0];
+			    float n17 = plane.oy[0];
+			    float n18 = plane.oy[0];
 
 			    for (int j = 1; j < plane.n; ++j) {
 			    	n13 = Math.max(n13, plane.ox[j]);
 			    	n14 = Math.min(n14, plane.ox[j]);
-			    	n15 = Math.max(n15, plane.oy[j]);
-			    	n16 = Math.min(n16, plane.oy[j]);
-			    	n17 = Math.max(n17, plane.oz[j]);
-			    	n18 = Math.min(n18, plane.oz[j]);
+			    	n15 = Math.max(n15, plane.oz[j]);
+			    	n16 = Math.min(n16, plane.oz[j]);
+			    	n17 = Math.max(n17, plane.oy[j]);
+			    	n18 = Math.min(n18, plane.oy[j]);
 			    }
 				if (Math.abs(n13 - n14) <= Math.abs(n15 - n16) && Math.abs(n13 - n14) <= Math.abs(n17 - n18)) {
 					n12 = 1;
@@ -553,8 +555,8 @@ public class ContO
 							n24 -= this.p.get(i).n;
 						}
 						if (n12 == 1) {
-							int abs = Math.abs((int)(Math.atan((this.p.get(i).oz[n22] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).oy[n22] - this.p.get(i).oy[n23])) / 0.017453292519943295));
-							int abs2 = Math.abs((int)(Math.atan((this.p.get(i).oz[n24] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).oy[n24] - this.p.get(i).oy[n23])) / 0.017453292519943295));
+							int abs = Math.abs((int)(Math.atan((this.p.get(i).oy[n22] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).oz[n22] - this.p.get(i).oz[n23])) / 0.017453292519943295));
+							int abs2 = Math.abs((int)(Math.atan((this.p.get(i).oy[n24] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).oz[n24] - this.p.get(i).oz[n23])) / 0.017453292519943295));
 							if (abs > 45) {
 								abs = 90 - abs;
 							}
@@ -567,8 +569,8 @@ public class ContO
 							}
 						}
 						if (n12 == 2) {
-							int abs3 = Math.abs((int)(Math.atan((this.p.get(i).oz[n22] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).ox[n22] - this.p.get(i).ox[n23])) / 0.017453292519943295));
-							int abs4 = Math.abs((int)(Math.atan((this.p.get(i).oz[n24] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).ox[n24] - this.p.get(i).ox[n23])) / 0.017453292519943295));
+							int abs3 = Math.abs((int)(Math.atan((this.p.get(i).oy[n22] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).ox[n22] - this.p.get(i).ox[n23])) / 0.017453292519943295));
+							int abs4 = Math.abs((int)(Math.atan((this.p.get(i).oy[n24] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).ox[n24] - this.p.get(i).ox[n23])) / 0.017453292519943295));
 							if (abs3 > 45) {
 								abs3 = 90 - abs3;
 							}
@@ -581,8 +583,8 @@ public class ContO
 							}
 						}
 						if (n12 == 3) {
-							int abs5 = Math.abs((int)(Math.atan((this.p.get(i).oy[n22] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).ox[n22] - this.p.get(i).ox[n23])) / 0.017453292519943295));
-							int abs6 = Math.abs((int)(Math.atan((this.p.get(i).oy[n24] - this.p.get(i).oy[n23]) / (double)(this.p.get(i).ox[n24] - this.p.get(i).ox[n23])) / 0.017453292519943295));
+							int abs5 = Math.abs((int)(Math.atan((this.p.get(i).oz[n22] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).ox[n22] - this.p.get(i).ox[n23])) / 0.017453292519943295));
+							int abs6 = Math.abs((int)(Math.atan((this.p.get(i).oz[n24] - this.p.get(i).oz[n23]) / (double)(this.p.get(i).ox[n24] - this.p.get(i).ox[n23])) / 0.017453292519943295));
 							if (abs5 > 45) {
 								abs5 = 90 - abs5;
 							}
@@ -601,8 +603,8 @@ public class ContO
 						final float[] array9 = new float[this.p.get(i).n];
 						for (int n25 = 0; n25 < this.p.get(i).n; ++n25) {
 							array7[n25] = this.p.get(i).ox[n25];
-							array8[n25] = this.p.get(i).oy[n25];
-							array9[n25] = this.p.get(i).oz[n25];
+							array8[n25] = this.p.get(i).oz[n25];
+							array9[n25] = this.p.get(i).oy[n25];
 						}
 						for (int n26 = 0; n26 < this.p.get(i).n; ++n26) {
 							int n27 = n26 + n21;
@@ -610,92 +612,28 @@ public class ContO
 								n27 -= this.p.get(i).n;
 							}
 							this.p.get(i).ox[n26] = array7[n27];
-							this.p.get(i).oy[n26] = array8[n27];
-							this.p.get(i).oz[n26] = array9[n27];
+							this.p.get(i).oz[n26] = array8[n27];
+							this.p.get(i).oy[n26] = array9[n27];
 						}
 					}
 					if (n12 == 1) {
-						if (Math.abs(this.p.get(i).oz[0] - this.p.get(i).oz[1]) > Math.abs(this.p.get(i).oy[0] - this.p.get(i).oy[1])) {
-							if (this.p.get(i).oz[0] > this.p.get(i).oz[1]) {
-								if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
-									this.p.get(i).fs = 1;
-								}
-								else {
-									this.p.get(i).fs = -1;
-								}
-							}
-							else if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
-								this.p.get(i).fs = -1;
-							}
-							else {
-								this.p.get(i).fs = 1;
-							}
-						}
-						else if (this.p.get(i).oy[0] > this.p.get(i).oy[1]) {
-							if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
-								this.p.get(i).fs = -1;
-							}
-							else {
-								this.p.get(i).fs = 1;
-							}
-						}
-						else if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
-							this.p.get(i).fs = 1;
-						}
-						else {
-							this.p.get(i).fs = -1;
-						}
-					}
-					if (n12 == 2) {
-						if (Math.abs(this.p.get(i).oz[0] - this.p.get(i).oz[1]) > Math.abs(this.p.get(i).ox[0] - this.p.get(i).ox[1])) {
-							if (this.p.get(i).oz[0] > this.p.get(i).oz[1]) {
-								if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
-									this.p.get(i).fs = -1;
-								}
-								else {
-									this.p.get(i).fs = 1;
-								}
-							}
-							else if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
-								this.p.get(i).fs = 1;
-							}
-							else {
-								this.p.get(i).fs = -1;
-							}
-						}
-						else if (this.p.get(i).ox[0] > this.p.get(i).ox[1]) {
-							if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
-								this.p.get(i).fs = 1;
-							}
-							else {
-								this.p.get(i).fs = -1;
-							}
-						}
-						else if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
-							this.p.get(i).fs = -1;
-						}
-						else {
-							this.p.get(i).fs = 1;
-						}
-					}
-					if (n12 == 3) {
-						if (Math.abs(this.p.get(i).oy[0] - this.p.get(i).oy[1]) > Math.abs(this.p.get(i).ox[0] - this.p.get(i).ox[1])) {
+						if (Math.abs(this.p.get(i).oy[0] - this.p.get(i).oy[1]) > Math.abs(this.p.get(i).oz[0] - this.p.get(i).oz[1])) {
 							if (this.p.get(i).oy[0] > this.p.get(i).oy[1]) {
-								if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+								if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
 									this.p.get(i).fs = 1;
 								}
 								else {
 									this.p.get(i).fs = -1;
 								}
 							}
-							else if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+							else if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
 								this.p.get(i).fs = -1;
 							}
 							else {
 								this.p.get(i).fs = 1;
 							}
 						}
-						else if (this.p.get(i).ox[0] > this.p.get(i).ox[1]) {
+						else if (this.p.get(i).oz[0] > this.p.get(i).oz[1]) {
 							if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
 								this.p.get(i).fs = -1;
 							}
@@ -710,16 +648,80 @@ public class ContO
 							this.p.get(i).fs = -1;
 						}
 					}
+					if (n12 == 2) {
+						if (Math.abs(this.p.get(i).oy[0] - this.p.get(i).oy[1]) > Math.abs(this.p.get(i).ox[0] - this.p.get(i).ox[1])) {
+							if (this.p.get(i).oy[0] > this.p.get(i).oy[1]) {
+								if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+									this.p.get(i).fs = -1;
+								}
+								else {
+									this.p.get(i).fs = 1;
+								}
+							}
+							else if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+								this.p.get(i).fs = 1;
+							}
+							else {
+								this.p.get(i).fs = -1;
+							}
+						}
+						else if (this.p.get(i).ox[0] > this.p.get(i).ox[1]) {
+							if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
+								this.p.get(i).fs = 1;
+							}
+							else {
+								this.p.get(i).fs = -1;
+							}
+						}
+						else if (this.p.get(i).oy[1] > this.p.get(i).oy[2]) {
+							this.p.get(i).fs = -1;
+						}
+						else {
+							this.p.get(i).fs = 1;
+						}
+					}
+					if (n12 == 3) {
+						if (Math.abs(this.p.get(i).oz[0] - this.p.get(i).oz[1]) > Math.abs(this.p.get(i).ox[0] - this.p.get(i).ox[1])) {
+							if (this.p.get(i).oz[0] > this.p.get(i).oz[1]) {
+								if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+									this.p.get(i).fs = 1;
+								}
+								else {
+									this.p.get(i).fs = -1;
+								}
+							}
+							else if (this.p.get(i).ox[1] > this.p.get(i).ox[2]) {
+								this.p.get(i).fs = -1;
+							}
+							else {
+								this.p.get(i).fs = 1;
+							}
+						}
+						else if (this.p.get(i).ox[0] > this.p.get(i).ox[1]) {
+							if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
+								this.p.get(i).fs = -1;
+							}
+							else {
+								this.p.get(i).fs = 1;
+							}
+						}
+						else if (this.p.get(i).oz[1] > this.p.get(i).oz[2]) {
+							this.p.get(i).fs = 1;
+						}
+						else {
+							this.p.get(i).fs = -1;
+						}
+					}
 					boolean b4 = false;
 					boolean b5 = false;
 					for (int n28 = 0; n28 < this.npl; ++n28) {
 						if (n28 != i && array.get(n28) != 0) {
 							float n29 = this.p.get(n28).ox[0];
 							float n30 = this.p.get(n28).ox[0];
-							float n31 = this.p.get(n28).oy[0];
-							float n32 = this.p.get(n28).oy[0];
-							float n33 = this.p.get(n28).oz[0];
-							float n34 = this.p.get(n28).oz[0];
+							float n31 = this.p.get(n28).oz[0];
+							float n32 = this.p.get(n28).oz[0];
+							float n33 = this.p.get(n28).oy[0];
+							float n34 = this.p.get(n28).oy[0];
 							for (int n35 = 0; n35 < this.p.get(n28).n; ++n35) {
 								if (this.p.get(n28).ox[n35] > n29) {
 									n29 = this.p.get(n28).ox[n35];
@@ -727,17 +729,17 @@ public class ContO
 								if (this.p.get(n28).ox[n35] < n30) {
 									n30 = this.p.get(n28).ox[n35];
 								}
-								if (this.p.get(n28).oy[n35] > n31) {
-									n31 = this.p.get(n28).oy[n35];
+								if (this.p.get(n28).oz[n35] > n31) {
+									n31 = this.p.get(n28).oz[n35];
 								}
-								if (this.p.get(n28).oy[n35] < n32) {
-									n32 = this.p.get(n28).oy[n35];
+								if (this.p.get(n28).oz[n35] < n32) {
+									n32 = this.p.get(n28).oz[n35];
 								}
-								if (this.p.get(n28).oz[n35] > n33) {
-									n33 = this.p.get(n28).oz[n35];
+								if (this.p.get(n28).oy[n35] > n33) {
+									n33 = this.p.get(n28).oy[n35];
 								}
-								if (this.p.get(n28).oz[n35] < n34) {
-									n34 = this.p.get(n28).oz[n35];
+								if (this.p.get(n28).oy[n35] < n34) {
+									n34 = this.p.get(n28).oy[n35];
 								}
 							}
 							final float n36 = (n29 + n30) / 2;
@@ -808,7 +810,7 @@ public class ContO
 								for (int n45 = 0; n45 < this.p.get(n44).n; ++n45) {
 									array10[n45] = false;
 									for (int n46 = 0; n46 < this.p.get(i).n; ++n46) {
-										if (this.p.get(i).ox[n46] == this.p.get(n44).ox[n45] && this.p.get(i).oy[n46] == this.p.get(n44).oy[n45] && this.p.get(i).oz[n46] == this.p.get(n44).oz[n45]) {
+										if (this.p.get(i).ox[n46] == this.p.get(n44).ox[n45] && this.p.get(i).oz[n46] == this.p.get(n44).oz[n45] && this.p.get(i).oy[n46] == this.p.get(n44).oy[n45]) {
 											array10[n45] = true;
 											b7 = true;
 										}
@@ -826,19 +828,19 @@ public class ContO
 												}
 											}
 											if (n12 == 2) {
-												if (this.p.get(n44).oy[n47] > n42) {
-													n42 = this.p.get(n44).oy[n47];
-												}
-												if (this.p.get(n44).oy[n47] < n43) {
-													n43 = this.p.get(n44).oy[n47];
-												}
-											}
-											if (n12 == 3) {
 												if (this.p.get(n44).oz[n47] > n42) {
 													n42 = this.p.get(n44).oz[n47];
 												}
 												if (this.p.get(n44).oz[n47] < n43) {
 													n43 = this.p.get(n44).oz[n47];
+												}
+											}
+											if (n12 == 3) {
+												if (this.p.get(n44).oy[n47] > n42) {
+													n42 = this.p.get(n44).oy[n47];
+												}
+												if (this.p.get(n44).oy[n47] < n43) {
+													n43 = this.p.get(n44).oy[n47];
 												}
 											}
 										}
@@ -886,11 +888,11 @@ public class ContO
 	public ContO(final ContO contO, final float x2, final float y2, final float z2, final float xz2) {
 		this.npl = 0;
 		this.x = 0;
-		this.y = 0;
 		this.z = 0;
-		this.xz = 0;
-		this.xy = 0;
-		this.zy = 0;
+		this.y = 0;
+		this.yaw = 0;
+		this.roll = 0;
+		this.pitch = 0;
 		this.wxz = 0;
 		this.wzy = 0;
 		this.dist = 0;
@@ -904,7 +906,7 @@ public class ContO
 		this.wrad = 0;
 		this.grat = 0;
 		this.keyx = new float[4];
-		this.keyz = new float[4];
+		this.keyy = new float[4];
 		this.sprkat = 0;
 		this.tnt = 0;
 		this.ust = 0;
@@ -951,18 +953,18 @@ public class ContO
 			if (contO.p.get(i).master == 1) {
 				contO.p.get(i).n = 20;
 			}
-			this.p.add(i, new Plane(this.m, this.t, contO.p.get(i).ox, contO.p.get(i).oz, contO.p.get(i).oy, contO.p.get(i).n, contO.p.get(i).oc, contO.p.get(i).glass, contO.p.get(i).gr, contO.p.get(i).fs, contO.p.get(i).wx, contO.p.get(i).wy, contO.p.get(i).wz, contO.disline, contO.p.get(i).bfase, contO.p.get(i).road, contO.p.get(i).light, contO.p.get(i).solo));
+			this.p.add(i, new Plane(this.m, this.t, contO.p.get(i).ox, contO.p.get(i).oy, contO.p.get(i).oz, contO.p.get(i).n, contO.p.get(i).oc, contO.p.get(i).glass, contO.p.get(i).gr, contO.p.get(i).fs, contO.p.get(i).wx, contO.p.get(i).wy, contO.p.get(i).wz, contO.disline, contO.p.get(i).bfase, contO.p.get(i).road, contO.p.get(i).light, contO.p.get(i).solo));
 		}
 		this.x = x2;
-		this.y = y2;
-		this.z = z2;
-		this.xz = 0;
-		this.xy = 0;
-		this.zy = 0;
+		this.z = y2;
+		this.y = z2;
+		this.yaw = 0;
+		this.roll = 0;
+		this.pitch = 0;
 		for (int j = 0; j < this.npl; ++j) {
 			this.p.get(j).colnum = contO.p.get(j).colnum;
 			this.p.get(j).master = contO.p.get(j).master;
-			this.p.get(j).rot(this.p.get(j).ox, this.p.get(j).oz, 0, 0, xz2, this.p.get(j).n);
+			this.p.get(j).rot(this.p.get(j).ox, this.p.get(j).oy, 0, 0, xz2, this.p.get(j).n);
 			this.p.get(j).loadprojf();
 		}
 		if (contO.tnt != 0) {
@@ -979,8 +981,8 @@ public class ContO
 					}
 				}
 				this.t.x[this.t.nt] = (int)(this.x + contO.tx[k] * this.m.cos(xz2) - contO.tz[k] * this.m.sin(xz2));
-				this.t.z[this.t.nt] = (int)(this.z + contO.tz[k] * this.m.cos(xz2) + contO.tx[k] * this.m.sin(xz2));
-				this.t.y[this.t.nt] = this.y + contO.ty[k];
+				this.t.z[this.t.nt] = (int)(this.y + contO.tz[k] * this.m.cos(xz2) + contO.tx[k] * this.m.sin(xz2));
+				this.t.y[this.t.nt] = this.z + contO.ty[k];
 				this.t.skd[this.t.nt] = contO.skd[k];
 				this.t.dam[this.t.nt] = contO.dam[k];
 				this.t.notwall[this.t.nt] = contO.notwall[k];
@@ -1001,7 +1003,7 @@ public class ContO
 		}
 		for (int n = 0; n < 4; ++n) {
 			this.keyx[n] = contO.keyx[n];
-			this.keyz[n] = contO.keyz[n];
+			this.keyy[n] = contO.keyy[n];
 		}
 		if (this.shadow) {
 			this.stg = new int[20];
@@ -1036,11 +1038,11 @@ public class ContO
 	public ContO(final float fgen, final float srx2, final float sry2, final Medium m, final Trackers t, final float x3, final float z3, final float ground) {
 		this.npl = 0;
 		this.x = 0;
-		this.y = 0;
 		this.z = 0;
-		this.xz = 0;
-		this.xy = 0;
-		this.zy = 0;
+		this.y = 0;
+		this.yaw = 0;
+		this.roll = 0;
+		this.pitch = 0;
 		this.wxz = 0;
 		this.wzy = 0;
 		this.dist = 0;
@@ -1054,7 +1056,7 @@ public class ContO
 		this.wrad = 0;
 		this.grat = 0;
 		this.keyx = new float[4];
-		this.keyz = new float[4];
+		this.keyy = new float[4];
 		this.sprkat = 0;
 		this.tnt = 0;
 		this.ust = 0;
@@ -1083,11 +1085,11 @@ public class ContO
 		this.m = m;
 		this.t = t;
 		this.x = x3;
-		this.z = z3;
-		this.y = ground;
-		this.xz = 0;
-		this.xy = 0;
-		this.zy = 0;
+		this.y = z3;
+		this.z = ground;
+		this.yaw = 0;
+		this.roll = 0;
+		this.pitch = 0;
 		this.wrad = 0;
 		this.grat = 0;
 		this.sprkat = 0;
@@ -1298,10 +1300,10 @@ public class ContO
 			x2[nt] += this.x;
 			final float[] z2 = this.t.z;
 			final int nt2 = this.t.nt;
-			z2[nt2] += this.z;
+			z2[nt2] += this.y;
 			final float[] y2 = this.t.y;
 			final int nt3 = this.t.nt;
-			y2[nt3] += this.y;
+			y2[nt3] += this.z;
 			for (int n27 = 0; n27 < 3; ++n27) {
 				this.t.c[this.t.nt][n27] = this.p.get(n23).oc[n27];
 			}
@@ -1324,12 +1326,12 @@ public class ContO
 		this.t.y[this.t.nt] /= 8;
 		final float[] y4 = this.t.y;
 		final int nt6 = this.t.nt;
-		y4[nt6] += this.y;
+		y4[nt6] += this.z;
 		this.t.rady[this.t.nt] = 200;
 		this.t.radx[this.t.nt] = array10[0] - array10[1];
 		this.t.radz[this.t.nt] = array11[0] - array11[1];
 		this.t.x[this.t.nt] = (array10[0] + array10[1]) / 2 + this.x;
-		this.t.z[this.t.nt] = (array11[0] + array11[1]) / 2 + this.z;
+		this.t.z[this.t.nt] = (array11[0] + array11[1]) / 2 + this.y;
 		this.t.zy[this.t.nt] = 0;
 		this.t.xy[this.t.nt] = 0;
 		for (int n29 = 0; n29 < 3; ++n29) {
@@ -1343,127 +1345,161 @@ public class ContO
 		++t3.nt;
 	}
 	public void d(final Graphics2D graphics2D) {
-		if (this.dist != 0) {
-			this.dist = 0;
-		}
-		final float n = this.m.cx + ((this.x - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.z - this.m.z - this.m.cz) * this.m.sin(this.m.xz));
-		final float n2 = this.m.cz + ((this.x - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.z - this.m.z - this.m.cz) * this.m.cos(this.m.xz));
-		final float n3 = this.m.cz + ((this.y - this.m.y - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
-		int onscreenSize = this.xs(n + this.maxR, n3) - this.xs(n - this.maxR, n3);
-		if (this.xs(n + this.maxR * 2, n3) > this.m.iw && this.xs(n - this.maxR * 2, n3) < this.m.w && n3 > -this.maxR && (n3 < this.m.fade[this.disline] + this.maxR || this.m.trk != 0) && (onscreenSize > this.disp || this.m.trk != 0) && (!this.decor || this.m.trk != 1)) {
-			if (this.shadow) {
-				if (!this.m.crs) {
-					if (n3 < 2000) {
-						boolean b = false;
-						if (this.t.ncx != 0 || this.t.ncz != 0) {
-							int ncx = (int) ((this.x - this.t.sx) / 3000);
-							if (ncx > this.t.ncx) {
-								ncx = this.t.ncx;
-							}
-							if (ncx < 0) {
-								ncx = 0;
-							}
-							int ncz = (int) ((this.z - this.t.sz) / 3000);
-							if (ncz > this.t.ncz) {
-								ncz = this.t.ncz;
-							}
-							if (ncz < 0) {
-								ncz = 0;
-							}
-							for (int i = this.t.sect[ncx][ncz].length - 1; i >= 0; --i) {
-								final int n5 = this.t.sect[ncx][ncz][i];
-								if (Math.abs(this.t.zy[n5]) != 90 && Math.abs(this.t.xy[n5]) != 90 && Math.abs(this.x - this.t.x[n5]) < this.t.radx[n5] + this.maxR && Math.abs(this.z - this.t.z[n5]) < this.t.radz[n5] + this.maxR && !this.t.decor[n5]) {
-									b = true;
-									break;
-								}
-							}
-						}
-						if (b) {
-							for (int j = 0; j < this.npl; ++j) {
-								this.p.get(j).s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 0);
-							}
-						}
-						else {
-							final float n6 = this.m.cy + ((this.m.ground - this.m.cy) * this.m.cos(this.m.zy) - (n2 - this.m.cz) * this.m.sin(this.m.zy));
-							final float n7 = this.m.cz + ((this.m.ground - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
-							if (this.ys(n6 + this.maxR, n7) > 0 && this.ys(n6 - this.maxR, n7) < this.m.h) {
-								for (int k = 0; k < this.npl; ++k) {
-									this.p.get(k).s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 1);
-								}
-							}
-						}
-						this.m.addsp(this.x - this.m.x, this.z - this.m.z, (this.maxR * 0.8F));
-					}
-					else {
-						this.lowshadow(graphics2D, n3);
-					}
-				}
-				else {
-					for (int l = 0; l < this.npl; ++l) {
-						this.p.get(l).s(graphics2D, this.x - this.m.x, this.y - this.m.y, this.z - this.m.z, this.xz, this.xy, this.zy, 2);
-					}
-				}
-			}
-			final float n8 = this.m.cy + ((this.y - this.m.y - this.m.cy) * this.m.cos(this.m.zy) - (n2 - this.m.cz) * this.m.sin(this.m.zy));
-			if (this.ys(n8 + this.maxR, n3) > this.m.ih && this.ys(n8 - this.maxR, n3) < this.m.h) {
-				if (this.elec && this.m.noelec == 0) {
-					this.electrify(graphics2D);
-				}
-				if (this.fix) {
-					this.fixit(graphics2D);
-				}
-				if (this.checkpoint != 0 && this.checkpoint - 1 == this.m.checkpoint) {
-					onscreenSize = -1;
-				}
-				if (this.shadow) {
-					this.dist = (float) Math.sqrt((this.m.x + this.m.cx - this.x) * (this.m.x + this.m.cx - this.x) + (this.m.z - this.z) * (this.m.z - this.z) + (this.m.y + this.m.cy - this.y) * (this.m.y + this.m.cy - this.y));
-					for (int n9 = 0; n9 < 20; ++n9) {
-						if (this.stg[n9] != 0) {
-							this.pdust(n9, graphics2D, true);
-						}
-					}
-					this.dsprk(graphics2D, true);
-				}
-				
-				final float dx = this.x - this.m.x;
-				final float dy = this.y - this.m.y;
-				final float dz = this.z - this.m.z;
-
-				this.p.sort(PLANE_COMPARATOR);
-
-				for (int i = 0; i < this.p.size(); ++i) {
-					Plane plane = this.p.get(i);
-					if (plane != null) {
-						plane.d(graphics2D, dx, dy, dz, this.xz, this.xy, this.zy, this.wxz, this.wzy, this.noline, onscreenSize);
-					}
-				}
-				
-				if (this.shadow) {
-					for (int n18 = 0; n18 < 20; ++n18) {
-						if (this.stg[n18] != 0) {
-							this.pdust(n18, graphics2D, false);
-						}
-					}
-					this.dsprk(graphics2D, false);
-				}
-				this.dist = (float) (Math.sqrt(Math.sqrt((this.m.x + this.m.cx - this.x) * (this.m.x + this.m.cx - this.x) + (this.m.z - this.z) * (this.m.z - this.z) + (this.m.y + this.m.cy - this.y) * (this.m.y + this.m.cy - this.y))) * this.grounded);
-			}
-		}
-		if (this.shadow && this.dist == 0) {
-			for (int n19 = 0; n19 < 20; ++n19) {
-				if (this.stg[n19] != 0) {
-					this.stg[n19] = 0;
-				}
-			}
-			for (int n20 = 0; n20 < 100; ++n20) {
-				if (this.rtg[n20] != 0) {
-					this.rtg[n20] = 0;
-				}
-			}
-			if (this.sprk != 0) {
-				this.sprk = 0;
-			}
-		}
+        if (this.dist != 0) {
+            this.dist = 0;
+        }
+        final float n = this.m.cx + ((this.x - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.y - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
+        final float n2 = this.m.cz + ((this.x - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.y - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
+        final float n3 = this.m.cz + ((this.z - this.m.z - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
+        int n4 = this.xs(n + this.maxR, n3) - this.xs(n - this.maxR, n3);
+        if (this.xs(n + this.maxR * 2, n3) > this.m.iw && this.xs(n - this.maxR * 2, n3) < this.m.w && n3 > -this.maxR && (n3 < this.m.fade[this.disline] + this.maxR || this.m.trk != 0) && (n4 > this.disp || this.m.trk != 0) && (!this.decor || (this.m.resdown != 2 && this.m.trk != 1))) {
+            if (this.shadow) {
+                if (!this.m.crs) {
+                    if (n3 < 2000) {
+                        boolean b = false;
+                        if (this.t.ncx != 0 || this.t.ncz != 0) {
+                            int ncx = (int) ((this.x - this.t.sx) / 3000F);
+                            if (ncx > this.t.ncx) {
+                                ncx = this.t.ncx;
+                            }
+                            if (ncx < 0) {
+                                ncx = 0;
+                            }
+                            int ncz = (int) ((this.y - this.t.sz) / 3000F);
+                            if (ncz > this.t.ncz) {
+                                ncz = this.t.ncz;
+                            }
+                            if (ncz < 0) {
+                                ncz = 0;
+                            }
+                            for (int i = this.t.sect[ncx][ncz].length - 1; i >= 0; --i) {
+                                final int n5 = this.t.sect[ncx][ncz][i];
+                                if (Math.abs(this.t.zy[n5]) != 90 && Math.abs(this.t.xy[n5]) != 90 && Math.abs(this.x - this.t.x[n5]) < this.t.radx[n5] + this.maxR && Math.abs(this.y - this.t.z[n5]) < this.t.radz[n5] + this.maxR && (!this.t.decor[n5] || this.m.resdown != 2)) {
+                                    b = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (b) {
+                            for (int j = 0; j < this.npl; ++j) {
+                                this.p.get(j).s(graphics2D, this.x - this.m.x, this.z - this.m.z, this.y - this.m.y, this.yaw, this.roll, this.pitch, 0);
+                            }
+                        }
+                        else {
+                            final float n6 = this.m.cy + ((this.m.ground - this.m.cy) * this.m.cos(this.m.zy) - (n2 - this.m.cz) * this.m.sin(this.m.zy));
+                            final float n7 = this.m.cz + ((this.m.ground - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
+                            if (this.ys(n6 + this.maxR, n7) > 0 && this.ys(n6 - this.maxR, n7) < this.m.h) {
+                                for (int k = 0; k < this.npl; ++k) {
+                                    this.p.get(k).s(graphics2D, this.x - this.m.x, this.z - this.m.z, this.y - this.m.y, this.yaw, this.roll, this.pitch, 1);
+                                }
+                            }
+                        }
+                        this.m.addsp(this.x - this.m.x, this.y - this.m.y, (int)(this.maxR * 0.8));
+                    }
+                    else {
+                        this.lowshadow(graphics2D, n3);
+                    }
+                }
+                else {
+                    for (int l = 0; l < this.npl; ++l) {
+                        this.p.get(l).s(graphics2D, this.x - this.m.x, this.z - this.m.z, this.y - this.m.y, this.yaw, this.roll, this.pitch, 2);
+                    }
+                }
+            }
+            final float n8 = this.m.cy + ((this.z - this.m.z - this.m.cy) * this.m.cos(this.m.zy) - (n2 - this.m.cz) * this.m.sin(this.m.zy));
+            if (this.ys(n8 + this.maxR, n3) > this.m.ih && this.ys(n8 - this.maxR, n3) < this.m.h) {
+                if (this.elec && this.m.noelec == 0) {
+                    this.electrify(graphics2D);
+                }
+                if (this.fix) {
+                    this.fixit(graphics2D);
+                }
+                if (this.checkpoint != 0 && this.checkpoint - 1 == this.m.checkpoint) {
+                    n4 = -1;
+                }
+                if (this.shadow) {
+                    this.dist = (int)Math.sqrt((this.m.x + this.m.cx - this.x) * (this.m.x + this.m.cx - this.x) + (this.m.y - this.y) * (this.m.y - this.y) + (this.m.z + this.m.cy - this.z) * (this.m.z + this.m.cy - this.z));
+                    for (int n9 = 0; n9 < 20; ++n9) {
+                        if (this.stg[n9] != 0) {
+                            this.pdust(n9, graphics2D, true);
+                        }
+                    }
+                    this.dsprk(graphics2D, true);
+                }
+                final int[] array = new int[this.npl];
+                final int[] array2 = new int[this.npl];
+                for (int n10 = 0; n10 < this.npl; ++n10) {
+                    array[n10] = 0;
+                }
+                for (int n11 = 0; n11 < this.npl; ++n11) {
+                    for (int n12 = n11 + 1; n12 < this.npl; ++n12) {
+                        if (this.p.get(n11).av != this.p.get(n12).av) {
+                            if (this.p.get(n11).av < this.p.get(n12).av) {
+                                final int[] array3 = array;
+                                final int n13 = n11;
+                                ++array3[n13];
+                            }
+                            else {
+                                final int[] array4 = array;
+                                final int n14 = n12;
+                                ++array4[n14];
+                            }
+                        }
+                        else if (n11 > n12) {
+                            final int[] array5 = array;
+                            final int n15 = n11;
+                            ++array5[n15];
+                        }
+                        else {
+                            final int[] array6 = array;
+                            final int n16 = n12;
+                            ++array6[n16];
+                        }
+                    }
+                    array2[array[n11]] = n11;
+                }
+                for (int n17 = 0; n17 < this.npl; ++n17) {
+                    this.p.get(array2[n17]).d(graphics2D, this.x - this.m.x, this.z - this.m.z, this.y - this.m.y, this.yaw, this.roll, this.pitch, this.wxz, this.wzy, this.noline, n4);
+                }
+                if (this.shadow) {
+                    for (int n18 = 0; n18 < 20; ++n18) {
+                        if (this.stg[n18] != 0) {
+                            this.pdust(n18, graphics2D, false);
+                        }
+                    }
+                    this.dsprk(graphics2D, false);
+                }
+                this.dist = (int)(Math.sqrt((int)Math.sqrt((this.m.x + this.m.cx - this.x) * (this.m.x + this.m.cx - this.x) + (this.m.y - this.y) * (this.m.y - this.y) + (this.m.z + this.m.cy - this.z) * (this.m.z + this.m.cy - this.z))) * this.grounded);
+            }
+        }
+        if (this.shadow && this.dist == 0) {
+            for (int n19 = 0; n19 < 20; ++n19) {
+                if (this.stg[n19] != 0) {
+                    this.stg[n19] = 0;
+                }
+            }
+            for (int n20 = 0; n20 < 100; ++n20) {
+                if (this.rtg[n20] != 0) {
+                    this.rtg[n20] = 0;
+                }
+            }
+            if (this.sprk != 0) {
+                this.sprk = 0;
+            }
+        }
+    }
+    
+	public void drawContO(final Graphics2D graphics2D) {
+		float cont3DX = this.x - this.m.x, cont3DZ = this.z - this.m.z, cont3DY = this.y - this.m.y;
+		/*
+		rot(cont3DX, cont3DZ, this.m.x, this.m.z, this.zy);
+		rot(cont3DY, cont3DZ, this.m.y, this.m.z, this.xz);
+		rot(cont3DX, cont3DY, this.m.x, this.m.y, this.xy);
+		rot(cont3DX, cont3DY, this.m.cx, this.m.cz, this.zy);
+		rot(cont3DX, cont3DZ, this.m.cy, this.m.cz, this.xz);
+		*/
+		this.p.get(0).drawPlane(graphics2D, cont3DX, cont3DY, cont3DZ, pitch, roll, yaw);
+		
 	}
 	
 	public void lowshadow(final Graphics2D graphics2D, final float n32) {
@@ -1472,19 +1508,19 @@ public class ContO
 		final int[] array3 = this.scratch4_3;
 		int n2 = 1;
 		float i;
-		for (i = Math.abs(this.zy); i > 270; i -= 360) {}
+		for (i = Math.abs(this.pitch); i > 270; i -= 360) {}
 		if (Math.abs(i) > 90) {
 			n2 = -1;
 		}
 		array[0] = (int)(this.keyx[0] * 1.2 + this.x - this.m.x);
-		array3[0] = (int)((this.keyz[0] + 30) * n2 * 1.2 + this.z - this.m.z);
+		array3[0] = (int)((this.keyy[0] + 30) * n2 * 1.2 + this.y - this.m.y);
 		array[1] = (int)(this.keyx[1] * 1.2 + this.x - this.m.x);
-		array3[1] = (int)((this.keyz[1] + 30) * n2 * 1.2 + this.z - this.m.z);
+		array3[1] = (int)((this.keyy[1] + 30) * n2 * 1.2 + this.y - this.m.y);
 		array[2] = (int)(this.keyx[3] * 1.2 + this.x - this.m.x);
-		array3[2] = (int)((this.keyz[3] - 30) * n2 * 1.2 + this.z - this.m.z);
+		array3[2] = (int)((this.keyy[3] - 30) * n2 * 1.2 + this.y - this.m.y);
 		array[3] = (int)(this.keyx[2] * 1.2 + this.x - this.m.x);
-		array3[3] = (int)((this.keyz[2] - 30) * n2 * 1.2 + this.z - this.m.z);
-		this.rot(array, array3, this.x - this.m.x, this.z - this.m.z, this.xz, 4);
+		array3[3] = (int)((this.keyy[2] - 30) * n2 * 1.2 + this.y - this.m.y);
+		this.rot(array, array3, this.x - this.m.x, this.y - this.m.y, this.yaw, 4);
 		int r = (int)(this.m.crgrnd[0] / 1.5F);
 		int g = (int)(this.m.crgrnd[1] / 1.5F);
 		int b = (int)(this.m.crgrnd[2] / 1.5F);
@@ -1499,7 +1535,7 @@ public class ContO
 			if (ncx < 0) {
 				ncx = 0;
 			}
-			int ncz = (int) ((this.z - this.t.sz) / 3000);
+			int ncz = (int) ((this.y - this.t.sz) / 3000);
 			if (ncz > this.t.ncz) {
 				ncz = this.t.ncz;
 			}
@@ -1510,17 +1546,17 @@ public class ContO
 				final int n3 = this.t.sect[ncx][ncz][k];
 				int n4 = 0;
 				for (int l = 0; l < 4; ++l) {
-					if (Math.abs(this.t.zy[n3]) != 90 && Math.abs(this.t.xy[n3]) != 90 && this.t.rady[n3] != 801 && Math.abs(array[l] - (this.t.x[n3] - this.m.x)) < this.t.radx[n3] && Math.abs(array3[l] - (this.t.z[n3] - this.m.z)) < this.t.radz[n3] && !this.t.decor[n3]) {
+					if (Math.abs(this.t.zy[n3]) != 90 && Math.abs(this.t.xy[n3]) != 90 && this.t.rady[n3] != 801 && Math.abs(array[l] - (this.t.x[n3] - this.m.x)) < this.t.radx[n3] && Math.abs(array3[l] - (this.t.z[n3] - this.m.y)) < this.t.radz[n3] && !this.t.decor[n3]) {
 						++n4;
 					}
 				}
 				if (n4 > 2) {
 					for (int n5 = 0; n5 < 4; ++n5) {
-						array2[n5] = (int) (this.t.y[n3] - this.m.y);
+						array2[n5] = (int) (this.t.y[n3] - this.m.z);
 						if (this.t.zy[n3] != 0) {
 							final int[] array4 = array2;
 							final int n6 = n5;
-							array4[n6] += (int)((array3[n5] - (this.t.z[n3] - this.m.z - this.t.radz[n3])) * this.m.sin(this.t.zy[n3]) / this.m.sin(90 - this.t.zy[n3]) - this.t.radz[n3] * this.m.sin(this.t.zy[n3]) / this.m.sin(90 - this.t.zy[n3]));
+							array4[n6] += (int)((array3[n5] - (this.t.z[n3] - this.m.y - this.t.radz[n3])) * this.m.sin(this.t.zy[n3]) / this.m.sin(90 - this.t.zy[n3]) - this.t.radz[n3] * this.m.sin(this.t.zy[n3]) / this.m.sin(90 - this.t.zy[n3]));
 						}
 						if (this.t.xy[n3] != 0) {
 							final int[] array5 = array2;
@@ -1622,12 +1658,12 @@ public class ContO
 			final int[] array3 = this.scratch4_1;
 			for (int l = 0; l < 4; ++l) {
 				array[l] = (int) (this.keyx[l] + this.x - this.m.x);
-				array2[l] = (int) (this.grat + this.y - this.m.y);
-				array3[l] = (int) (this.keyz[l] + this.z - this.m.z);
+				array2[l] = (int) (this.grat + this.z - this.m.z);
+				array3[l] = (int) (this.keyy[l] + this.y - this.m.y);
 			}
-			this.rot(array, array2, this.x - this.m.x, this.y - this.m.y, this.xy, 4);
-			this.rot(array2, array3, this.y - this.m.y, this.z - this.m.y, this.zy, 4);
-			this.rot(array, array3, this.x - this.m.x, this.z - this.m.z, this.xz, 4);
+			this.rot(array, array2, this.x - this.m.x, this.z - this.m.z, this.roll, 4);
+			this.rot(array2, array3, this.z - this.m.z, this.y - this.m.z, this.pitch, 4);
+			this.rot(array, array3, this.x - this.m.x, this.y - this.m.y, this.yaw, 4);
 			this.rot(array, array3, this.m.cx, this.m.cz, this.m.xz, 4);
 			this.rot(array2, array3, this.m.cy, this.m.cz, this.m.zy, 4);
 			int abs = 0;
@@ -1653,10 +1689,10 @@ public class ContO
 			if (abs2 < n3) {
 				abs2 = n3;
 			}
-			final float n4 = this.m.cx + (int)((this.x - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.z - this.m.z - this.m.cz) * this.m.sin(this.m.xz));
-			final float n5 = this.m.cz + (int)((this.x - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.z - this.m.z - this.m.cz) * this.m.cos(this.m.xz));
-			final float n6 = this.m.cy + (int)((this.y - this.m.y - this.m.cy) * this.m.cos(this.m.zy) - (n5 - this.m.cz) * this.m.sin(this.m.zy));
-			final float n7 = this.m.cz + (int)((this.y - this.m.y - this.m.cy) * this.m.sin(this.m.zy) + (n5 - this.m.cz) * this.m.cos(this.m.zy));
+			final float n4 = this.m.cx + (int)((this.x - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.y - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
+			final float n5 = this.m.cz + (int)((this.x - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.y - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
+			final float n6 = this.m.cy + (int)((this.z - this.m.z - this.m.cy) * this.m.cos(this.m.zy) - (n5 - this.m.cz) * this.m.sin(this.m.zy));
+			final float n7 = this.m.cz + (int)((this.z - this.m.z - this.m.cy) * this.m.sin(this.m.zy) + (n5 - this.m.cz) * this.m.cos(this.m.zy));
 			array[0] = this.xs((int)(n4 - abs / 0.8 - this.m.random() * (abs / 2.4)), n7);
 			array2[0] = this.ys((int)(n6 - abs2 / 1.92 - this.m.random() * (abs2 / 5.67)), n7);
 			array[1] = this.xs((int)(n4 - abs / 0.8 - this.m.random() * (abs / 2.4)), n7);
@@ -1775,26 +1811,26 @@ public class ContO
 			final float[] array2 = this.scratchF8_2;
 			final float[] array3 = this.scratchF8_3;
 			for (int j = 0; j < 8; ++j) {
-				array3[j] = this.z - this.m.z;
+				array3[j] = this.y - this.m.y;
 			}
 			array[0] = this.x - this.m.x - 504;
-			array2[0] = this.y - this.m.y - this.edl[i] - 5 - (int)(this.m.random() * 5.0f);
+			array2[0] = this.z - this.m.z - this.edl[i] - 5 - (int)(this.m.random() * 5.0f);
 			array[1] = this.x - this.m.x - 252 + n4;
-			array2[1] = this.y - this.m.y - n - 5 - (int)(this.m.random() * 5.0f);
+			array2[1] = this.z - this.m.z - n - 5 - (int)(this.m.random() * 5.0f);
 			array[2] = this.x - this.m.x + 252 - n3;
-			array2[2] = this.y - this.m.y - n2 - 5 - (int)(this.m.random() * 5.0f);
+			array2[2] = this.z - this.m.z - n2 - 5 - (int)(this.m.random() * 5.0f);
 			array[3] = this.x - this.m.x + 504;
-			array2[3] = this.y - this.m.y - this.edr[i] - 5 - (int)(this.m.random() * 5.0f);
+			array2[3] = this.z - this.m.z - this.edr[i] - 5 - (int)(this.m.random() * 5.0f);
 			array[4] = this.x - this.m.x + 504;
-			array2[4] = this.y - this.m.y - this.edr[i] + 5 + (int)(this.m.random() * 5.0f);
+			array2[4] = this.z - this.m.z - this.edr[i] + 5 + (int)(this.m.random() * 5.0f);
 			array[5] = this.x - this.m.x + 252 - n3;
-			array2[5] = this.y - this.m.y - n2 + 5 + (int)(this.m.random() * 5.0f);
+			array2[5] = this.z - this.m.z - n2 + 5 + (int)(this.m.random() * 5.0f);
 			array[6] = this.x - this.m.x - 252 + n4;
-			array2[6] = this.y - this.m.y - n + 5 + (int)(this.m.random() * 5.0f);
+			array2[6] = this.z - this.m.z - n + 5 + (int)(this.m.random() * 5.0f);
 			array[7] = this.x - this.m.x - 504;
-			array2[7] = this.y - this.m.y - this.edl[i] + 5 + (int)(this.m.random() * 5.0f);
+			array2[7] = this.z - this.m.z - this.edl[i] + 5 + (int)(this.m.random() * 5.0f);
 			if (this.roted) {
-				this.rot(array, array3, this.x - this.m.x, this.z - this.m.z, 90, 8);
+				this.rot(array, array3, this.x - this.m.x, this.y - this.m.y, 90, 8);
 			}
 			this.rot(array, array3, this.m.cx, this.m.cz, this.m.xz, 8);
 			this.rot(array2, array3, this.m.cy, this.m.cz, this.m.zy, 8);
@@ -1890,16 +1926,16 @@ public class ContO
 				++elc[n11];
 			}
 		}
-		if (!this.roted || this.xz != 0) {
-			this.xy += 11;
-			if (this.xy > 360) {
-				this.xy -= 360;
+		if (!this.roted || this.yaw != 0) {
+			this.roll += 11;
+			if (this.roll > 360) {
+				this.roll -= 360;
 			}
 		}
 		else {
-			this.zy += 11;
-			if (this.zy > 360) {
-				this.zy -= 360;
+			this.pitch += 11;
+			if (this.pitch > 360) {
+				this.pitch -= 360;
 			}
 		}
 	}
@@ -1924,12 +1960,12 @@ public class ContO
 			if (!b) {
 				final float random = this.m.random();
 				this.sx[this.ust] = (int)((n2 + this.x * random) / (1.0f + random));
-				this.sz[this.ust] = (int)((n4 + this.z * random) / (1.0f + random));
-				this.sy[this.ust] = (int)((n3 + this.y * random) / (1.0f + random));
+				this.sz[this.ust] = (int)((n4 + this.y * random) / (1.0f + random));
+				this.sy[this.ust] = (int)((n3 + this.z * random) / (1.0f + random));
 			}
 			else {
 				this.sx[this.ust] = (int)((n2 + (this.x + scx2)) / 2.0f);
-				this.sz[this.ust] = (int)((n4 + (this.z + scz2)) / 2.0f);
+				this.sz[this.ust] = (int)((n4 + (this.y + scz2)) / 2.0f);
 				this.sy[this.ust] = (int)n3;
 			}
 			if (this.sy[n] > 250) {
@@ -1944,7 +1980,7 @@ public class ContO
 
 	public void pdust(final int n, final Graphics2D graphics2D, final boolean b) {
 		if (b) {
-			this.sav[n] = (int)Math.sqrt((this.m.x + this.m.cx - this.sx[n]) * (this.m.x + this.m.cx - this.sx[n]) + (this.m.y + this.m.cy - this.sy[n]) * (this.m.y + this.m.cy - this.sy[n]) + (this.m.z - this.sz[n]) * (this.m.z - this.sz[n]));
+			this.sav[n] = (int)Math.sqrt((this.m.x + this.m.cx - this.sx[n]) * (this.m.x + this.m.cx - this.sx[n]) + (this.m.z + this.m.cy - this.sy[n]) * (this.m.z + this.m.cy - this.sy[n]) + (this.m.y - this.sz[n]) * (this.m.y - this.sz[n]));
 		}
 		if ((b && this.sav[n] > this.dist) || (!b && this.sav[n] <= this.dist)) {
 			if (this.stg[n] == 1) {
@@ -1967,7 +2003,7 @@ public class ContO
 				if (ncx < 0) {
 					ncx = 0;
 				}
-				int ncz = (int) ((this.z - this.t.sz) / 3000);
+				int ncz = (int) ((this.y - this.t.sz) / 3000);
 				if (ncz > this.t.ncz) {
 					ncz = this.t.ncz;
 				}
@@ -2019,10 +2055,10 @@ public class ContO
 				}
 				this.smag[n][6] = this.smag[n][7];
 			}
-			final float n8 = this.m.cx + (int)((this.sx[n] - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.sz[n] - this.m.z - this.m.cz) * this.m.sin(this.m.xz));
-			final float n9 = this.m.cz + (int)((this.sx[n] - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.sz[n] - this.m.z - this.m.cz) * this.m.cos(this.m.xz));
-			final float n10 = this.m.cy + (int)((this.sy[n] - this.m.y - this.m.cy - this.smag[n][7]) * this.m.cos(this.m.zy) - (n9 - this.m.cz) * this.m.sin(this.m.zy));
-			final float n11 = this.m.cz + (int)((this.sy[n] - this.m.y - this.m.cy - this.smag[n][7]) * this.m.sin(this.m.zy) + (n9 - this.m.cz) * this.m.cos(this.m.zy));
+			final float n8 = this.m.cx + (int)((this.sx[n] - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.sz[n] - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
+			final float n9 = this.m.cz + (int)((this.sx[n] - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.sz[n] - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
+			final float n10 = this.m.cy + (int)((this.sy[n] - this.m.z - this.m.cy - this.smag[n][7]) * this.m.cos(this.m.zy) - (n9 - this.m.cz) * this.m.sin(this.m.zy));
+			final float n11 = this.m.cz + (int)((this.sy[n] - this.m.z - this.m.cy - this.smag[n][7]) * this.m.sin(this.m.zy) + (n9 - this.m.cz) * this.m.cos(this.m.zy));
 			final float[] sx = this.sx;
 			sx[n] += this.scx[n] / (this.stg[n] + 1);
 			final float[] sz = this.sz;
@@ -2101,9 +2137,9 @@ public class ContO
 
 	public void sprk(final float n, final float n2, final float n3, final float rcx, final float rcy, final float rcz, final int n4) {
 		if (n4 != 1) {
-			this.srx = (int)(n - this.sprkat * this.m.sin(this.xz));
-			this.sry = (int)(n2 - this.sprkat * this.m.cos(this.zy) * this.m.cos(this.xy));
-			this.srz = (int)(n3 + this.sprkat * this.m.cos(this.xz));
+			this.srx = (int)(n - this.sprkat * this.m.sin(this.yaw));
+			this.sry = (int)(n2 - this.sprkat * this.m.cos(this.pitch) * this.m.cos(this.roll));
+			this.srz = (int)(n3 + this.sprkat * this.m.cos(this.yaw));
 			this.sprk = 1;
 		}
 		else {
@@ -2111,7 +2147,7 @@ public class ContO
 			if (this.sprk == 4) {
 				this.srx = (int)(this.x + rcx);
 				this.sry = (int)n2;
-				this.srz = (int)(this.z + rcz);
+				this.srz = (int)(this.y + rcz);
 				this.sprk = 5;
 			}
 			else {
@@ -2133,7 +2169,7 @@ public class ContO
 			int n = (int)(Math.sqrt(this.rcx * this.rcx + this.rcy * this.rcy + this.rcz * this.rcz) / 10.0);
 			if (n > 5) {
 				boolean b2 = false;
-				if (this.dist < Math.sqrt((this.m.x + this.m.cx - this.srx) * (this.m.x + this.m.cx - this.srx) + (this.m.y + this.m.cy - this.sry) * (this.m.y + this.m.cy - this.sry) + (this.m.z - this.srz) * (this.m.z - this.srz))) {
+				if (this.dist < Math.sqrt((this.m.x + this.m.cx - this.srx) * (this.m.x + this.m.cx - this.srx) + (this.m.z + this.m.cy - this.sry) * (this.m.z + this.m.cy - this.sry) + (this.m.y - this.srz) * (this.m.y - this.srz))) {
 					b2 = true;
 				}
 				if (n > 33) {
@@ -2200,14 +2236,14 @@ public class ContO
 				final float[] rz = this.rz;
 				final int n9 = j;
 				rz[n9] += (int)this.vrz[j];
-				final float n10 = this.m.cx + (float)((this.rx[j] - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.rz[j] - this.m.z - this.m.cz) * this.m.sin(this.m.xz));
-				final float n11 = this.m.cz + (float)((this.rx[j] - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.rz[j] - this.m.z - this.m.cz) * this.m.cos(this.m.xz));
-				final float n12 = this.m.cy + (float)((this.ry[j] - this.m.y - this.m.cy) * this.m.cos(this.m.zy) - (n11 - this.m.cz) * this.m.sin(this.m.zy));
-				final float n13 = this.m.cz + (float)((this.ry[j] - this.m.y - this.m.cy) * this.m.sin(this.m.zy) + (n11 - this.m.cz) * this.m.cos(this.m.zy));
-				final float n14 = this.m.cx + (float)((this.rx[j] - this.m.x - this.m.cx + this.vrx[j]) * this.m.cos(this.m.xz) - (this.rz[j] - this.m.z - this.m.cz + this.vrz[j]) * this.m.sin(this.m.xz));
-				final float n15 = this.m.cz + (float)((this.rx[j] - this.m.x - this.m.cx + this.vrx[j]) * this.m.sin(this.m.xz) + (this.rz[j] - this.m.z - this.m.cz + this.vrz[j]) * this.m.cos(this.m.xz));
-				final float n16 = this.m.cy + (float)((this.ry[j] - this.m.y - this.m.cy + this.vry[j]) * this.m.cos(this.m.zy) - (n15 - this.m.cz) * this.m.sin(this.m.zy));
-				final float n17 = this.m.cz + (float)((this.ry[j] - this.m.y - this.m.cy + this.vry[j]) * this.m.sin(this.m.zy) + (n15 - this.m.cz) * this.m.cos(this.m.zy));
+				final float n10 = this.m.cx + (float)((this.rx[j] - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.rz[j] - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
+				final float n11 = this.m.cz + (float)((this.rx[j] - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.rz[j] - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
+				final float n12 = this.m.cy + (float)((this.ry[j] - this.m.z - this.m.cy) * this.m.cos(this.m.zy) - (n11 - this.m.cz) * this.m.sin(this.m.zy));
+				final float n13 = this.m.cz + (float)((this.ry[j] - this.m.z - this.m.cy) * this.m.sin(this.m.zy) + (n11 - this.m.cz) * this.m.cos(this.m.zy));
+				final float n14 = this.m.cx + (float)((this.rx[j] - this.m.x - this.m.cx + this.vrx[j]) * this.m.cos(this.m.xz) - (this.rz[j] - this.m.y - this.m.cz + this.vrz[j]) * this.m.sin(this.m.xz));
+				final float n15 = this.m.cz + (float)((this.rx[j] - this.m.x - this.m.cx + this.vrx[j]) * this.m.sin(this.m.xz) + (this.rz[j] - this.m.y - this.m.cz + this.vrz[j]) * this.m.cos(this.m.xz));
+				final float n16 = this.m.cy + (float)((this.ry[j] - this.m.z - this.m.cy + this.vry[j]) * this.m.cos(this.m.zy) - (n15 - this.m.cz) * this.m.sin(this.m.zy));
+				final float n17 = this.m.cz + (float)((this.ry[j] - this.m.z - this.m.cy + this.vry[j]) * this.m.sin(this.m.zy) + (n15 - this.m.cz) * this.m.cos(this.m.zy));
 				final int xs = this.xs(n10, n13);
 				final int ys = this.ys(n12, n13);
 				final int xs2 = this.xs(n14, n17);
@@ -2290,7 +2326,7 @@ public class ContO
 	}
 
 	public float getpy(final int n, final int n2, final int n3) {
-		return (n - this.x) / 10 * ((n - this.x) / 10) + (n2 - this.y) / 10 * ((n2 - this.y) / 10) + (n3 - this.z) / 10 * ((n3 - this.z) / 10);
+		return (n - this.x) / 10 * ((n - this.x) / 10) + (n2 - this.z) / 10 * ((n2 - this.z) / 10) + (n3 - this.y) / 10 * ((n3 - this.y) / 10);
 	}
 
 	public float py(final float array, final float array2, final float array22, final float array23) {
@@ -2316,6 +2352,15 @@ public class ContO
 				array[i] = n + ((n5 - n) * this.m.cos(n3) - (n6 - n2) * this.m.sin(n3));
 				array2[i] = n2 + ((n5 - n) * this.m.sin(n3) + (n6 - n2) * this.m.cos(n3));
 			}
+		}
+	}
+	
+	public void rot(float array, float array2, final float n, final float n2, final float n3) {
+		if (n3 != 0) {
+				final float n5 = array;
+				final float n6 = array2;
+				array = n + ((n5 - n) * this.m.cos(n3) - (n6 - n2) * this.m.sin(n3));
+				array2 = n2 + ((n5 - n) * this.m.sin(n3) + (n6 - n2) * this.m.cos(n3));
 		}
 	}
 }

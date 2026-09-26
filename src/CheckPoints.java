@@ -84,14 +84,14 @@ public class CheckPoints
         if (!this.haltall) {
             this.pcleared = array[n2].pcleared;
             for (int i = 0; i < n; ++i) {
-                this.magperc[i] = array[i].hitmag / (float)array[i].cd.maxmag[array[i].cn];
+                this.magperc[i] = array[i].hitmag / (float)array[i].cd.maxmag.get(array[i].cn);
                 if (this.magperc[i] > 1.0f) {
                     this.magperc[i] = 1.0f;
                 }
                 this.pos[i] = 0;
                 this.onscreen[i] = array2[i].dist;
                 this.opx[i] = array2[i].x;
-                this.opz[i] = array2[i].z;
+                this.opz[i] = array2[i].y;
                 this.omxz[i] = array[i].mxz;
                 if (this.dested[i] == 0) {
                     this.clear[i] = array[i].clear;
@@ -126,7 +126,7 @@ public class CheckPoints
                                 n6 = 0;
                             }
                         }
-                        if (this.py(array2[j].x / 100, this.x[n6] / 100, array2[j].z / 100, this.z[n6] / 100) > this.py(array2[k].x / 100, this.x[n6] / 100, array2[k].z / 100, this.z[n6] / 100)) {
+                        if (this.py(array2[j].x / 100, this.x[n6] / 100, array2[j].y / 100, this.z[n6] / 100) > this.py(array2[k].x / 100, this.x[n6] / 100, array2[k].y / 100, this.z[n6] / 100)) {
                             final int[] pos3 = this.pos;
                             final int n7 = j;
                             ++pos3[n7];

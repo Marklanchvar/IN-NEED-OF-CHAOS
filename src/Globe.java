@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.Reader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -276,7 +277,7 @@ public class Globe implements Runnable
     int loadedstages;
     int loadedstage;
     CheckPoints cp;
-    ContO[] bco;
+    ArrayList<ContO> bco;
     ContO[] co;
     int mouson;
     int nclns;
@@ -348,7 +349,7 @@ public class Globe implements Runnable
     String lwbwinner;
     boolean canredo;
     
-    public Globe(final Graphics2D rd, final xtGraphics xt, final Medium m, final Login lg, final CarDefine cd, final CheckPoints cp, final ContO[] bco, final ContO[] co, final GameSparker gs) {
+    public Globe(final Graphics2D rd, final xtGraphics xt, final Medium m, final Login lg, final CarDefine cd, final CheckPoints cp, final ArrayList<ContO> array, final ContO[] co, final GameSparker gs) {
         this.domon = false;
         this.fase = 0;
         this.open = 0;
@@ -647,9 +648,11 @@ public class Globe implements Runnable
         this.lg = lg;
         this.cd = cd;
         this.cp = cp;
-        this.bco = bco;
+        this.bco = array;
         this.co = co;
         this.gImage = this.gs.createImage(560, 300);
+        this.rdo = (Graphics2D) this.gImage.getGraphics();
+        
         for (int i = 0; i < 21; ++i) {
             this.ctime[i] = "";
             this.cnames[i] = "";
@@ -4824,65 +4827,65 @@ public class Globe implements Runnable
                                 this.ftm = this.rdo.getFontMetrics();
                                 this.rdo.setColor(new Color(0, 0, 0));
                                 this.rdo.drawString("Created/Published by", 63, 37);
-                                final int n55 = 63 + this.ftm.stringWidth("Created/Published by") / 2 - this.ftm.stringWidth(this.cd.createdby[19 + this.cd.haltload]) / 2;
-                                final int n56 = n55 + this.ftm.stringWidth(this.cd.createdby[19 + this.cd.haltload]);
-                                this.rdo.drawString(this.cd.createdby[19 + this.cd.haltload], n55, 52);
+                                final int n55 = 63 + this.ftm.stringWidth("Created/Published by") / 2 - this.ftm.stringWidth(this.cd.createdby.get(19 + this.cd.haltload)) / 2;
+                                final int n56 = n55 + this.ftm.stringWidth(this.cd.createdby.get(19 + this.cd.haltload));
+                                this.rdo.drawString(this.cd.createdby.get(19 + this.cd.haltload), n55, 52);
                                 this.rdo.drawLine(n55, 54, n56, 54);
                                 if (n > n55 + 216 && n < n56 + 216 && n2 > 152 && n2 < 166) {
                                     this.cur = 12;
                                     if (b) {
                                         this.tab = 1;
-                                        if (!this.proname.equals(this.cd.createdby[19 + this.cd.haltload])) {
-                                            this.proname = this.cd.createdby[19 + this.cd.haltload];
+                                        if (!this.proname.equals(this.cd.createdby.get(19 + this.cd.haltload))) {
+                                            this.proname = this.cd.createdby.get(19 + this.cd.haltload);
                                             this.loadedp = false;
                                             this.onexitpro();
                                         }
                                     }
                                 }
                                 String str8 = "Class C";
-                                if (this.cd.cclass[35 + this.cd.haltload] == 1) {
+                                if (this.cd.cclass.get(35 + this.cd.haltload) == 1) {
                                     str8 = "Class B&C";
                                 }
-                                if (this.cd.cclass[35 + this.cd.haltload] == 2) {
+                                if (this.cd.cclass.get(35 + this.cd.haltload) == 2) {
                                     str8 = "Class B";
                                 }
-                                if (this.cd.cclass[35 + this.cd.haltload] == 3) {
+                                if (this.cd.cclass.get(35 + this.cd.haltload) == 3) {
                                     str8 = "Class A&B";
                                 }
-                                if (this.cd.cclass[35 + this.cd.haltload] == 4) {
+                                if (this.cd.cclass.get(35 + this.cd.haltload) == 4) {
                                     str8 = "Class A";
                                 }
                                 this.rdo.drawString(str8, 389 - this.ftm.stringWidth(str8) / 2, 45);
-                                if ((n28 != -1 || this.cd.createdby[19 + this.cd.haltload].toLowerCase().equals(this.xt.nickname.toLowerCase())) && this.stringbutton(this.rdo, " Remove X ", 466, 45, -3, n, n2, b && !this.gs.openm, 216, 112)) {
+                                if ((n28 != -1 || this.cd.createdby.get(19 + this.cd.haltload).toLowerCase().equals(this.xt.nickname.toLowerCase())) && this.stringbutton(this.rdo, " Remove X ", 466, 45, -3, n, n2, b && !this.gs.openm, 216, 112)) {
                                     this.loadedcars = 10;
                                 }
                                 this.m.crs = true;
                                 this.m.focus_point = 400;
                                 this.m.x = -335;
-                                this.m.y = 0;
-                                this.m.z = -50;
+                                this.m.z = 0;
+                                this.m.y = -50;
                                 this.m.xz = 0;
                                 this.m.zy = 20;
                                 this.m.ground = -2000;
                                 this.m.cx = 280;
                                 this.m.cy = 150;
-                                this.bco[35 + this.cd.haltload].z = 1000;
-                                this.bco[35 + this.cd.haltload].y = 480 - this.bco[35 + this.cd.haltload].grat;
-                                this.bco[35 + this.cd.haltload].x = -52;
-                                this.bco[35 + this.cd.haltload].zy = 0;
-                                this.bco[35 + this.cd.haltload].xz = this.mrot;
+                                this.bco.get(35 + this.cd.haltload).y = 1000;
+                                this.bco.get(35 + this.cd.haltload).z = 480 - this.bco.get(35 + this.cd.haltload).grat;
+                                this.bco.get(35 + this.cd.haltload).x = -52;
+                                this.bco.get(35 + this.cd.haltload).pitch = 0;
+                                this.bco.get(35 + this.cd.haltload).yaw = this.mrot;
                                 this.mrot -= 5;
                                 if (this.mrot < -360) {
                                     this.mrot += 360;
                                 }
-                                this.bco[35 + this.cd.haltload].xy = 0;
-                                final ContO contO = this.bco[35 + this.cd.haltload];
+                                this.bco.get(35 + this.cd.haltload).roll = 0;
+                                final ContO contO = this.bco.get(35 + this.cd.haltload);
                                 contO.wzy -= 10;
-                                if (this.bco[35 + this.cd.haltload].wzy < -45) {
-                                    final ContO contO2 = this.bco[35 + this.cd.haltload];
+                                if (this.bco.get(35 + this.cd.haltload).wzy < -45) {
+                                    final ContO contO2 = this.bco.get(35 + this.cd.haltload);
                                     contO2.wzy += 45;
                                 }
-                                this.bco[35 + this.cd.haltload].d(this.rdo);
+                                this.bco.get(35 + this.cd.haltload).d(this.rdo);
                                 this.m.cx = 400;
                                 this.m.cy = 225;
                                 int n57 = 137;
@@ -4917,29 +4920,29 @@ public class Globe implements Runnable
                                     this.rdo.drawString("Endurance:", 473 + n59, 373 + n60);
                                     this.rdo.drawImage(this.xt.statb, 536 + n59, 367 + n60, null);
                                     this.rdo.setColor(new Color(0, 0, 0));
-                                    float n61 = (this.cd.swits[35 + this.cd.haltload][2] - 220) / 90.0f;
+                                    float n61 = (this.cd.swits.get(35 + this.cd.haltload)[2] - 220) / 90.0f;
                                     if (n61 < 0.2) {
                                         n61 = 0.2f;
                                     }
                                     this.rdo.fillRect((int)(162.0f + 156.0f * n61) + n58, 337 + n60, (int)(156.0f * (1.0f - n61) + 1.0f), 7);
-                                    float n62 = this.cd.acelf[35 + this.cd.haltload][1] * this.cd.acelf[35 + this.cd.haltload][0] * this.cd.acelf[35 + this.cd.haltload][2] * this.cd.grip[35 + this.cd.haltload] / 7700.0f;
+                                    float n62 = this.cd.acelf.get(35 + this.cd.haltload)[1] * this.cd.acelf.get(35 + this.cd.haltload)[0] * this.cd.acelf.get(35 + this.cd.haltload)[2] * this.cd.grip.get(35 + this.cd.haltload) / 7700.0f;
                                     if (n62 > 1.0f) {
                                         n62 = 1.0f;
                                     }
                                     this.rdo.fillRect((int)(162.0f + 156.0f * n62) + n58, 352 + n60, (int)(156.0f * (1.0f - n62) + 1.0f), 7);
-                                    final float n63 = this.cd.dishandle[35 + this.cd.haltload];
+                                    final float n63 = this.cd.dishandle.get(35 + this.cd.haltload);
                                     this.rdo.fillRect((int)(162.0f + 156.0f * n63) + n58, 367 + n60, (int)(156.0f * (1.0f - n63) + 1.0f), 7);
-                                    float n64 = (this.cd.airc[35 + this.cd.haltload] * this.cd.airs[35 + this.cd.haltload] * this.cd.bounce[35 + this.cd.haltload] + 28.0f) / 139.0f;
+                                    float n64 = (this.cd.airc.get(35 + this.cd.haltload) * this.cd.airs.get(35 + this.cd.haltload) * this.cd.bounce.get(35 + this.cd.haltload) + 28.0f) / 139.0f;
                                     if (n64 > 1.0f) {
                                         n64 = 1.0f;
                                     }
                                     this.rdo.fillRect((int)(536.0f + 156.0f * n64) + n59, 337 + n60, (int)(156.0f * (1.0f - n64) + 1.0f), 7);
-                                    float n65 = (this.cd.moment[35 + this.cd.haltload] + 0.5f) / 2.6f;
+                                    float n65 = (this.cd.moment.get(35 + this.cd.haltload) + 0.5f) / 2.6f;
                                     if (n65 > 1.0f) {
                                         n65 = 1.0f;
                                     }
                                     this.rdo.fillRect((int)(536.0f + 156.0f * n65) + n59, 352 + n60, (int)(156.0f * (1.0f - n65) + 1.0f), 7);
-                                    final float n66 = this.cd.outdam[35 + this.cd.haltload];
+                                    final float n66 = this.cd.outdam.get(35 + this.cd.haltload);
                                     this.rdo.fillRect((int)(536.0f + 156.0f * n66) + n59, 367 + n60, (int)(156.0f * (1.0f - n66) + 1.0f), 7);
                                     this.rdo.drawImage(this.xt.statbo, 162 + n58, 337 + n60, null);
                                     this.rdo.drawImage(this.xt.statbo, 162 + n58, 352 + n60, null);
@@ -5053,28 +5056,28 @@ public class Globe implements Runnable
                                     }
                                     final Color hsbColor = Color.getHSBColor(this.xt.arnp[0], this.xt.arnp[1], 1.0f - this.xt.arnp[2]);
                                     final Color hsbColor2 = Color.getHSBColor(this.xt.arnp[3], this.xt.arnp[4], 1.0f - this.xt.arnp[5]);
-                                    for (int n71 = 0; n71 < this.bco[36].npl; ++n71) {
-                                        if (this.bco[36].p.get(n71).colnum == 1) {
-                                            this.bco[36].p.get(n71).hsb[0] = this.xt.arnp[0];
-                                            this.bco[36].p.get(n71).hsb[1] = this.xt.arnp[1];
-                                            this.bco[36].p.get(n71).hsb[2] = 1.0f - this.xt.arnp[2];
-                                            this.bco[36].p.get(n71).c[0] = hsbColor.getRed();
-                                            this.bco[36].p.get(n71).c[1] = hsbColor.getGreen();
-                                            this.bco[36].p.get(n71).c[2] = hsbColor.getBlue();
-                                            this.bco[36].p.get(n71).oc[0] = hsbColor.getRed();
-                                            this.bco[36].p.get(n71).oc[1] = hsbColor.getGreen();
-                                            this.bco[36].p.get(n71).oc[2] = hsbColor.getBlue();
+                                    for (int n71 = 0; n71 < this.bco.get(36).npl; ++n71) {
+                                        if (this.bco.get(36).p.get(n71).colnum == 1) {
+                                            this.bco.get(36).p.get(n71).hsb[0] = this.xt.arnp[0];
+                                            this.bco.get(36).p.get(n71).hsb[1] = this.xt.arnp[1];
+                                            this.bco.get(36).p.get(n71).hsb[2] = 1.0f - this.xt.arnp[2];
+                                            this.bco.get(36).p.get(n71).c[0] = hsbColor.getRed();
+                                            this.bco.get(36).p.get(n71).c[1] = hsbColor.getGreen();
+                                            this.bco.get(36).p.get(n71).c[2] = hsbColor.getBlue();
+                                            this.bco.get(36).p.get(n71).oc[0] = hsbColor.getRed();
+                                            this.bco.get(36).p.get(n71).oc[1] = hsbColor.getGreen();
+                                            this.bco.get(36).p.get(n71).oc[2] = hsbColor.getBlue();
                                         }
-                                        if (this.bco[36].p.get(n71).colnum == 2) {
-                                            this.bco[36].p.get(n71).hsb[0] = this.xt.arnp[3];
-                                            this.bco[36].p.get(n71).hsb[1] = this.xt.arnp[4];
-                                            this.bco[36].p.get(n71).hsb[2] = 1.0f - this.xt.arnp[5];
-                                            this.bco[36].p.get(n71).c[0] = hsbColor2.getRed();
-                                            this.bco[36].p.get(n71).c[1] = hsbColor2.getGreen();
-                                            this.bco[36].p.get(n71).c[2] = hsbColor2.getBlue();
-                                            this.bco[36].p.get(n71).oc[0] = hsbColor2.getRed();
-                                            this.bco[36].p.get(n71).oc[1] = hsbColor2.getGreen();
-                                            this.bco[36].p.get(n71).oc[2] = hsbColor2.getBlue();
+                                        if (this.bco.get(36).p.get(n71).colnum == 2) {
+                                            this.bco.get(36).p.get(n71).hsb[0] = this.xt.arnp[3];
+                                            this.bco.get(36).p.get(n71).hsb[1] = this.xt.arnp[4];
+                                            this.bco.get(36).p.get(n71).hsb[2] = 1.0f - this.xt.arnp[5];
+                                            this.bco.get(36).p.get(n71).c[0] = hsbColor2.getRed();
+                                            this.bco.get(36).p.get(n71).c[1] = hsbColor2.getGreen();
+                                            this.bco.get(36).p.get(n71).c[2] = hsbColor2.getBlue();
+                                            this.bco.get(36).p.get(n71).oc[0] = hsbColor2.getRed();
+                                            this.bco.get(36).p.get(n71).oc[1] = hsbColor2.getGreen();
+                                            this.bco.get(36).p.get(n71).oc[2] = hsbColor2.getBlue();
                                         }
                                     }
                                     if (this.stringbutton(this.rdo, "    Play >    ", 280, 220, -1, n, n2, b && !this.gs.openm, 216, 112)) {
@@ -5088,20 +5091,20 @@ public class Globe implements Runnable
                                     if (this.xt.sc[0] != 36) {
                                         if (this.stringbutton(this.rdo, "     Switch to using clan cars     ", 280, 250, -2, n, n2, b && !this.gs.openm, 216, 112)) {
                                             this.xt.sc[0] = 36;
-                                            for (int n72 = 0, n73 = 0; n73 < this.bco[36].npl && n72 == 0; ++n73) {
-                                                if (this.bco[36].p.get(n73).colnum == 1) {
+                                            for (int n72 = 0, n73 = 0; n73 < this.bco.get(36).npl && n72 == 0; ++n73) {
+                                                if (this.bco.get(36).p.get(n73).colnum == 1) {
                                                     final float[] hsbvals = new float[3];
-                                                    Color.RGBtoHSB(this.bco[36].p.get(n73).c[0], this.bco[36].p.get(n73).c[1], this.bco[36].p.get(n73).c[2], hsbvals);
+                                                    Color.RGBtoHSB(this.bco.get(36).p.get(n73).c[0], this.bco.get(36).p.get(n73).c[1], this.bco.get(36).p.get(n73).c[2], hsbvals);
                                                     this.xt.arnp[0] = hsbvals[0];
                                                     this.xt.arnp[1] = hsbvals[1];
                                                     this.xt.arnp[2] = 1.0f - hsbvals[2];
                                                     n72 = 1;
                                                 }
                                             }
-                                            for (int n74 = 0, n75 = 0; n75 < this.bco[36].npl && n74 == 0; ++n75) {
-                                                if (this.bco[36].p.get(n75).colnum == 2) {
+                                            for (int n74 = 0, n75 = 0; n75 < this.bco.get(36).npl && n74 == 0; ++n75) {
+                                                if (this.bco.get(36).p.get(n75).colnum == 2) {
                                                     final float[] hsbvals2 = new float[3];
-                                                    Color.RGBtoHSB(this.bco[36].p.get(n75).c[0], this.bco[36].p.get(n75).c[1], this.bco[36].p.get(n75).c[2], hsbvals2);
+                                                    Color.RGBtoHSB(this.bco.get(36).p.get(n75).c[0], this.bco.get(36).p.get(n75).c[1], this.bco.get(36).p.get(n75).c[2], hsbvals2);
                                                     this.xt.arnp[3] = hsbvals2[0];
                                                     this.xt.arnp[4] = hsbvals2[1];
                                                     this.xt.arnp[5] = 1.0f - hsbvals2[2];
@@ -5117,7 +5120,7 @@ public class Globe implements Runnable
                                         this.rdo.drawString("You are currently using your clan's cars.", 280 - this.ftm.stringWidth("You are currently using your clan's cars.") / 2, 250);
                                     }
                                 }
-                                if (this.cd.publish[19 + this.cd.haltload] > 0) {
+                                if (this.cd.publish.get(19 + this.cd.haltload) > 0) {
                                     this.rd.setFont(new Font("Arial", 1, 12));
                                     this.ftm = this.rd.getFontMetrics();
                                     this.rd.setColor(new Color(0, 0, 0));
@@ -12451,20 +12454,20 @@ public class Globe implements Runnable
                             while (this.cd.haltload == this.cd.onloadingcar) {}
                             this.loadedcar = this.cd.loadonlinecar(this.selcar, 35 + this.cd.haltload);
                             if (this.xt.sc[0] == 36 && this.cd.haltload == 1 && this.loadedcar > 0) {
-                                for (int n87 = 0, n88 = 0; n88 < this.bco[36].npl && n87 == 0; ++n88) {
-                                    if (this.bco[36].p.get(n88).colnum == 1) {
+                                for (int n87 = 0, n88 = 0; n88 < this.bco.get(36).npl && n87 == 0; ++n88) {
+                                    if (this.bco.get(36).p.get(n88).colnum == 1) {
                                         final float[] hsbvals = new float[3];
-                                        Color.RGBtoHSB(this.bco[36].p.get(n88).c[0], this.bco[36].p.get(n88).c[1], this.bco[36].p.get(n88).c[2], hsbvals);
+                                        Color.RGBtoHSB(this.bco.get(36).p.get(n88).c[0], this.bco.get(36).p.get(n88).c[1], this.bco.get(36).p.get(n88).c[2], hsbvals);
                                         this.xt.arnp[0] = hsbvals[0];
                                         this.xt.arnp[1] = hsbvals[1];
                                         this.xt.arnp[2] = 1.0f - hsbvals[2];
                                         n87 = 1;
                                     }
                                 }
-                                for (int n89 = 0, n90 = 0; n90 < this.bco[36].npl && n89 == 0; ++n90) {
-                                    if (this.bco[36].p.get(n90).colnum == 2) {
+                                for (int n89 = 0, n90 = 0; n90 < this.bco.get(36).npl && n89 == 0; ++n90) {
+                                    if (this.bco.get(36).p.get(n90).colnum == 2) {
                                         final float[] hsbvals2 = new float[3];
-                                        Color.RGBtoHSB(this.bco[36].p.get(n90).c[0], this.bco[36].p.get(n90).c[1], this.bco[36].p.get(n90).c[2], hsbvals2);
+                                        Color.RGBtoHSB(this.bco.get(36).p.get(n90).c[0], this.bco.get(36).p.get(n90).c[1], this.bco.get(36).p.get(n90).c[2], hsbvals2);
                                         this.xt.arnp[3] = hsbvals2[0];
                                         this.xt.arnp[4] = hsbvals2[1];
                                         this.xt.arnp[5] = 1.0f - hsbvals2[2];
@@ -12822,8 +12825,8 @@ public class Globe implements Runnable
         this.m.crs = true;
         this.m.focus_point = 400;
         this.m.x = -335;
-        this.m.y = 0;
-        this.m.z = -50;
+        this.m.z = 0;
+        this.m.y = -50;
         this.m.xz = 0;
         this.m.zy = 20;
         this.m.ground = -2000;

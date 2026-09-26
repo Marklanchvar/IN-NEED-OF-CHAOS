@@ -1454,7 +1454,7 @@ public class xtGraphics extends Panel implements Runnable
     
     public void stopallnow() {
         if (this.runner != null) {
-            this.runner.stop();
+            this.runner.interrupt();
             this.runner = null;
         }
         this.runtyp = 0;
@@ -2954,7 +2954,7 @@ public class xtGraphics extends Panel implements Runnable
         }
         this.loadstrack(runtyp, s, n);
         if (b) {
-            this.runner.stop();
+            this.runner.interrupt();
             this.runner = null;
             this.runtyp = 0;
         }
@@ -4924,7 +4924,7 @@ public class xtGraphics extends Panel implements Runnable
                     if (this.onjoin != -1 && this.multion != 0 && this.ontyp > 0 && this.ontyp <= 5) {
                         int n = 0;
                         for (int i = 16; i < this.cd.nlocars; ++i) {
-                            if (Math.abs(this.cd.cclass[i] - (this.ontyp - 1)) <= 1) {
+                            if (Math.abs(this.cd.cclass.get(i) - (this.ontyp - 1)) <= 1) {
                                 if (n == 0) {
                                     this.minsl = i;
                                     n = 1;
@@ -4945,7 +4945,7 @@ public class xtGraphics extends Panel implements Runnable
                             if (this.sc[0] > this.maxsl) {
                                 this.sc[0] = this.maxsl;
                             }
-                            if (Math.abs(this.cd.cclass[this.sc[0]] - (this.ontyp - 1)) > 1) {
+                            if (Math.abs(this.cd.cclass.get(this.sc[0]) - (this.ontyp - 1)) > 1) {
                                 this.sc[0] = this.minsl;
                             }
                         }
@@ -5042,7 +5042,7 @@ public class xtGraphics extends Panel implements Runnable
                         array.get(j).p.get(l).oc[2] = array.get(j).scol[2];
                     }
                 }
-                array.get(j).xy = 0;
+                array.get(j).roll = 0;
             }
             for (int n2 = 0; n2 < 6; ++n2) {
                 this.arnp[n2] = -1.0f;
@@ -5051,8 +5051,8 @@ public class xtGraphics extends Panel implements Runnable
         this.m.trk = 0;
         this.m.crs = true;
         this.m.x = -400;
-        this.m.y = -525;
-        this.m.z = -50;
+        this.m.z = -525;
+        this.m.y = -50;
         this.m.xz = 0;
         this.m.zy = 10;
         this.m.ground = 495;
@@ -5164,8 +5164,8 @@ public class xtGraphics extends Panel implements Runnable
             }
         }
         if ((this.multion != 0 || this.testdrive == 1 || this.testdrive == 2) && this.lsc != this.sc[0]) {
-            if (array.get(this.sc[0]).xy != 0) {
-                array.get(this.sc[0]).xy = 0;
+            if (array.get(this.sc[0]).roll != 0) {
+                array.get(this.sc[0]).roll = 0;
             }
             for (int n3 = 0, n4 = 0; n4 < array.get(this.sc[0]).npl && n3 == 0; ++n4) {
                 if (array.get(this.sc[0]).p.get(n4).colnum == 1) {
@@ -5229,9 +5229,9 @@ public class xtGraphics extends Panel implements Runnable
                 if (this.cfase == 3 && this.cd.lastload == 2) {
                     this.app.mcars.move(400 - this.app.mcars.w / 2, 78);
                     this.app.mcars.show = true;
-                    if (!this.app.mcars.getSelectedItem().equals(this.cd.names[this.sc[0]])) {
+                    if (!this.app.mcars.getSelectedItem().equals(this.cd.names.get(this.sc[0]))) {
                         for (int l = 16; l < this.cd.nlocars; ++l) {
-                            if (this.cd.names[l].equals(this.app.mcars.getSelectedItem())) {
+                            if (this.cd.names.get(l).equals(this.app.mcars.getSelectedItem())) {
                                 n7 = l;
                             }
                         }
@@ -5249,11 +5249,11 @@ public class xtGraphics extends Panel implements Runnable
                         string = "N#" + (this.sc[0] - 35) + "  ";
                     }
                     if (this.aflk) {
-                        this.drawcs(95 + n8, string + this.cd.names[this.sc[0]], 240, 240, 240, 3);
+                        this.drawcs(95 + n8, string + this.cd.names.get(this.sc[0]), 240, 240, 240, 3);
                         this.aflk = false;
                     }
                     else {
-                        this.drawcs(95, string + this.cd.names[this.sc[0]], 176, 176, 176, 3);
+                        this.drawcs(95, string + this.cd.names.get(this.sc[0]), 176, 176, 176, 3);
                         this.aflk = true;
                     }
                 }
@@ -5261,25 +5261,25 @@ public class xtGraphics extends Panel implements Runnable
             else {
                 this.app.mcars.show = false;
             }
-            array.get(this.sc[0]).z = 950;
+            array.get(this.sc[0]).y = 950;
             if (this.sc[0] == 13) {
-                array.get(this.sc[0]).z = 1000;
+                array.get(this.sc[0]).y = 1000;
             }
-            array.get(this.sc[0]).y = -34 - array.get(this.sc[0]).grat;
+            array.get(this.sc[0]).z = -34 - array.get(this.sc[0]).grat;
             array.get(this.sc[0]).x = 0;
             if (this.mouson >= 0 && this.mouson <= 3) {
                 final ContO contO = array.get(this.sc[0]);
-                contO.xz += 2;
+                contO.yaw += 2;
             }
             else {
                 final ContO contO2 = array.get(this.sc[0]);
-                contO2.xz += 5;
+                contO2.yaw += 5;
             }
-            if (array.get(this.sc[0]).xz > 360) {
+            if (array.get(this.sc[0]).yaw > 360) {
                 final ContO contO3 = array.get(this.sc[0]);
-                contO3.xz -= 360;
+                contO3.yaw -= 360;
             }
-            array.get(this.sc[0]).zy = 0;
+            array.get(this.sc[0]).pitch = 0;
             final ContO contO4 = array.get(this.sc[0]);
             contO4.wzy -= 10;
             if (array.get(this.sc[0]).wzy < -30) {
@@ -5685,7 +5685,7 @@ public class xtGraphics extends Panel implements Runnable
                             if (!this.app.openm) {
                                 if (!this.app.mycar.isShowing()) {
                                     this.app.mycar.show();
-                                    this.app.mycar.setState(this.cd.include[this.sc[0] - 16]);
+                                    this.app.mycar.setState(this.cd.include.get(this.sc[0] - 16));
                                 }
                             }
                             else {
@@ -5696,8 +5696,8 @@ public class xtGraphics extends Panel implements Runnable
                             this.rd.setColor(new Color(0, 0, 0));
                             this.rd.drawRoundRect(305, 302, 190, 24, 7, 20);
                             this.app.movefield(this.app.mycar, 334, 306, 150, 17);
-                            if (this.app.mycar.getState() != this.cd.include[this.sc[0] - 16]) {
-                                this.cd.include[this.sc[0] - 16] = this.app.mycar.getState();
+                            if (this.app.mycar.getState() != this.cd.include.get(this.sc[0] - 16)) {
+                                this.cd.include.set(this.sc[0] - 16, this.app.mycar.getState());
                                 this.app.requestFocus();
                             }
                         }
@@ -5715,8 +5715,8 @@ public class xtGraphics extends Panel implements Runnable
                             this.rd.setFont(new Font("Arial", 1, 12));
                             this.ftm = this.rd.getFontMetrics();
                             this.rd.setColor(new Color(0, 0, 0));
-                            if (!this.cd.createdby[this.sc[0] - 16].equals(this.nickname)) {
-                                b2 = this.clink(this.cd.createdby[this.sc[0] - 16], n, n2, b);
+                            if (!this.cd.createdby.get(this.sc[0] - 16).equals(this.nickname)) {
+                                b2 = this.clink(this.cd.createdby.get(this.sc[0] - 16), n, n2, b);
                             }
                             else {
                                 this.rd.drawString("Created by You", 241, 160);
@@ -5772,14 +5772,14 @@ public class xtGraphics extends Panel implements Runnable
                         }
                         if (this.cd.action == 7) {
                             this.drawprom(145, 95);
-                            this.drawcs(175, "" + this.cd.names[this.cd.ac] + " has been successfully added to your cars!", 0, 0, 0, 3);
+                            this.drawcs(175, "" + this.cd.names.get(this.cd.ac) + " has been successfully added to your cars!", 0, 0, 0, 3);
                             if (this.drawcarb(true, null, " OK ", 379, 195, n, n2, b)) {
                                 this.cd.action = 0;
                             }
                         }
                         if (this.cd.action == 6) {
                             this.drawprom(145, 95);
-                            this.drawcs(195, "Adding " + this.cd.names[this.cd.ac] + " to your cars...", 0, 0, 0, 3);
+                            this.drawcs(195, "Adding " + this.cd.names.get(this.cd.ac) + " to your cars...", 0, 0, 0, 3);
                         }
                         int n17 = 95;
                         int n18 = 5;
@@ -5839,8 +5839,8 @@ public class xtGraphics extends Panel implements Runnable
                             this.rd.setFont(new Font("Arial", 1, 12));
                             this.ftm = this.rd.getFontMetrics();
                             this.rd.setColor(new Color(0, 0, 0));
-                            if (!this.cd.createdby[this.sc[0] - 16].equals(this.nickname)) {
-                                b2 = this.clink(this.cd.createdby[this.sc[0] - 16], n, n2, b);
+                            if (!this.cd.createdby.get(this.sc[0] - 16).equals(this.nickname)) {
+                                b2 = this.clink(this.cd.createdby.get(this.sc[0] - 16), n, n2, b);
                             }
                             else {
                                 this.rd.drawString("Created by You", 241, 160);
@@ -6098,29 +6098,29 @@ public class xtGraphics extends Panel implements Runnable
                     this.rd.drawString("Endurance:", 473, 373);
                     this.rd.drawImage(this.statb, 536, 367, null);
                     this.rd.setColor(new Color(0, 0, 0));
-                    float n19 = (this.cd.swits[this.sc[0]][2] - 220) / 90.0f;
+                    float n19 = (this.cd.swits.get(this.sc[0])[2] - 220) / 90.0f;
                     if (n19 < 0.2) {
                         n19 = 0.2f;
                     }
                     this.rd.fillRect((int)(162.0f + 156.0f * n19), 337, (int)(156.0f * (1.0f - n19) + 1.0f), 7);
-                    float n20 = this.cd.acelf[this.sc[0]][1] * this.cd.acelf[this.sc[0]][0] * this.cd.acelf[this.sc[0]][2] * this.cd.grip[this.sc[0]] / 7700.0f;
+                    float n20 = this.cd.acelf.get(this.sc[0])[1] * this.cd.acelf.get(this.sc[0])[0] * this.cd.acelf.get(this.sc[0])[2] * this.cd.grip.get(this.sc[0]) / 7700.0f;
                     if (n20 > 1.0f) {
                         n20 = 1.0f;
                     }
                     this.rd.fillRect((int)(162.0f + 156.0f * n20), 352, (int)(156.0f * (1.0f - n20) + 1.0f), 7);
-                    final float n21 = this.cd.dishandle[this.sc[0]];
+                    final float n21 = this.cd.dishandle.get(this.sc[0]);
                     this.rd.fillRect((int)(162.0f + 156.0f * n21), 367, (int)(156.0f * (1.0f - n21) + 1.0f), 7);
-                    float n22 = (this.cd.airc[this.sc[0]] * this.cd.airs[this.sc[0]] * this.cd.bounce[this.sc[0]] + 28.0f) / 139.0f;
+                    float n22 = (this.cd.airc.get(this.sc[0]) * this.cd.airs.get(this.sc[0]) * this.cd.bounce.get(this.sc[0]) + 28.0f) / 139.0f;
                     if (n22 > 1.0f) {
                         n22 = 1.0f;
                     }
                     this.rd.fillRect((int)(536.0f + 156.0f * n22), 337, (int)(156.0f * (1.0f - n22) + 1.0f), 7);
-                    float n23 = (this.cd.moment[this.sc[0]] + 0.5f) / 2.6f;
+                    float n23 = (this.cd.moment.get(this.sc[0]) + 0.5f) / 2.6f;
                     if (n23 > 1.0f) {
                         n23 = 1.0f;
                     }
                     this.rd.fillRect((int)(536.0f + 156.0f * n23), 352, (int)(156.0f * (1.0f - n23) + 1.0f), 7);
-                    final float n24 = this.cd.outdam[this.sc[0]];
+                    final float n24 = this.cd.outdam.get(this.sc[0]);
                     this.rd.fillRect((int)(536.0f + 156.0f * n24), 367, (int)(156.0f * (1.0f - n24) + 1.0f), 7);
                     this.rd.drawImage(this.statbo, 162, 337, null);
                     this.rd.drawImage(this.statbo, 162, 352, null);
@@ -6132,16 +6132,16 @@ public class xtGraphics extends Panel implements Runnable
                         this.rd.setFont(new Font("Arial", 1, 13));
                         this.ftm = this.rd.getFontMetrics();
                         String str3 = "Class C";
-                        if (this.cd.cclass[this.sc[0]] == 1) {
+                        if (this.cd.cclass.get(this.sc[0]) == 1) {
                             str3 = "Class B & C";
                         }
-                        if (this.cd.cclass[this.sc[0]] == 2) {
+                        if (this.cd.cclass.get(this.sc[0]) == 2) {
                             str3 = "Class B";
                         }
-                        if (this.cd.cclass[this.sc[0]] == 3) {
+                        if (this.cd.cclass.get(this.sc[0]) == 3) {
                             str3 = "Class A & B";
                         }
-                        if (this.cd.cclass[this.sc[0]] == 4) {
+                        if (this.cd.cclass.get(this.sc[0]) == 4) {
                             str3 = "Class A";
                         }
                         if (this.kbload < 7) {
@@ -6320,7 +6320,7 @@ public class xtGraphics extends Panel implements Runnable
                         }
                     }
                     if (this.cfase == 101 && n7 == -1) {
-                        if (this.cd.publish[this.sc[0] - 16] == 1 || this.cd.publish[this.sc[0] - 16] == 2) {
+                        if (this.cd.publish.get(this.sc[0] - 16) == 1 || this.cd.publish.get(this.sc[0] - 16) == 2) {
                             if (this.drawcarb(true, null, "Add to My Cars", 345, 385, n, n2, b) && this.cd.action == 0) {
                                 this.cd.ac = this.sc[0];
                                 if (this.logged) {
@@ -6355,14 +6355,14 @@ public class xtGraphics extends Panel implements Runnable
             this.gatey = 300;
             if (this.flipo > 10) {
                 final ContO contO6 = array.get(this.sc[0]);
-                contO6.y -= 100;
+                contO6.z -= 100;
                 if (this.nextc == 1) {
                     final ContO contO7 = array.get(this.sc[0]);
-                    contO7.zy += 20;
+                    contO7.pitch += 20;
                 }
                 if (this.nextc == -1) {
                     final ContO contO8 = array.get(this.sc[0]);
-                    contO8.zy -= 20;
+                    contO8.pitch -= 20;
                 }
             }
             else {
@@ -6384,7 +6384,7 @@ public class xtGraphics extends Panel implements Runnable
                             }
                         }
                         if (this.multion != 0 && this.onjoin != -1 && this.ontyp > 0 && this.ontyp <= 5) {
-                            while (this.sc[0] < this.maxsl && Math.abs(this.cd.cclass[this.sc[0]] - (this.ontyp - 1)) > 1) {
+                            while (this.sc[0] < this.maxsl && Math.abs(this.cd.cclass.get(this.sc[0]) - (this.ontyp - 1)) > 1) {
                                 final int[] sc2 = this.sc;
                                 final int n29 = 0;
                                 ++sc2[n29];
@@ -6404,7 +6404,7 @@ public class xtGraphics extends Panel implements Runnable
                             }
                         }
                         if (this.multion != 0 && this.onjoin != -1 && this.ontyp > 0 && this.ontyp <= 5) {
-                            while (this.sc[0] > this.minsl && Math.abs(this.cd.cclass[this.sc[0]] - (this.ontyp - 1)) > 1) {
+                            while (this.sc[0] > this.minsl && Math.abs(this.cd.cclass.get(this.sc[0]) - (this.ontyp - 1)) > 1) {
                                 final int[] sc4 = this.sc;
                                 final int n31 = 0;
                                 --sc4[n31];
@@ -6412,15 +6412,15 @@ public class xtGraphics extends Panel implements Runnable
                         }
                     }
                     if (this.cfase == 3 && this.cd.lastload == 2) {
-                        this.app.mcars.select(this.cd.names[this.sc[0]]);
+                        this.app.mcars.select(this.cd.names.get(this.sc[0]));
                     }
-                    array.get(this.sc[0]).z = 950;
-                    array.get(this.sc[0]).y = -34 - array.get(this.sc[0]).grat - 1100;
+                    array.get(this.sc[0]).y = 950;
+                    array.get(this.sc[0]).z = -34 - array.get(this.sc[0]).grat - 1100;
                     array.get(this.sc[0]).x = 0;
-                    array.get(this.sc[0]).zy = 0;
+                    array.get(this.sc[0]).pitch = 0;
                 }
                 final ContO contO9 = array.get(this.sc[0]);
-                contO9.y += 100;
+                contO9.z += 100;
             }
             --this.flipo;
         }
@@ -6467,7 +6467,7 @@ public class xtGraphics extends Panel implements Runnable
                     this.fase = -22;
                 }
                 if (this.sc[0] < 16 || this.cd.lastload == 2) {
-                    this.app.setcarcookie(this.sc[0], this.cd.names[this.sc[0]], this.arnp, this.gmode, this.unlocked, this.mtop);
+                    this.app.setcarcookie(this.sc[0], this.cd.names.get(this.sc[0]), this.arnp, this.gmode, this.unlocked, this.mtop);
                 }
                 if (this.cd.haltload != 0) {
                     if (this.cd.haltload == 2) {
@@ -6531,7 +6531,7 @@ public class xtGraphics extends Panel implements Runnable
         if (b2) {
             this.app.mouses = 0;
             this.onviewpro = true;
-            this.cd.viewname = this.cd.createdby[this.sc[0] - 16];
+            this.cd.viewname = this.cd.createdby.get(this.sc[0] - 16);
             this.m.crs = false;
             this.fase = 1177;
             this.intertrack.stop();
@@ -6793,19 +6793,19 @@ public class xtGraphics extends Panel implements Runnable
                     this.rd.fillRect(226, 211, 4, 125);
                     this.rd.fillRect(226, 332, 348, 4);
                     this.rd.fillRect(570, 211, 4, 125);
-                    array.get(n4).y = y;
+                    array.get(n4).z = y;
                     this.m.crs = true;
                     this.m.x = -400;
-                    this.m.y = 0;
-                    this.m.z = -50;
+                    this.m.z = 0;
+                    this.m.y = -50;
                     this.m.xz = 0;
                     this.m.zy = 0;
                     this.m.ground = 2470;
-                    array.get(n4).z = 1000;
+                    array.get(n4).y = 1000;
                     array.get(n4).x = 0;
                     final ContO contO = array.get(n4);
-                    contO.xz += 5;
-                    array.get(n4).zy = 0;
+                    contO.yaw += 5;
+                    array.get(n4).pitch = 0;
                     final ContO contO2 = array.get(n4);
                     contO2.wzy -= 10;
                     array.get(n4).d(this.rd);
@@ -6822,10 +6822,10 @@ public class xtGraphics extends Panel implements Runnable
                         s = " ";
                     }
                     if (this.aflk) {
-                        this.drawcs(320, "" + this.cd.names[n4] + "" + s + " has been unlocked!", 196, 176, 0, 3);
+                        this.drawcs(320, "" + this.cd.names.get(n4) + "" + s + " has been unlocked!", 196, 176, 0, 3);
                     }
                     else {
-                        this.drawcs(320, "" + this.cd.names[n4] + "" + s + " has been unlocked!", 255, 247, 165, 3);
+                        this.drawcs(320, "" + this.cd.names.get(n4) + "" + s + " has been unlocked!", 255, 247, 165, 3);
                     }
                     this.pin = 140;
                 }
@@ -7258,7 +7258,7 @@ public class xtGraphics extends Panel implements Runnable
                             array[n20] = false;
                         }
                     }
-                    if (this.cd.include[n19] && this.sc[0] != n19 + 16) {
+                    if (this.cd.include.get(n19) && this.sc[0] != n19 + 16) {
                         int n21;
                         for (n21 = (int)(1.0 + Math.random() * (n2 - 1)); array[n21]; n21 = (int)(1.0 + Math.random() * (n2 - 1))) {}
                         array[n21] = true;
@@ -7277,7 +7277,7 @@ public class xtGraphics extends Panel implements Runnable
                             array[n24] = false;
                         }
                     }
-                    if (this.cd.include[n23] && this.sc[0] != n23 + 16) {
+                    if (this.cd.include.get(n23) && this.sc[0] != n23 + 16) {
                         int n25;
                         for (n25 = (int)(1.0 + Math.random() * (n2 - 1)); array[n25]; n25 = (int)(1.0 + Math.random() * (n2 - 1))) {}
                         array[n25] = true;
@@ -7743,11 +7743,11 @@ public class xtGraphics extends Panel implements Runnable
                                     this.drawhi(this.youlost, 70);
                                     if (this.fase != 7001) {
                                         if (this.aflk) {
-                                            this.drawcs(120, "" + this.cd.names[this.sc[n2]] + " finished first, race over!", 0, 0, 0, 0);
+                                            this.drawcs(120, "" + this.cd.names.get(this.sc[n2]) + " finished first, race over!", 0, 0, 0, 0);
                                             this.aflk = false;
                                         }
                                         else {
-                                            this.drawcs(120, "" + this.cd.names[this.sc[n2]] + " finished first, race over!", 0, 128, 255, 0);
+                                            this.drawcs(120, "" + this.cd.names.get(this.sc[n2]) + " finished first, race over!", 0, 128, 255, 0);
                                             this.aflk = true;
                                         }
                                     }
@@ -7990,7 +7990,7 @@ public class xtGraphics extends Panel implements Runnable
                 this.rd.drawString("" + checkPoints.wasted + " / " + (this.nplayers - 1) + "", 150, 18);
                 this.rd.drawImage(this.pos, 42, 27, null);
                 this.rd.drawImage(this.rank[checkPoints.pos[mad.im]], 110, 28, null);
-                this.drawstat(this.cd.maxmag[mad.cn], mad.hitmag, mad.newcar, mad.power);
+                this.drawstat(this.cd.maxmag.get(mad.cn), mad.hitmag, mad.newcar, mad.power);
                 if (control.radar && checkPoints.stage != 10) {
                     this.radarstat(mad, contO, checkPoints);
                 }
@@ -8334,12 +8334,12 @@ public class xtGraphics extends Panel implements Runnable
                         if (this.fase != 7001) {
                             if (this.dested[n9] == 1) {
                                 this.wasay = true;
-                                this.say = "" + this.cd.names[this.sc[n9]] + " has been wasted!";
+                                this.say = "" + this.cd.names.get(this.sc[n9]) + " has been wasted!";
                                 this.tcnt = -15;
                             }
                             if (this.dested[n9] == 2) {
                                 this.wasay = true;
-                                this.say = "You wasted " + this.cd.names[this.sc[n9]] + "!";
+                                this.say = "You wasted " + this.cd.names.get(this.sc[n9]) + "!";
                                 this.tcnt = -15;
                             }
                         }
@@ -8661,7 +8661,7 @@ public class xtGraphics extends Panel implements Runnable
             n7 = (int)(90 + n9 + Math.atan((checkPoints.opz[alocked] - checkPoints.opz[this.im]) / (double)(checkPoints.opx[alocked] - checkPoints.opx[this.im])) / 0.017453292519943295);
             if (this.multion == 0) {
                 this.drawcs(13, "[                                ]", 76, 67, 240, 0);
-                this.drawcs(13, this.cd.names[this.sc[alocked]], 0, 0, 0, 0);
+                this.drawcs(13, this.cd.names.get(this.sc[alocked]), 0, 0, 0, 0);
             }
             else {
                 this.rd.setFont(new Font("Arial", 1, 12));
@@ -8670,7 +8670,7 @@ public class xtGraphics extends Panel implements Runnable
                 this.drawcs(12, this.plnames[alocked], 0, 0, 0, 0);
                 this.rd.setFont(new Font("Arial", 0, 10));
                 this.ftm = this.rd.getFontMetrics();
-                this.drawcs(24, this.cd.names[this.sc[alocked]], 0, 0, 0, 0);
+                this.drawcs(24, this.cd.names.get(this.sc[alocked]), 0, 0, 0, 0);
                 this.rd.setFont(new Font("Arial", 1, 11));
                 this.ftm = this.rd.getFontMetrics();
             }
@@ -9052,10 +9052,10 @@ public class xtGraphics extends Panel implements Runnable
         this.rd.drawImage(this.sped, 7, 234, null);
         final float n12 = contO.x - this.lcarx;
         this.lcarx = contO.x;
-        final float n13 = contO.y - this.lcary;
-        this.lcary = contO.y;
-        final float n14 = contO.z - this.lcarz;
-        this.lcarz = contO.z;
+        final float n13 = contO.z - this.lcary;
+        this.lcary = contO.z;
+        final float n14 = contO.y - this.lcarz;
+        this.lcarz = contO.y;
         final float n15 = (float)Math.sqrt(n12 * n12 + n14 * n14) * 1.4f * 21.0f * 60.0f * 60.0f / 100000.0f;
         final float n16 = n15 * 0.621371f;
         this.rd.setColor(new Color(0, 0, 100));
@@ -9066,7 +9066,7 @@ public class xtGraphics extends Panel implements Runnable
     public void playsounds(final Mad mad, final Control control, final int n) {
         if ((this.fase == 0 || this.fase == 7001) && this.starcnt < 35 && this.cntwis != 8 && !this.mutes) {
             boolean b = (control.up && mad.speed > 0.0f) || (control.down && mad.speed < 10.0f);
-            boolean b2 = (mad.skid == 1 && control.handb) || Math.abs(mad.scz[0] - (mad.scz[1] + mad.scz[0] + mad.scz[2] + mad.scz[3]) / 4.0f) > 1.0f || Math.abs(mad.scx[0] - (mad.scx[1] + mad.scx[0] + mad.scx[2] + mad.scx[3]) / 4.0f) > 1.0f;
+            boolean b2 = (mad.skid == 1 && control.handb) || Math.abs(mad.scy[0] - (mad.scy[1] + mad.scy[0] + mad.scy[2] + mad.scy[3]) / 4.0f) > 1.0f || Math.abs(mad.scx[0] - (mad.scx[1] + mad.scx[0] + mad.scx[2] + mad.scx[3]) / 4.0f) > 1.0f;
             boolean b3 = false;
             if (control.up && mad.speed < 10.0f) {
                 b2 = true;
@@ -9077,8 +9077,8 @@ public class xtGraphics extends Panel implements Runnable
                 if (!mad.capsized) {
                     if (!b2) {
                         if (mad.power != 98.0f) {
-                            if (Math.abs(mad.speed) > 0.0f && Math.abs(mad.speed) <= this.cd.swits[mad.cn][0]) {
-                                int n2 = (int)(3.0f * Math.abs(mad.speed) / this.cd.swits[mad.cn][0]);
+                            if (Math.abs(mad.speed) > 0.0f && Math.abs(mad.speed) <= this.cd.swits.get(mad.cn)[0]) {
+                                int n2 = (int)(3.0f * Math.abs(mad.speed) / this.cd.swits.get(mad.cn)[0]);
                                 if (n2 == 2) {
                                     if (this.pwait == 0) {
                                         n2 = 0;
@@ -9092,8 +9092,8 @@ public class xtGraphics extends Panel implements Runnable
                                 }
                                 this.sparkeng(n2, mad.cn);
                             }
-                            if (Math.abs(mad.speed) > this.cd.swits[mad.cn][0] && Math.abs(mad.speed) <= this.cd.swits[mad.cn][1]) {
-                                int n3 = (int)(3.0f * (Math.abs(mad.speed) - this.cd.swits[mad.cn][0]) / (this.cd.swits[mad.cn][1] - this.cd.swits[mad.cn][0]));
+                            if (Math.abs(mad.speed) > this.cd.swits.get(mad.cn)[0] && Math.abs(mad.speed) <= this.cd.swits.get(mad.cn)[1]) {
+                                int n3 = (int)(3.0f * (Math.abs(mad.speed) - this.cd.swits.get(mad.cn)[0]) / (this.cd.swits.get(mad.cn)[1] - this.cd.swits.get(mad.cn)[0]));
                                 if (n3 == 2) {
                                     if (this.pwait == 0) {
                                         n3 = 0;
@@ -9107,14 +9107,14 @@ public class xtGraphics extends Panel implements Runnable
                                 }
                                 this.sparkeng(n3, mad.cn);
                             }
-                            if (Math.abs(mad.speed) > this.cd.swits[mad.cn][1] && Math.abs(mad.speed) <= this.cd.swits[mad.cn][2]) {
-                                this.sparkeng((int)(3.0f * (Math.abs(mad.speed) - this.cd.swits[mad.cn][1]) / (this.cd.swits[mad.cn][2] - this.cd.swits[mad.cn][1])), mad.cn);
+                            if (Math.abs(mad.speed) > this.cd.swits.get(mad.cn)[1] && Math.abs(mad.speed) <= this.cd.swits.get(mad.cn)[2]) {
+                                this.sparkeng((int)(3.0f * (Math.abs(mad.speed) - this.cd.swits.get(mad.cn)[1]) / (this.cd.swits.get(mad.cn)[2] - this.cd.swits.get(mad.cn)[1])), mad.cn);
                             }
                         }
                         else {
                             int n4 = 2;
                             if (this.pwait == 0) {
-                                if (Math.abs(mad.speed) > this.cd.swits[mad.cn][1]) {
+                                if (Math.abs(mad.speed) > this.cd.swits.get(mad.cn)[1]) {
                                     n4 = 3;
                                 }
                             }
@@ -9250,7 +9250,7 @@ public class xtGraphics extends Panel implements Runnable
         if (this.lcn != lcn) {
             for (int i = 0; i < 5; ++i) {
                 if (this.pengs[i]) {
-                    this.engs[this.cd.enginsignature[this.lcn]][i].stop();
+                    this.engs[this.cd.enginsignature.get(this.lcn)][i].stop();
                     this.pengs[i] = false;
                 }
             }
@@ -9260,12 +9260,12 @@ public class xtGraphics extends Panel implements Runnable
         for (int j = 0; j < 5; ++j) {
             if (n == j) {
                 if (!this.pengs[j]) {
-                    this.engs[this.cd.enginsignature[lcn]][j].loop();
+                    this.engs[this.cd.enginsignature.get(lcn)][j].loop();
                     this.pengs[j] = true;
                 }
             }
             else if (this.pengs[j]) {
-                this.engs[this.cd.enginsignature[lcn]][j].stop();
+                this.engs[this.cd.enginsignature.get(lcn)][j].stop();
                 this.pengs[j] = false;
             }
         }

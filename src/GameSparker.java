@@ -30,6 +30,7 @@ import java.awt.image.ImageObserver;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.awt.Color;
 import java.awt.Checkbox;
 import java.awt.TextArea;
@@ -116,14 +117,9 @@ public class GameSparker extends Applet implements Runnable
     Smenu ilaps;
     Smenu icars;
     Smenu proitem;
-    static byte[] minimumMilliseconds = {15, 30};
-    static byte[] targetMilliseconds = {47, 30};
-    static byte[] maximumMilliseconds = {53, 30};
+	private boolean drawn;
+    static byte[] targetMilliseconds = {47, 53};
 	public static PlaneWaster churner = new PlaneWaster();
-    long totime = 0;
-    byte nfr = 0;
-    byte actat = 0;
-    long ltime = -1;
     
     public GameSparker() {
         this.mload = 1;
@@ -155,7 +151,7 @@ public class GameSparker extends Applet implements Runnable
         this.nob = 0;
         this.notb = 0;
         this.view = 0;
-        this.mvect = 100;
+        this.mvect = (mvect < 0) ? 0 : (mvect > 1) ? 1 : mvect;
         this.lmxz = 0;
         this.shaka = 0;
         this.applejava = false;
@@ -192,6 +188,7 @@ public class GameSparker extends Applet implements Runnable
     
     @Override
     public void run() {
+    	this.mvect = 1;
     	this.rd.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         this.rd.setColor(Color.BLACK);
         this.rd.fillRect(0, 0, 800, 450);
@@ -258,6 +255,10 @@ public class GameSparker extends Applet implements Runnable
         int n9 = 0;
         int n10 = 0;
         int n11 = 0;
+        long ltime = System.nanoTime();
+        long ctime;
+        int actat;
+        byte faseTarget;
         while (true) {
         	if (Madness.anti != 0) {
         		this.rd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -267,204 +268,204 @@ public class GameSparker extends Applet implements Runnable
         		this.rd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         	}
         	if (xtGraphics.fase == 111) {
-        		if (this.mouses == 1) {
-        			n8 = 800;
-        		}
-        		if (n8 < 800) {
-        			xtGraphics.clicknow();
-        			++n8;
-        		}
-        		else {
-        			n8 = 0;
-        			if (!this.exwist) {
-        				xtGraphics.fase = 9;
-        			}
-        			this.mouses = 0;
-        			this.lostfcs = false;
-        		}
-        	}
-        	if (xtGraphics.fase == 9) {
-        		if (n8 < 76) {
-        			xtGraphics.rad(n8);
-        			this.catchlink();
-        			if (this.mouses == 2) {
-        				this.mouses = 0;
-        			}
-        			if (this.mouses == 1) {
-        				this.mouses = 2;
-        			}
-        			++n8;
-        		}
-        		else {
-        			n8 = 0;
-        			xtGraphics.fase = 10;
-        			this.mouses = 0;
-        			this.u[0].falseo(0);
-        		}
-        	}
-        	if (xtGraphics.fase == -9) {
-        		if (xtGraphics.loadedt) {
-        			xtGraphics.mainbg(-101);
-        			this.rd.setColor(new Color(0, 0, 0));
-        			this.rd.fillRect(0, 0, 800, 450);
-        			this.repaint();
-        			xtGraphics.strack.unload();
-        			xtGraphics.strack = null;
-        			xtGraphics.flexpix = null;
-        			xtGraphics.fleximg = null;
-        			System.gc();
-        			xtGraphics.loadedt = false;
-        		}
-        		if (n8 < 2) {
-        			xtGraphics.mainbg(-101);
-        			this.rd.setColor(new Color(0, 0, 0));
-        			this.rd.fillRect(65, 25, 670, 400);
-        			++n8;
-        		}
-        		else {
-        			this.checkmemory(xtGraphics);
-        			xtGraphics.inishcarselect(array);
-        			n8 = 0;
-        			xtGraphics.fase = 7;
-        			this.mvect = 50;
-        			this.mouses = 0;
-        		}
-        	}
-        	if (xtGraphics.fase == 8) {
-        		xtGraphics.credits(this.u[0], this.xm, this.ym, this.mouses);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (xtGraphics.flipo <= 100) {
-        			this.catchlink();
-        		}
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == 10) {
-        		this.mvect = 100;
-        		xtGraphics.maini(this.u[0]);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == 102) {
-        		this.mvect = 100;
-        		if (xtGraphics.loadedt) {
-        			this.rd.setColor(new Color(0, 0, 0));
-        			this.rd.fillRect(0, 0, 800, 450);
-        			this.repaint();
-        			this.checkmemory(xtGraphics);
-        			xtGraphics.strack.unload();
-        			xtGraphics.strack = null;
-        			xtGraphics.flexpix = null;
-        			xtGraphics.fleximg = null;
-        			System.gc();
-        			xtGraphics.loadedt = false;
-        		}
-        		if (xtGraphics.testdrive == 1 || xtGraphics.testdrive == 2) {
-        			Madness.carmaker();
-        		}
-        		if (xtGraphics.testdrive == 3 || xtGraphics.testdrive == 4) {
-        			Madness.stagemaker();
-        		}
-        		xtGraphics.maini2(this.u[0], this.xm, this.ym, this.mouses);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == -22) {
-        		checkPoints.name = Madness.testcar;
-        		checkPoints.stage = -1;
-        		this.loadstage(array2, array, medium, trackers, checkPoints, xtGraphics, array3, record);
-        		if (checkPoints.stage == -3) {
-        			Madness.testcar = "Failx12";
-        			Madness.stagemaker();
-        		}
-        	}
-        	if (xtGraphics.fase == 11) {
-        		xtGraphics.inst(this.u[0]);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == -5) {
-        		this.mvect = 100;
-        		xtGraphics.finish(checkPoints, array, this.u[0], this.xm, this.ym, this.moused);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == 7) {
-        		xtGraphics.carselect(this.u[0], array, array3[0], this.xm, this.ym, this.moused);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        		this.drawms();
-        	}
-        	if (xtGraphics.fase == 6) {
-        		xtGraphics.musicomp(checkPoints.stage, this.u[0]);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == 5) {
-        		this.mvect = 100;
-        		xtGraphics.loadmusic(checkPoints.stage, checkPoints.trackname, checkPoints.trackvol);
-        	}
-        	if (xtGraphics.fase == 4) {
-        		xtGraphics.cantgo(this.u[0]);
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == 3) {
-        		this.rd.setColor(new Color(0, 0, 0));
-        		this.rd.fillRect(65, 25, 670, 400);
-        		this.repaint();
-        		xtGraphics.inishstageselect(checkPoints);
-        	}
-        	if (xtGraphics.fase == 2) {
-        		this.mvect = 100;
-        		xtGraphics.loadingstage(checkPoints.stage, true);
-        		checkPoints.nfix = 0;
-        		checkPoints.notb = false;
-        		this.loadstage(array2, array, medium, trackers, checkPoints, xtGraphics, array3, record);
-        		this.u[0].falseo(0);
-        		udpMistro.freg = 0.0f;
-        		this.mvect = 20;
-        	}
-        	if (xtGraphics.fase == 1) {
+                if (this.mouses == 1) {
+                    n8 = 800;
+                }
+                if (n8 < 800) {
+                    xtGraphics.clicknow();
+                    ++n8;
+                }
+                else {
+                    n8 = 0;
+                    if (!this.exwist) {
+                        xtGraphics.fase = 9;
+                    }
+                    this.mouses = 0;
+                    this.lostfcs = false;
+                }
+            }
+            if (xtGraphics.fase == 9) {
+                if (n8 < 76) {
+                    xtGraphics.rad(n8);
+                    this.catchlink();
+                    if (this.mouses == 2) {
+                        this.mouses = 0;
+                    }
+                    if (this.mouses == 1) {
+                        this.mouses = 2;
+                    }
+                    ++n8;
+                }
+                else {
+                    n8 = 0;
+                    xtGraphics.fase = 10;
+                    this.mouses = 0;
+                    this.u[0].falseo(0);
+                }
+            }
+            if (xtGraphics.fase == -9) {
+                if (xtGraphics.loadedt) {
+                    xtGraphics.mainbg(-101);
+                    this.rd.setColor(new Color(0, 0, 0));
+                    this.rd.fillRect(0, 0, 800, 450);
+                    this.repaint();
+                    xtGraphics.strack.unload();
+                    xtGraphics.strack = null;
+                    xtGraphics.flexpix = null;
+                    xtGraphics.fleximg = null;
+                    System.gc();
+                    xtGraphics.loadedt = false;
+                }
+                if (n8 < 2) {
+                    xtGraphics.mainbg(-101);
+                    this.rd.setColor(new Color(0, 0, 0));
+                    this.rd.fillRect(65, 25, 670, 400);
+                    ++n8;
+                }
+                else {
+                    this.checkmemory(xtGraphics);
+                    xtGraphics.inishcarselect(array);
+                    n8 = 0;
+                    xtGraphics.fase = 7;
+                    this.mvect = .5F;
+                    this.mouses = 0;
+                }
+            }
+            if (xtGraphics.fase == 8) {
+                xtGraphics.credits(this.u[0], this.xm, this.ym, this.mouses);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (xtGraphics.flipo <= 100) {
+                    this.catchlink();
+                }
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == 10) {
+                this.mvect = 1;
+                xtGraphics.maini(this.u[0]);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == 102) {
+                this.mvect = 1;
+                if (xtGraphics.loadedt) {
+                    this.rd.setColor(new Color(0, 0, 0));
+                    this.rd.fillRect(0, 0, 800, 450);
+                    this.repaint();
+                    this.checkmemory(xtGraphics);
+                    xtGraphics.strack.unload();
+                    xtGraphics.strack = null;
+                    xtGraphics.flexpix = null;
+                    xtGraphics.fleximg = null;
+                    System.gc();
+                    xtGraphics.loadedt = false;
+                }
+                if (xtGraphics.testdrive == 1 || xtGraphics.testdrive == 2) {
+                    Madness.carmaker();
+                }
+                if (xtGraphics.testdrive == 3 || xtGraphics.testdrive == 4) {
+                    Madness.stagemaker();
+                }
+                xtGraphics.maini2(this.u[0], this.xm, this.ym, this.mouses);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == -22) {
+                checkPoints.name = Madness.testcar;
+                checkPoints.stage = -1;
+                this.loadstage(array2, array, medium, trackers, checkPoints, xtGraphics, array3, record);
+                if (checkPoints.stage == -3) {
+                    Madness.testcar = "Failx12";
+                    Madness.stagemaker();
+                }
+            }
+            if (xtGraphics.fase == 11) {
+                xtGraphics.inst(this.u[0]);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == -5) {
+                this.mvect = 1;
+                xtGraphics.finish(checkPoints, array, this.u[0], this.xm, this.ym, this.moused);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == 7) {
+                xtGraphics.carselect(this.u[0], array, array3[0], this.xm, this.ym, this.moused);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+                this.drawms();
+            }
+            if (xtGraphics.fase == 6) {
+                xtGraphics.musicomp(checkPoints.stage, this.u[0]);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == 5) {
+                this.mvect = 1;
+                xtGraphics.loadmusic(checkPoints.stage, checkPoints.trackname, checkPoints.trackvol);
+            }
+            if (xtGraphics.fase == 4) {
+                xtGraphics.cantgo(this.u[0]);
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == 3) {
+                this.rd.setColor(new Color(0, 0, 0));
+                this.rd.fillRect(65, 25, 670, 400);
+                this.repaint();
+                xtGraphics.inishstageselect(checkPoints);
+            }
+            if (xtGraphics.fase == 2) {
+                this.mvect = 1;
+                xtGraphics.loadingstage(checkPoints.stage, true);
+                checkPoints.nfix = 0;
+                checkPoints.notb = false;
+                this.loadstage(array2, array, medium, trackers, checkPoints, xtGraphics, array3, record);
+                this.u[0].falseo(0);
+                udpMistro.freg = 0.0f;
+                this.mvect = .2F;
+            }
+            if (xtGraphics.fase == 1) {
                 xtGraphics.trackbg(false);
                 if (checkPoints.stage != -3) {
                     medium.aroundtrack(checkPoints);
@@ -532,607 +533,1180 @@ public class GameSparker extends Applet implements Runnable
                 xtGraphics.stageselect(checkPoints, this.u[0], this.xm, this.ym, this.moused);
                 this.drawms();
             }
-            if (xtGraphics.fase == 0) { //INGAME
-        		for (int n33 = 0; n33 < xtGraphics.nplayers; ++n33) {
-        			if (array3[n33].newcar) {
-        				final float xz = array2[n33].xz;
-        				final float xy = array2[n33].xy;
-        				final float zy = array2[n33].zy;
-        				array2[n33] = new ContO(array.get(array3[n33].cn), array2[n33].x, array2[n33].y, array2[n33].z, 0);
-        				array2[n33].xz = xz;
-        				array2[n33].xy = xy;
-        				array2[n33].zy = zy;
-        				array3[n33].newcar = false;
-        			}
-        		}
-        		medium.d(this.rd);
-        		int n34 = 0;
-        		final int[] array16 = new int[this.nob];
-        		for (int n35 = 0; n35 < this.nob; ++n35) {
-        			if (array2[n35].dist != 0) {
-        				array16[n34] = n35;
-        				++n34;
-        			}
-        			else {
-        				array2[n35].d(this.rd);
-        			}
-        		}
-        		final int[] array17 = new int[n34];
-        		final int[] array18 = new int[n34];
-        		for (int n36 = 0; n36 < n34; ++n36) {
-        			array17[n36] = 0;
-        		}
-        		for (int n37 = 0; n37 < n34; ++n37) {
-        			for (int n38 = n37 + 1; n38 < n34; ++n38) {
-        				if (array2[array16[n37]].dist < array2[array16[n38]].dist) {
-        					final int[] array19 = array17;
-        					final int n39 = n37;
-        					++array19[n39];
-        				}
-        				else {
-        					final int[] array20 = array17;
-        					final int n40 = n38;
-        					++array20[n40];
-        				}
-        			}
-        			array18[array17[n37]] = n37;
-        		}
-        		for (int n41 = 0; n41 < n34; ++n41) {
-        			array2[array16[array18[n41]]].d(this.rd);
-        		}
-        		
-        		if (xtGraphics.starcnt == 0) {
-        			for (int n42 = 0; n42 < xtGraphics.nplayers; ++n42) {
-        				for (int n43 = 0; n43 < xtGraphics.nplayers; ++n43) {
-        					if (n43 != n42) {
-        						array3[n42].colide(array2[n42], array3[n43], array2[n43]);
-        					}
-        				}
-        			}
-        			for (int n44 = 0; n44 < xtGraphics.nplayers; ++n44) {
-        				array3[n44].drive(this.u[n44], array2[n44], trackers, checkPoints);
-        			}
-        			for (int n45 = 0; n45 < xtGraphics.nplayers; ++n45) {
-        				record.rec(array2[n45], n45, array3[n45].squash, array3[n45].lastcolido, array3[n45].cntdest, 0);
-        			}
-        			checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, 0);
-        			for (int n46 = 1; n46 < xtGraphics.nplayers; ++n46) {
-        				this.u[n46].preform(array3[n46], array2[n46], checkPoints, trackers);
-        			}
-        		}
-        		else {
-        			if (xtGraphics.starcnt == 130) {
-        				medium.adv = 1900;
-        				medium.zy = 40;
-        				medium.vxz = 70;
-        				this.rd.setColor(new Color(255, 255, 255));
-        				this.rd.fillRect(0, 0, 800, 450);
-        			}
-        			if (xtGraphics.starcnt != 0) {
-        				final xtGraphics xtGraphics2 = xtGraphics;
-        				--xtGraphics2.starcnt;
-        			}
-        		}
-        		if (xtGraphics.starcnt < 38) {
-        			if (this.view == 0) {
-        				medium.follow(array2[0], array3[0].cxz, this.u[0].lookback);
-        				xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], true);
-        				if (array3[0].outshakedam > 0) {
-        					this.shaka = array3[0].outshakedam / 20;
-        					if (this.shaka > 25) {
-        						this.shaka = 25;
-        					}
-        				}
-        				this.mvect = 65 + Math.abs(this.lmxz - medium.xz) / 5 * 100;
-        				if (this.mvect > 90) {
-        					this.mvect = 90;
-        				}
-        				this.lmxz = medium.xz;
-        			}
-        			if (this.view == 1) {
-        				medium.around(array2[0], false);
-        				xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], false);
-        				this.mvect = 80;
-        			}
-        			if (this.view == 2) {
-        				medium.watch(array2[0], array3[0].mxz);
-        				xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], false);
-        				this.mvect = 65 + Math.abs(this.lmxz - medium.xz) / 5 * 100;
-        				if (this.mvect > 90) {
-        					this.mvect = 90;
-        				}
-        				this.lmxz = medium.xz;
-        			}
-        			if (this.mouses == 1) {
-        				this.u[0].enter = true;
-        				this.mouses = 0;
-        			}
-        		}
-        		else {
-        			int n47 = 3;
-        			if (xtGraphics.nplayers == 1) {
-        				n47 = 0;
-        			}
-        			medium.around(array2[n47], true);
-        			this.mvect = 80;
-        			if (this.u[0].enter || this.u[0].handb) {
-        				xtGraphics.starcnt = 38;
-        				this.u[0].enter = false;
-        				this.u[0].handb = false;
-        			}
-        			if (xtGraphics.starcnt == 38) {
-        				this.mouses = 0;
-        				medium.vert = false;
-        				medium.adv = 900;
-        				medium.vxz = 180;
-        				checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, 0);
-        				medium.follow(array2[0], array3[0].cxz, 0);
-        				xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], true);
-        				this.rd.setColor(new Color(255, 255, 255));
-        				this.rd.fillRect(0, 0, 800, 450);
-        			}
-        		}
-        	}
-        	if (xtGraphics.fase == -1) { //REPLAY
-        		if (n7 == 0) {
-        			for (int n67 = 0; n67 < xtGraphics.nplayers; ++n67) {
-        				record.ocar[n67] = new ContO(array2[n67], 0, 0, 0, 0);
-        				array2[n67] = new ContO(record.car[0][n67], 0, 0, 0, 0);
-        			}
-        		}
-        		medium.d(this.rd);
-        		int n68 = 0;
-        		final int[] array26 = new int[this.nob];
-        		for (int n69 = 0; n69 < this.nob; ++n69) {
-        			if (array2[n69].dist != 0) {
-        				array26[n68] = n69;
-        				++n68;
-        			}
-        			else {
-        				array2[n69].d(this.rd);
-        			}
-        		}
-        		final int[] array27 = new int[n68];
-        		for (int n70 = 0; n70 < n68; ++n70) {
-        			array27[n70] = 0;
-        		}
-        		for (int n71 = 0; n71 < n68; ++n71) {
-        			for (int n72 = n71 + 1; n72 < n68; ++n72) {
-        				if (array2[array26[n71]].dist != array2[array26[n72]].dist) {
-        					if (array2[array26[n71]].dist < array2[array26[n72]].dist) {
-        						final int[] array28 = array27;
-        						final int n73 = n71;
-        						++array28[n73];
-        					}
-        					else {
-        						final int[] array29 = array27;
-        						final int n74 = n72;
-        						++array29[n74];
-        					}
-        				}
-        				else if (n72 > n71) {
-        					final int[] array30 = array27;
-        					final int n75 = n71;
-        					++array30[n75];
-        				}
-        				else {
-        					final int[] array31 = array27;
-        					final int n76 = n72;
-        					++array31[n76];
-        				}
-        			}
-        		}
-        		for (int n77 = 0; n77 < n68; ++n77) {
-        			for (int n78 = 0; n78 < n68; ++n78) {
-        				if (array27[n78] == n77) {
-        					array2[array26[n78]].d(this.rd);
-        				}
-        			}
-        		}
-        		if (this.u[0].enter || this.u[0].handb || this.mouses == 1) {
-        			n7 = 299;
-        			this.u[0].enter = false;
-        			this.u[0].handb = false;
-        			this.mouses = 0;
-        		}
-        		for (int n79 = 0; n79 < xtGraphics.nplayers; ++n79) {
-        			if (record.fix[n79] == n7) {
-        				if (array2[n79].dist == 0) {
-        					array2[n79].fcnt = 8;
-        				}
-        				else {
-        					array2[n79].fix = true;
-        				}
-        			}
-        			if (array2[n79].fcnt == 7 || array2[n79].fcnt == 8) {
-        				array2[n79] = new ContO(array.get(array3[n79].cn), 0, 0, 0, 0);
-        				record.cntdest[n79] = 0;
-        			}
-        			if (n7 == 299) {
-        				array2[n79] = new ContO(record.ocar[n79], 0, 0, 0, 0);
-        			}
-        			record.play(array2[n79], array3[n79], n79, n7);
-        		}
-        		if (++n7 == 300) {
-        			n7 = 0;
-        			xtGraphics.fase = -6;
-        		}
-        		else {
-        			xtGraphics.replyn();
-        		}
-        		medium.around(array2[0], false);
-        	}
-        	if (xtGraphics.fase == -2) {
-        		if (xtGraphics.multion >= 2) {
-        			record.hcaught = false;
-        		}
-        		this.u[0].falseo(3);
-        		if (record.hcaught && record.wasted == 0 && record.whenwasted != 229 && (checkPoints.stage == 1 || checkPoints.stage == 2) && xtGraphics.looped != 0) {
-        			record.hcaught = false;
-        		}
-        		if (record.hcaught) {
-        			this.rd.setColor(new Color(0, 0, 0));
-        			this.rd.fillRect(0, 0, 800, 450);
-        			this.repaint();
-        		}
-        		if (xtGraphics.multion != 0) {
-        			udpMistro.UDPquit();
-        			xtGraphics.stopchat();
-        			if (this.cmsg.isShowing()) {
-        				this.cmsg.hide();
-        			}
-        			this.cmsg.setText("");
-        			this.requestFocus();
-        		}
-        		if (record.hcaught) {
-        			if (medium.random() > 0.45) {
-        				medium.vert = false;
-        			}
-        			else {
-        				medium.vert = true;
-        			}
-        			medium.adv = (int)(900.0f * medium.random());
-        			medium.vxz = (int)(360.0f * medium.random());
-        			n7 = 0;
-        			xtGraphics.fase = -3;
-        			n8 = 0;
-        			n9 = 0;
-        		}
-        		else {
-        			n7 = -2;
-        			xtGraphics.fase = -4;
-        		}
-        	}
-        	if (xtGraphics.fase == -3) { //GAME HIGHLIGHT
-        		if (n7 == 0) {
-        			if (record.wasted == 0) {
-        				if (record.whenwasted == 229) {
-        					n10 = 67;
-        					final Medium medium2 = medium;
-        					medium2.vxz += 90;
-        				}
-        				else {
-        					n10 = (int)(medium.random() * 4.0f);
-        					if (n10 == 1 || n10 == 3) {
-        						n10 = 69;
-        					}
-        					if (n10 == 2 || n10 == 4) {
-        						n10 = 30;
-        					}
-        				}
-        			}
-        			else if (record.closefinish != 0 && n9 != 0) {
-        				final Medium medium3 = medium;
-        				medium3.vxz += 90;
-        			}
-        			for (int n80 = 0; n80 < xtGraphics.nplayers; ++n80) {
-        				array2[n80] = new ContO(record.starcar[n80], 0, 0, 0, 0);
-        			}
-        		}
-        		medium.d(this.rd);
-        		int n81 = 0;
-        		final int[] array32 = new int[this.nob];
-        		for (int n82 = 0; n82 < this.nob; ++n82) {
-        			if (array2[n82].dist != 0) {
-        				array32[n81] = n82;
-        				++n81;
-        			}
-        			else {
-        				array2[n82].d(this.rd);
-        			}
-        		}
-        		final int[] array33 = new int[n81];
-        		for (int n83 = 0; n83 < n81; ++n83) {
-        			array33[n83] = 0;
-        		}
-        		for (int n84 = 0; n84 < n81; ++n84) {
-        			for (int n85 = n84 + 1; n85 < n81; ++n85) {
-        				if (array2[array32[n84]].dist != array2[array32[n85]].dist) {
-        					if (array2[array32[n84]].dist < array2[array32[n85]].dist) {
-        						final int[] array34 = array33;
-        						final int n86 = n84;
-        						++array34[n86];
-        					}
-        					else {
-        						final int[] array35 = array33;
-        						final int n87 = n85;
-        						++array35[n87];
-        					}
-        				}
-        				else if (n85 > n84) {
-        					final int[] array36 = array33;
-        					final int n88 = n84;
-        					++array36[n88];
-        				}
-        				else {
-        					final int[] array37 = array33;
-        					final int n89 = n85;
-        					++array37[n89];
-        				}
-        			}
-        		}
-        		for (int n90 = 0; n90 < n81; ++n90) {
-        			for (int n91 = 0; n91 < n81; ++n91) {
-        				if (array33[n91] == n90) {
-        					array2[array32[n91]].d(this.rd);
-        				}
-        			}
-        		}
-        		for (int n92 = 0; n92 < xtGraphics.nplayers; ++n92) {
-        			if (record.hfix[n92] == n7) {
-        				if (array2[n92].dist == 0) {
-        					array2[n92].fcnt = 8;
-        				}
-        				else {
-        					array2[n92].fix = true;
-        				}
-        			}
-        			if (array2[n92].fcnt == 7 || array2[n92].fcnt == 8) {
-        				array2[n92] = new ContO(array.get(array3[n92].cn), 0, 0, 0, 0);
-        				record.cntdest[n92] = 0;
-        			}
-        			record.playh(array2[n92], array3[n92], n92, n7, xtGraphics.im);
-        		}
-        		if (n9 == 2 && n7 == 299) {
-        			this.u[0].enter = true;
-        		}
-        		if (this.u[0].enter || this.u[0].handb) {
-        			xtGraphics.fase = -4;
-        			this.u[0].enter = false;
-        			this.u[0].handb = false;
-        			n7 = -7;
-        		}
-        		else {
-        			xtGraphics.levelhigh(record.wasted, record.whenwasted, record.closefinish, n7, checkPoints.stage);
-        			if (n7 == 0 || n7 == 1 || n7 == 2) {
-        				this.rd.setColor(new Color(0, 0, 0));
-        				this.rd.fillRect(0, 0, 800, 450);
-        			}
-        			if (record.wasted != xtGraphics.im) {
-        				if (record.closefinish == 0) {
-        					if (n8 == 9 || n8 == 11) {
-        						this.rd.setColor(new Color(255, 255, 255));
-        						this.rd.fillRect(0, 0, 800, 450);
-        					}
-        					if (n8 == 0) {
-        						medium.around(array2[xtGraphics.im], false);
-        					}
-        					if (n8 > 0 && n8 < 20) {
-        						medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8);
-        					}
-        					if (n8 == 20) {
-        						medium.around(array2[record.wasted], false);
-        					}
-        					if (n7 > record.whenwasted && n8 != 20) {
-        						++n8;
-        					}
-        					if ((n8 == 0 || n8 == 20) && ++n7 == 300) {
-        						n7 = 0;
-        						n8 = 0;
-        						++n9;
-        					}
-        				}
-        				else if (record.closefinish == 1) {
-        					if (n8 == 0) {
-        						medium.around(array2[xtGraphics.im], false);
-        					}
-        					if (n8 > 0 && n8 < 20) {
-        						medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8);
-        					}
-        					if (n8 == 20) {
-        						medium.around(array2[record.wasted], false);
-        					}
-        					if (n8 > 20 && n8 < 40) {
-        						medium.transaround(array2[record.wasted], array2[xtGraphics.im], n8 - 20);
-        					}
-        					if (n8 == 40) {
-        						medium.around(array2[xtGraphics.im], false);
-        					}
-        					if (n8 > 40 && n8 < 60) {
-        						medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8 - 40);
-        					}
-        					if (n8 == 60) {
-        						medium.around(array2[record.wasted], false);
-        					}
-        					if (n7 > 160 && n8 < 20) {
-        						++n8;
-        					}
-        					if (n7 > 230 && n8 < 40) {
-        						++n8;
-        					}
-        					if (n7 > 280 && n8 < 60) {
-        						++n8;
-        					}
-        					if ((n8 == 0 || n8 == 20 || n8 == 40 || n8 == 60) && ++n7 == 300) {
-        						n7 = 0;
-        						n8 = 0;
-        						++n9;
-        					}
-        				}
-        				else {
-        					if (n8 == 0) {
-        						medium.around(array2[xtGraphics.im], false);
-        					}
-        					if (n8 > 0 && n8 < 20) {
-        						medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8);
-        					}
-        					if (n8 == 20) {
-        						medium.around(array2[record.wasted], false);
-        					}
-        					if (n8 > 20 && n8 < 40) {
-        						medium.transaround(array2[record.wasted], array2[xtGraphics.im], n8 - 20);
-        					}
-        					if (n8 == 40) {
-        						medium.around(array2[xtGraphics.im], false);
-        					}
-        					if (n8 > 40 && n8 < 60) {
-        						medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8 - 40);
-        					}
-        					if (n8 == 60) {
-        						medium.around(array2[record.wasted], false);
-        					}
-        					if (n8 > 60 && n8 < 80) {
-        						medium.transaround(array2[record.wasted], array2[xtGraphics.im], n8 - 60);
-        					}
-        					if (n8 == 80) {
-        						medium.around(array2[xtGraphics.im], false);
-        					}
-        					if (n7 > 90 && n8 < 20) {
-        						++n8;
-        					}
-        					if (n7 > 160 && n8 < 40) {
-        						++n8;
-        					}
-        					if (n7 > 230 && n8 < 60) {
-        						++n8;
-        					}
-        					if (n7 > 280 && n8 < 80) {
-        						++n8;
-        					}
-        					if ((n8 == 0 || n8 == 20 || n8 == 40 || n8 == 60 || n8 == 80) && ++n7 == 300) {
-        						n7 = 0;
-        						n8 = 0;
-        						++n9;
-        					}
-        				}
-        			}
-        			else {
-        				if (n10 == 67 && (n8 == 3 || n8 == 31 || n8 == 66)) {
-        					this.rd.setColor(new Color(255, 255, 255));
-        					this.rd.fillRect(0, 0, 800, 450);
-        				}
-        				if (n10 == 69 && (n8 == 3 || n8 == 5 || n8 == 31 || n8 == 33 || n8 == 66 || n8 == 68)) {
-        					this.rd.setColor(new Color(255, 255, 255));
-        					this.rd.fillRect(0, 0, 800, 450);
-        				}
-        				if (n10 == 30 && n8 >= 1 && n8 < 30) {
-        					if (n8 % (int)(2.0f + medium.random() * 3.0f) == 0 && n11 == 0) {
-        						this.rd.setColor(new Color(255, 255, 255));
-        						this.rd.fillRect(0, 0, 800, 450);
-        						n11 = 1;
-        					}
-        					else {
-        						n11 = 0;
-        					}
-        				}
-        				if (n7 > record.whenwasted && n8 != n10) {
-        					++n8;
-        				}
-        				medium.around(array2[xtGraphics.im], false);
-        				if ((n8 == 0 || n8 == n10) && ++n7 == 300) {
-        					n7 = 0;
-        					n8 = 0;
-        					++n9;
-        				}
-        			}
-        		}
-        	}
-        	if (xtGraphics.fase == -4) {
-        		if (n7 == 0) {
-        			xtGraphics.sendwin(checkPoints);
-        			if (xtGraphics.winner && xtGraphics.multion == 0 && xtGraphics.gmode != 0 && checkPoints.stage != 27 && checkPoints.stage == xtGraphics.unlocked[xtGraphics.gmode - 1] + (xtGraphics.gmode - 1) * 10) {
-        				final int[] unlocked = xtGraphics.unlocked;
-        				final int n93 = xtGraphics.gmode - 1;
-        				++unlocked[n93];
-        				this.setcarcookie(xtGraphics.sc[0], carDefine.names[xtGraphics.sc[0]], xtGraphics.arnp, xtGraphics.gmode, xtGraphics.unlocked, false);
-        				final int[] unlocked2 = xtGraphics.unlocked;
-        				final int n94 = xtGraphics.gmode - 1;
-        				--unlocked2[n94];
-        			}
-        		}
-        		if (n7 <= 0) {
-        			this.rd.drawImage(xtGraphics.mdness, 289, 30, null);
-        			this.rd.drawImage(xtGraphics.dude[0], 135, 10, null);
-        		}
-        		if (n7 >= 0) {
-        			xtGraphics.fleximage(this.offImage, n7, checkPoints.stage);
-        		}
-        		if (++n7 == 7) {
-        			xtGraphics.fase = -5;
-        		}
-        	}
-        	if (xtGraphics.fase == -6) {
-        		this.repaint();
-        		xtGraphics.pauseimage(this.offImage);
-        		xtGraphics.fase = -7;
-        		this.mouses = 0;
-        	}
-        	if (xtGraphics.fase == -7) {
-        		xtGraphics.pausedgame(checkPoints.stage, this.u[0], record);
-        		if (n7 != 0) {
-        			n7 = 0;
-        		}
-        		xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
-        		if (this.mouses == 2) {
-        			this.mouses = 0;
-        		}
-        		if (this.mouses == 1) {
-        			this.mouses = 2;
-        		}
-        	}
-        	if (xtGraphics.fase == -8) {
-        		xtGraphics.cantreply();
-        		if (++n7 == 150 || this.u[0].enter || this.u[0].handb || this.mouses == 1) {
-        			xtGraphics.fase = -7;
-        			this.mouses = 0;
-        			this.u[0].enter = false;
-        			this.u[0].handb = false;
-        		}
-        	}
-        	if (this.lostfcs) {
-        		if (this.fcscnt == 0) {
-        				this.requestFocus();
-        			this.fcscnt = 10;
-        		}
-        		else {
-        			--this.fcscnt;
-        		}
-        	}
-        	this.repaint();
-        	churner.render(rd);
-        	churner.clear();
-        	xtGraphics.playsounds(array3[xtGraphics.im], this.u[0], checkPoints.stage);
-        	long ctime = new Date().getTime();
-            if (ltime == -1) {
-                totime = 47;
-            } else {
-                totime += (ctime - ltime);
-            }
-            ltime = ctime;
-            nfr++;
-            if (nfr == 10) {
-                if (totime > 470) {
-                    actat--;
-                    if (actat < 5) {
-                        actat = 5;
+            if (xtGraphics.fase == 1177) {
+                this.mvect = 1;
+                if (n == 0) {
+                    if (xtGraphics.loadedt) {
+                        this.rd.setColor(new Color(0, 0, 0));
+                        this.rd.fillRect(0, 0, 800, 450);
+                        this.repaint();
+                        this.checkmemory(xtGraphics);
+                        xtGraphics.strack.unload();
+                        xtGraphics.strack = null;
+                        xtGraphics.flexpix = null;
+                        xtGraphics.fleximg = null;
+                        System.gc();
+                        xtGraphics.loadedt = false;
                     }
-                } else {
-                    actat += 2;
+                    xtGraphics.intertrack.unloadimod();
+                    this.rd.setColor(new Color(0, 0, 0));
+                    this.rd.fillRect(65, 25, 670, 400);
+                    if (this.mload > 0) {
+                        this.rd.drawImage(xtGraphics.mload, 259, 195, this);
+                    }
+                    this.repaint();
+                    if (this.mload == 2) {
+                        carDefine.loadready();
+                        this.loadbase(array, medium, trackers, xtGraphics, true);
+                        this.readcookies(xtGraphics, carDefine, array);
+                        this.mload = -1;
+                    }
+                    System.gc();
+                    login = new Login(medium, this.rd, xtGraphics, this);
+                    globe = new Globe(this.rd, xtGraphics, medium, login, carDefine, checkPoints, array, array2, this);
+                    lobby = new Lobby(medium, this.rd, login, globe, xtGraphics, carDefine, this);
+                    n = 1;
                 }
-                medium.adjstfade(actat);
-                totime = 0;
-                nfr = 0;
+                if (login.fase != 18) {
+                    boolean b = false;
+                    if (login.fase == 0) {
+                        login.inishmulti();
+                    }
+                    if (login.fase >= 1 && login.fase <= 11) {
+                        login.multistart(array, this.xm, this.ym, this.moused);
+                    }
+                    if (login.fase >= 12 && login.fase <= 17) {
+                        if (globe.open != 452) {
+                            login.multimode(array);
+                        }
+                        else {
+                            b = true;
+                        }
+                        globe.dome(0, this.xm, this.ym, this.moused, this.u[0]);
+                    }
+                    if (login.justlog) {
+                        if (!xtGraphics.clan.equals("")) {
+                            globe.itab = 2;
+                        }
+                        login.justlog = false;
+                    }
+                    if (!b) {
+                        login.ctachm(this.xm, this.ym, this.mouses, this.u[0], lobby);
+                        this.mvect = .5F;
+                    }
+                    else {
+                        this.drawms();
+                        this.mvect = 1;
+                    }
+                    if (this.mouses == 1) {
+                        this.mouses = 11;
+                    }
+                    if (this.mouses <= -1) {
+                        --this.mouses;
+                        if (this.mouses == -4) {
+                            this.mouses = 0;
+                        }
+                    }
+                    if (this.mousew != 0) {
+                        if (this.mousew > 0) {
+                            --this.mousew;
+                        }
+                        else {
+                            ++this.mousew;
+                        }
+                    }
+                }
+                else {
+                    boolean b2 = false;
+                    if (lobby.fase == 0) {
+                        lobby.inishlobby();
+                        this.mvect = 1;
+                    }
+                    if (lobby.fase == 1) {
+                        if (globe.open >= 2 && globe.open < 452) {
+                            this.openm = true;
+                        }
+                        if (globe.open != 452) {
+                            lobby.lobby(this.xm, this.ym, this.moused, this.mousew, checkPoints, this.u[0], array);
+                        }
+                        else {
+                            b2 = true;
+                        }
+                        globe.dome(lobby.conon, this.xm, this.ym, this.moused, this.u[0]);
+                        if (lobby.loadstage > 0) {
+                            this.setCursor(new Cursor(3));
+                            this.drawms();
+                            this.repaint();
+                            trackers.nt = 0;
+                            if (this.loadstagePreview(lobby.loadstage, "", array2, array, medium, checkPoints)) {
+                                lobby.gstagename = checkPoints.name;
+                                lobby.gstagelaps = checkPoints.nlaps;
+                                lobby.loadstage = -lobby.loadstage;
+                            }
+                            else {
+                                lobby.loadstage = 0;
+                                checkPoints.name = "";
+                            }
+                            this.setCursor(new Cursor(0));
+                        }
+                        if (lobby.msload != 0) {
+                            this.setCursor(new Cursor(3));
+                            this.drawms();
+                            this.repaint();
+                            if (lobby.msload == 1) {
+                                carDefine.loadmystages(checkPoints);
+                            }
+                            if (lobby.msload == 7) {
+                                carDefine.loadclanstages(xtGraphics.clan);
+                            }
+                            if (lobby.msload == 3 || lobby.msload == 4) {
+                                carDefine.loadtop20(lobby.msload);
+                            }
+                            lobby.msload = 0;
+                            this.setCursor(new Cursor(0));
+                        }
+                    }
+                    if (lobby.fase == 3) {
+                        xtGraphics.trackbg(false);
+                        medium.trk = 0;
+                        medium.focus_point = 400;
+                        medium.crs = true;
+                        medium.x = -335;
+                        medium.z = 0;
+                        medium.y = -50;
+                        medium.xz = 0;
+                        medium.zy = 20;
+                        medium.ground = -2000;
+                        this.mvect = 1;
+                        lobby.fase = 1;
+                    }
+                    if (lobby.fase == 4) {
+                        this.mvect = .5F;
+                        medium.d(this.rd);
+                        medium.aroundtrack(checkPoints);
+                        int n20 = 0;
+                        final int[] array10 = new int[1000];
+                        for (int n21 = 0; n21 < this.nob; ++n21) {
+                            if (array2[n21].dist != 0) {
+                                array10[n20] = n21;
+                                ++n20;
+                            }
+                            else {
+                                array2[n21].d(this.rd);
+                            }
+                        }
+                        final int[] array11 = new int[n20];
+                        for (int n22 = 0; n22 < n20; ++n22) {
+                            array11[n22] = 0;
+                        }
+                        for (int n23 = 0; n23 < n20; ++n23) {
+                            for (int n24 = n23 + 1; n24 < n20; ++n24) {
+                                if (array2[array10[n23]].dist != array2[array10[n24]].dist) {
+                                    if (array2[array10[n23]].dist < array2[array10[n24]].dist) {
+                                        final int[] array12 = array11;
+                                        final int n25 = n23;
+                                        ++array12[n25];
+                                    }
+                                    else {
+                                        final int[] array13 = array11;
+                                        final int n26 = n24;
+                                        ++array13[n26];
+                                    }
+                                }
+                                else if (n24 > n23) {
+                                    final int[] array14 = array11;
+                                    final int n27 = n23;
+                                    ++array14[n27];
+                                }
+                                else {
+                                    final int[] array15 = array11;
+                                    final int n28 = n24;
+                                    ++array15[n28];
+                                }
+                            }
+                        }
+                        for (int n29 = 0; n29 < n20; ++n29) {
+                            for (int n30 = 0; n30 < n20; ++n30) {
+                                if (array11[n30] == n29) {
+                                    array2[array10[n30]].d(this.rd);
+                                }
+                            }
+                        }
+                        lobby.stageselect(checkPoints, this.u[0], this.xm, this.ym, this.moused);
+                        if (lobby.plsndt == 1) {
+                            this.mvect = .7F;
+                            this.repaint();
+                            this.setCursor(new Cursor(3));
+                            xtGraphics.loadstrack(checkPoints.stage, checkPoints.trackname, checkPoints.trackvol);
+                            xtGraphics.strack.play();
+                            lobby.plsndt = 2;
+                            this.moused = false;
+                            this.mouses = 0;
+                        }
+                    }
+                    if (lobby.fase == 2) {
+                        int n31 = 0;
+                        for (int n32 = 0; n32 < lobby.ngm; ++n32) {
+                            if (lobby.ongame == lobby.gnum[n32]) {
+                                n31 = n32;
+                            }
+                        }
+                        boolean b3 = false;
+                        if (lobby.gstgn[n31] > 0) {
+                            if (lobby.gstgn[n31] == -lobby.loadstage) {
+                                b3 = true;
+                            }
+                        }
+                        else if (lobby.gstages[n31].equals(checkPoints.name)) {
+                            b3 = true;
+                        }
+                        if (b3) {
+                            lobby.fase = 4;
+                            lobby.addstage = 0;
+                        }
+                        else {
+                            xtGraphics.loadingstage(lobby.gstgn[n31], false);
+                            trackers.nt = 0;
+                            if (this.loadstagePreview(lobby.gstgn[n31], lobby.gstages[n31], array2, array, medium, checkPoints)) {
+                                lobby.loadstage = -lobby.gstgn[n31];
+                                lobby.fase = 4;
+                                lobby.addstage = 0;
+                            }
+                            else {
+                                lobby.loadstage = 0;
+                                checkPoints.name = "";
+                                lobby.fase = 3;
+                            }
+                        }
+                    }
+                    if (lobby.fase == 76) {
+                        checkPoints.nlaps = lobby.laps;
+                        checkPoints.stage = lobby.stage;
+                        checkPoints.name = lobby.stagename;
+                        checkPoints.nfix = lobby.nfix;
+                        checkPoints.notb = lobby.notb;
+                        xtGraphics.fase = 21;
+                        this.u[0].multion = xtGraphics.multion;
+                    }
+                    if (globe.loadwbgames == 7) {
+                        this.repaint();
+                        globe.redogame();
+                    }
+                    if (!this.openm) {
+                        if (!b2) {
+                            lobby.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                        }
+                    }
+                    else {
+                        this.mouses = 0;
+                    }
+                    this.drawms();
+                    if (lobby.fase == 1) {
+                        lobby.preforma(this.xm, this.ym);
+                    }
+                    if (lobby.loadwarb) {
+                        this.repaint();
+                        globe.loadwarb();
+                        lobby.loadwarb = false;
+                    }
+                    if (globe.loadwbgames == 1) {
+                        this.repaint();
+                        globe.loadwgames();
+                    }
+                    if (this.mouses == 1) {
+                        this.mouses = 11;
+                    }
+                    if (this.mouses <= -1) {
+                        --this.mouses;
+                        if (this.mouses == -4) {
+                            this.mouses = 0;
+                        }
+                    }
+                    if (this.mousew != 0) {
+                        if (this.mousew > 0) {
+                            --this.mousew;
+                        }
+                        else {
+                            ++this.mousew;
+                        }
+                        if (!lobby.zeromsw) {
+                            this.mousew = 0;
+                        }
+                    }
+                }
             }
+            if (xtGraphics.fase == 24) {
+                login.endcons();
+                login = null;
+                lobby = null;
+                globe = null;
+                n = 0;
+                System.gc();
+                System.runFinalization();
+                if (!xtGraphics.mtop) {
+                    xtGraphics.fase = 102;
+                    xtGraphics.opselect = 2;
+                }
+                else {
+                    xtGraphics.fase = 10;
+                    xtGraphics.opselect = 1;
+                }
+            }
+            if (xtGraphics.fase == 23) {
+                if (login.fase == 18) {
+                    xtGraphics.playingame = -101;
+                }
+                login.stopallnow();
+                lobby.stopallnow();
+                globe.stopallnow();
+                login = null;
+                lobby = null;
+                globe = null;
+                this.hidefields();
+                n = 0;
+                System.gc();
+                System.runFinalization();
+                xtGraphics.fase = -9;
+            }
+            if (xtGraphics.fase == 22) {
+                this.loadstage(array2, array, medium, trackers, checkPoints, xtGraphics, array3, record);
+                if (checkPoints.stage != -3) {
+                    if (xtGraphics.lan && xtGraphics.im == 0) {
+                        udpMistro.UDPLanServer(xtGraphics.nplayers, xtGraphics.server, xtGraphics.servport, xtGraphics.playingame);
+                    }
+                    this.u[0].falseo(2);
+                    this.requestFocus();
+                }
+                else {
+                    xtGraphics.fase = 1177;
+                }
+            }
+            if (xtGraphics.fase == 21) {
+                login.endcons();
+                login = null;
+                lobby = null;
+                globe = null;
+                n = 0;
+                System.gc();
+                System.runFinalization();
+                xtGraphics.fase = 22;
+            }
+            if (xtGraphics.fase == 0) {
+                for (int n33 = 0; n33 < xtGraphics.nplayers; ++n33) {
+                    if (array3[n33].newcar) {
+                        final float xz = array2[n33].yaw;
+                        final float xy = array2[n33].roll;
+                        final float zy = array2[n33].pitch;
+                        array2[n33] = new ContO(array.get(array3[n33].cn), array2[n33].x, array2[n33].z, array2[n33].y, 0);
+                        array2[n33].yaw = xz;
+                        array2[n33].roll = xy;
+                        array2[n33].pitch = zy;
+                        array3[n33].newcar = false;
+                    }
+                }
+                medium.d(this.rd);
+                int n34 = 0;
+                final int[] array16 = new int[this.nob];
+                for (int n35 = 0; n35 < this.nob; ++n35) {
+                    if (array2[n35].dist != 0) {
+                        array16[n34] = n35;
+                        ++n34;
+                    }
+                    else {
+                        array2[n35].d(this.rd);
+                    }
+                }
+                final int[] array17 = new int[n34];
+                final int[] array18 = new int[n34];
+                for (int n36 = 0; n36 < n34; ++n36) {
+                    array17[n36] = 0;
+                }
+                for (int n37 = 0; n37 < n34; ++n37) {
+                    for (int n38 = n37 + 1; n38 < n34; ++n38) {
+                        if (array2[array16[n37]].dist < array2[array16[n38]].dist) {
+                            final int[] array19 = array17;
+                            final int n39 = n37;
+                            ++array19[n39];
+                        }
+                        else {
+                            final int[] array20 = array17;
+                            final int n40 = n38;
+                            ++array20[n40];
+                        }
+                    }
+                    array18[array17[n37]] = n37;
+                }
+                for (int n41 = 0; n41 < n34; ++n41) {
+                    array2[array16[array18[n41]]].d(this.rd);
+                }
+                if (xtGraphics.starcnt == 0) {
+                    for (int n42 = 0; n42 < xtGraphics.nplayers; ++n42) {
+                        for (int n43 = 0; n43 < xtGraphics.nplayers; ++n43) {
+                            if (n43 != n42) {
+                                array3[n42].colide(array2[n42], array3[n43], array2[n43]);
+                            }
+                        }
+                    }
+                    for (int n44 = 0; n44 < xtGraphics.nplayers; ++n44) {
+                        array3[n44].drive(this.u[n44], array2[n44], trackers, checkPoints);
+                    }
+                    for (int n45 = 0; n45 < xtGraphics.nplayers; ++n45) {
+                        record.rec(array2[n45], n45, array3[n45].squash, array3[n45].lastcolido, array3[n45].cntdest, 0);
+                    }
+                    checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, 0);
+                    for (int n46 = 1; n46 < xtGraphics.nplayers; ++n46) {
+                        this.u[n46].preform(array3[n46], array2[n46], checkPoints, trackers);
+                    }
+                }
+                else {
+                    if (xtGraphics.starcnt == 130) {
+                        medium.adv = 1900;
+                        medium.zy = 40;
+                        medium.vxz = 70;
+                        this.rd.setColor(new Color(255, 255, 255));
+                        this.rd.fillRect(0, 0, 800, 450);
+                    }
+                    if (xtGraphics.starcnt != 0) {
+                        final xtGraphics xtGraphics2 = xtGraphics;
+                        --xtGraphics2.starcnt;
+                    }
+                }
+                if (xtGraphics.starcnt < 38) {
+                    if (this.view == 0) {
+                        medium.follow(array2[0], array3[0].cxz, this.u[0].lookback);
+                        xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], true);
+                        if (array3[0].outshakedam > 0) {
+                            this.shaka = array3[0].outshakedam / 20;
+                            if (this.shaka > 25) {
+                                this.shaka = 25;
+                            }
+                        }
+                        this.mvect = Math.abs(this.lmxz - medium.xz) / 5 + .65F;
+                        if (this.mvect > .9) {
+                            this.mvect = .9F;
+                        }
+                        this.lmxz = medium.xz;
+                    }
+                    if (this.view == 1) {
+                        medium.around(array2[0], false);
+                        xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], false);
+                        this.mvect = .8F;
+                    }
+                    if (this.view == 2) {
+                        medium.watch(array2[0], array3[0].mxz);
+                        xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], false);
+                        this.mvect = Math.abs(this.lmxz - medium.xz) / 5 + .65F;
+                        if (this.mvect > .9) {
+                            this.mvect = .9F;
+                        }
+                        this.lmxz = medium.xz;
+                    }
+                    if (this.mouses == 1) {
+                        this.u[0].enter = true;
+                        this.mouses = 0;
+                    }
+                }
+                else {
+                    int n47 = 3;
+                    if (xtGraphics.nplayers == 1) {
+                        n47 = 0;
+                    }
+                    medium.around(array2[n47], true);
+                    this.mvect = .8F;
+                    if (this.u[0].enter || this.u[0].handb) {
+                        xtGraphics.starcnt = 38;
+                        this.u[0].enter = false;
+                        this.u[0].handb = false;
+                    }
+                    if (xtGraphics.starcnt == 38) {
+                        this.mouses = 0;
+                        medium.vert = false;
+                        medium.adv = 900;
+                        medium.vxz = 180;
+                        checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, 0);
+                        medium.follow(array2[0], array3[0].cxz, 0);
+                        xtGraphics.stat(array3[0], array2[0], checkPoints, this.u[0], true);
+                        this.rd.setColor(new Color(255, 255, 255));
+                        this.rd.fillRect(0, 0, 800, 450);
+                    }
+                }
+            }
+            if (xtGraphics.fase == 7001) {
+                for (int n48 = 0; n48 < xtGraphics.nplayers; ++n48) {
+                    if (array3[n48].newedcar == 0 && array3[n48].newcar) {
+                        final float xz2 = array2[n48].yaw;
+                        final float xy2 = array2[n48].roll;
+                        final float zy2 = array2[n48].pitch;
+                        xtGraphics.colorCar(array.get(array3[n48].cn), n48);
+                        array2[n48] = new ContO(array.get(array3[n48].cn), array2[n48].x, array2[n48].z, array2[n48].y, 0);
+                        array2[n48].yaw = xz2;
+                        array2[n48].roll = xy2;
+                        array2[n48].pitch = zy2;
+                        array3[n48].newedcar = 20;
+                    }
+                }
+                medium.d(this.rd);
+                int n49 = 0;
+                final int[] array21 = new int[200];
+                for (int n50 = 0; n50 < this.nob; ++n50) {
+                    if (array2[n50].dist != 0) {
+                        array21[n49] = n50;
+                        ++n49;
+                    }
+                    else {
+                        array2[n50].d(this.rd);
+                    }
+                }
+                final int[] array22 = new int[n49];
+                final int[] array23 = new int[n49];
+                for (int n51 = 0; n51 < n49; ++n51) {
+                    array22[n51] = 0;
+                }
+                for (int n52 = 0; n52 < n49; ++n52) {
+                    for (int n53 = n52 + 1; n53 < n49; ++n53) {
+                        if (array2[array21[n52]].dist < array2[array21[n53]].dist) {
+                            final int[] array24 = array22;
+                            final int n54 = n52;
+                            ++array24[n54];
+                        }
+                        else {
+                            final int[] array25 = array22;
+                            final int n55 = n53;
+                            ++array25[n55];
+                        }
+                    }
+                    array23[array22[n52]] = n52;
+                }
+                for (int n56 = 0; n56 < n49; ++n56) {
+                    if (array21[array23[n56]] < xtGraphics.nplayers && array21[array23[n56]] != xtGraphics.im) {
+                        udpMistro.readContOinfo(array2[array21[array23[n56]]], array21[array23[n56]]);
+                    }
+                    array2[array21[array23[n56]]].d(this.rd);
+                }
+                if (xtGraphics.starcnt == 0) {
+                    if (xtGraphics.multion == 1) {
+                        int n57 = 1;
+                        for (int n58 = 0; n58 < xtGraphics.nplayers; ++n58) {
+                            if (xtGraphics.im != n58) {
+                                udpMistro.readinfo(array3[n58], array2[n58], this.u[n57], n58, checkPoints.dested);
+                                ++n57;
+                            }
+                        }
+                    }
+                    else {
+                        for (int n59 = 0; n59 < xtGraphics.nplayers; ++n59) {
+                            udpMistro.readinfo(array3[n59], array2[n59], this.u[n59], n59, checkPoints.dested);
+                        }
+                    }
+                    for (int n60 = 0; n60 < xtGraphics.nplayers; ++n60) {
+                        for (int n61 = 0; n61 < xtGraphics.nplayers; ++n61) {
+                            if (n61 != n60) {
+                                array3[n60].colide(array2[n60], array3[n61], array2[n61]);
+                            }
+                        }
+                    }
+                    if (xtGraphics.multion == 1) {
+                        int n62 = 1;
+                        for (int n63 = 0; n63 < xtGraphics.nplayers; ++n63) {
+                            if (xtGraphics.im != n63) {
+                                array3[n63].drive(this.u[n62], array2[n63], trackers, checkPoints);
+                                ++n62;
+                            }
+                            else {
+                                array3[n63].drive(this.u[0], array2[n63], trackers, checkPoints);
+                            }
+                        }
+                        for (int n64 = 0; n64 < xtGraphics.nplayers; ++n64) {
+                            record.rec(array2[n64], n64, array3[n64].squash, array3[n64].lastcolido, array3[n64].cntdest, xtGraphics.im);
+                        }
+                    }
+                    else {
+                        for (int n65 = 0; n65 < xtGraphics.nplayers; ++n65) {
+                            array3[n65].drive(this.u[n65], array2[n65], trackers, checkPoints);
+                        }
+                    }
+                    checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, xtGraphics.multion);
+                }
+                else {
+                    if (xtGraphics.starcnt == 130) {
+                        medium.adv = 1900;
+                        medium.zy = 40;
+                        medium.vxz = 70;
+                        this.rd.setColor(new Color(255, 255, 255));
+                        this.rd.fillRect(0, 0, 800, 450);
+                        this.repaint();
+                        if (xtGraphics.lan) {
+                            udpMistro.UDPConnectLan(xtGraphics.localserver, xtGraphics.nplayers, xtGraphics.im);
+                            if (xtGraphics.im == 0) {
+                                xtGraphics.setbots(udpMistro.isbot, udpMistro.frame);
+                            }
+                        }
+                        else {
+                            udpMistro.UDPConnectOnline(xtGraphics.server, xtGraphics.gameport, xtGraphics.nplayers, xtGraphics.im);
+                        }
+                        if (xtGraphics.multion >= 2) {
+                            xtGraphics.im = (int)(Math.random() * xtGraphics.nplayers);
+                            xtGraphics.starcnt = 0;
+                        }
+                    }
+                    if (xtGraphics.starcnt == 50) {
+                        udpMistro.frame[udpMistro.im][0] = 0;
+                    }
+                    if (xtGraphics.starcnt != 39 && xtGraphics.starcnt != 0) {
+                        final xtGraphics xtGraphics3 = xtGraphics;
+                        --xtGraphics3.starcnt;
+                    }
+                    if (udpMistro.go && xtGraphics.starcnt >= 39) {
+                        xtGraphics.starcnt = 38;
+                        if (xtGraphics.lan) {
+                            if (checkPoints.stage < 0) {}
+                            if (xtGraphics.loadedt) {
+                                xtGraphics.strack.play();
+                            }
+                        }
+                    }
+                }
+                if (xtGraphics.lan && udpMistro.im == 0) {
+                    for (int n66 = 2; n66 < xtGraphics.nplayers; ++n66) {
+                        if (udpMistro.isbot[n66]) {
+                            this.u[n66].preform(array3[n66], array2[n66], checkPoints, trackers);
+                            udpMistro.setinfo(array3[n66], array2[n66], this.u[n66], checkPoints.pos[n66], checkPoints.magperc[n66], false, n66);
+                        }
+                    }
+                }
+                if (xtGraphics.starcnt < 38) {
+                    if (xtGraphics.multion == 1) {
+                        udpMistro.setinfo(array3[xtGraphics.im], array2[xtGraphics.im], this.u[0], checkPoints.pos[xtGraphics.im], checkPoints.magperc[xtGraphics.im], xtGraphics.holdit, xtGraphics.im);
+                        if (this.view == 0) {
+                            medium.follow(array2[xtGraphics.im], array3[xtGraphics.im].cxz, this.u[0].lookback);
+                            xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], true);
+                            if (array3[xtGraphics.im].outshakedam > 0) {
+                                this.shaka = array3[xtGraphics.im].outshakedam / 20;
+                                if (this.shaka > 25) {
+                                    this.shaka = 25;
+                                }
+                            }
+                            this.mvect = Math.abs(this.lmxz - medium.xz) / 5 + .65F;
+                            if (this.mvect > .9) {
+                                this.mvect = .9F;
+                            }
+                            this.lmxz = medium.xz;
+                        }
+                        if (this.view == 1) {
+                            medium.around(array2[xtGraphics.im], false);
+                            xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], false);
+                            this.mvect = .8F;
+                        }
+                        if (this.view == 2) {
+                            medium.watch(array2[xtGraphics.im], array3[xtGraphics.im].mxz);
+                            xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], false);
+                            this.mvect = Math.abs(this.lmxz - medium.xz) / 5 + .65F;
+                            if (this.mvect > .9) {
+                                this.mvect = .9F;
+                            }
+                            this.lmxz = medium.xz;
+                        }
+                    }
+                    else {
+                        if (this.view == 0) {
+                            medium.getaround(array2[xtGraphics.im]);
+                            this.mvect = .8F;
+                        }
+                        if (this.view == 1) {
+                            medium.getfollow(array2[xtGraphics.im], array3[xtGraphics.im].cxz, this.u[0].lookback);
+                            this.mvect = Math.abs(this.lmxz - medium.xz) / 5 + .65F;
+                            if (this.mvect > .9) {
+                                this.mvect = .9F;
+                            }
+                            this.lmxz = medium.xz;
+                        }
+                        if (this.view == 2) {
+                            medium.watch(array2[xtGraphics.im], array3[xtGraphics.im].mxz);
+                            this.mvect = Math.abs(this.lmxz - medium.xz) / 5 + .65F;
+                            if (this.mvect > .9) {
+                                this.mvect = .9F;
+                            }
+                            this.lmxz = medium.xz;
+                        }
+                        xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], true);
+                    }
+                    if (this.mouses == 1) {
+                        if (xtGraphics.holdit && xtGraphics.exitm != 4 && xtGraphics.multion == 1) {
+                            this.u[0].enter = true;
+                        }
+                        this.mouses = 0;
+                    }
+                }
+                else {
+                    medium.around(array2[xtGraphics.im], true);
+                    this.mvect = .8F;
+                    if (xtGraphics.starcnt == 39) {
+                        xtGraphics.waitenter();
+                    }
+                    if (xtGraphics.starcnt == 38) {
+                        xtGraphics.forstart = 0;
+                        this.mouses = 0;
+                        medium.vert = false;
+                        medium.adv = 900;
+                        medium.vxz = 180;
+                        checkPoints.checkstat(array3, array2, record, xtGraphics.nplayers, xtGraphics.im, xtGraphics.multion);
+                        medium.follow(array2[xtGraphics.im], array3[xtGraphics.im].cxz, 0);
+                        xtGraphics.stat(array3[xtGraphics.im], array2[xtGraphics.im], checkPoints, this.u[0], true);
+                        this.rd.setColor(new Color(255, 255, 255));
+                        this.rd.fillRect(0, 0, 800, 450);
+                    }
+                }
+                xtGraphics.multistat(this.u[0], checkPoints, this.xm, this.ym, this.moused, udpMistro);
+            }
+            if (xtGraphics.fase == -1) {
+                if (n7 == 0) {
+                    for (int n67 = 0; n67 < xtGraphics.nplayers; ++n67) {
+                        record.ocar[n67] = new ContO(array2[n67], 0, 0, 0, 0);
+                        array2[n67] = new ContO(record.car[0][n67], 0, 0, 0, 0);
+                    }
+                }
+                medium.d(this.rd);
+                int n68 = 0;
+                final int[] array26 = new int[200];
+                for (int n69 = 0; n69 < this.nob; ++n69) {
+                    if (array2[n69].dist != 0) {
+                        array26[n68] = n69;
+                        ++n68;
+                    }
+                    else {
+                        array2[n69].d(this.rd);
+                    }
+                }
+                final int[] array27 = new int[n68];
+                for (int n70 = 0; n70 < n68; ++n70) {
+                    array27[n70] = 0;
+                }
+                for (int n71 = 0; n71 < n68; ++n71) {
+                    for (int n72 = n71 + 1; n72 < n68; ++n72) {
+                        if (array2[array26[n71]].dist != array2[array26[n72]].dist) {
+                            if (array2[array26[n71]].dist < array2[array26[n72]].dist) {
+                                final int[] array28 = array27;
+                                final int n73 = n71;
+                                ++array28[n73];
+                            }
+                            else {
+                                final int[] array29 = array27;
+                                final int n74 = n72;
+                                ++array29[n74];
+                            }
+                        }
+                        else if (n72 > n71) {
+                            final int[] array30 = array27;
+                            final int n75 = n71;
+                            ++array30[n75];
+                        }
+                        else {
+                            final int[] array31 = array27;
+                            final int n76 = n72;
+                            ++array31[n76];
+                        }
+                    }
+                }
+                for (int n77 = 0; n77 < n68; ++n77) {
+                    for (int n78 = 0; n78 < n68; ++n78) {
+                        if (array27[n78] == n77) {
+                            array2[array26[n78]].d(this.rd);
+                        }
+                    }
+                }
+                if (this.u[0].enter || this.u[0].handb || this.mouses == 1) {
+                    n7 = 299;
+                    this.u[0].enter = false;
+                    this.u[0].handb = false;
+                    this.mouses = 0;
+                }
+                for (int n79 = 0; n79 < xtGraphics.nplayers; ++n79) {
+                    if (record.fix[n79] == n7) {
+                        if (array2[n79].dist == 0) {
+                            array2[n79].fcnt = 8;
+                        }
+                        else {
+                            array2[n79].fix = true;
+                        }
+                    }
+                    if (array2[n79].fcnt == 7 || array2[n79].fcnt == 8) {
+                        array2[n79] = new ContO(array.get(array3[n79].cn), 0, 0, 0, 0);
+                        record.cntdest[n79] = 0;
+                    }
+                    if (n7 == 299) {
+                        array2[n79] = new ContO(record.ocar[n79], 0, 0, 0, 0);
+                    }
+                    record.play(array2[n79], array3[n79], n79, n7);
+                }
+                if (++n7 == 300) {
+                    n7 = 0;
+                    xtGraphics.fase = -6;
+                }
+                else {
+                    xtGraphics.replyn();
+                }
+                medium.around(array2[0], false);
+            }
+            if (xtGraphics.fase == -2) {
+                if (xtGraphics.multion >= 2) {
+                    record.hcaught = false;
+                }
+                this.u[0].falseo(3);
+                if (record.hcaught && record.wasted == 0 && record.whenwasted != 229 && (checkPoints.stage == 1 || checkPoints.stage == 2) && xtGraphics.looped != 0) {
+                    record.hcaught = false;
+                }
+                if (record.hcaught) {
+                    this.rd.setColor(new Color(0, 0, 0));
+                    this.rd.fillRect(0, 0, 800, 450);
+                    this.repaint();
+                }
+                if (xtGraphics.multion != 0) {
+                    udpMistro.UDPquit();
+                    xtGraphics.stopchat();
+                    if (this.cmsg.isShowing()) {
+                        this.cmsg.hide();
+                    }
+                    this.cmsg.setText("");
+                    this.requestFocus();
+                }
+                if (record.hcaught) {
+                    if (medium.random() > 0.45) {
+                        medium.vert = false;
+                    }
+                    else {
+                        medium.vert = true;
+                    }
+                    medium.adv = (int)(900.0f * medium.random());
+                    medium.vxz = (int)(360.0f * medium.random());
+                    n7 = 0;
+                    xtGraphics.fase = -3;
+                    n8 = 0;
+                    n9 = 0;
+                }
+                else {
+                    n7 = -2;
+                    xtGraphics.fase = -4;
+                }
+            }
+            if (xtGraphics.fase == -3) {
+                if (n7 == 0) {
+                    if (record.wasted == 0) {
+                        if (record.whenwasted == 229) {
+                            n10 = 67;
+                            final Medium medium2 = medium;
+                            medium2.vxz += 90;
+                        }
+                        else {
+                            n10 = (int)(medium.random() * 4.0f);
+                            if (n10 == 1 || n10 == 3) {
+                                n10 = 69;
+                            }
+                            if (n10 == 2 || n10 == 4) {
+                                n10 = 30;
+                            }
+                        }
+                    }
+                    else if (record.closefinish != 0 && n9 != 0) {
+                        final Medium medium3 = medium;
+                        medium3.vxz += 90;
+                    }
+                    for (int n80 = 0; n80 < xtGraphics.nplayers; ++n80) {
+                        array2[n80] = new ContO(record.starcar[n80], 0, 0, 0, 0);
+                    }
+                }
+                medium.d(this.rd);
+                int n81 = 0;
+                final int[] array32 = new int[200];
+                for (int n82 = 0; n82 < this.nob; ++n82) {
+                    if (array2[n82].dist != 0) {
+                        array32[n81] = n82;
+                        ++n81;
+                    }
+                    else {
+                        array2[n82].d(this.rd);
+                    }
+                }
+                final int[] array33 = new int[n81];
+                for (int n83 = 0; n83 < n81; ++n83) {
+                    array33[n83] = 0;
+                }
+                for (int n84 = 0; n84 < n81; ++n84) {
+                    for (int n85 = n84 + 1; n85 < n81; ++n85) {
+                        if (array2[array32[n84]].dist != array2[array32[n85]].dist) {
+                            if (array2[array32[n84]].dist < array2[array32[n85]].dist) {
+                                final int[] array34 = array33;
+                                final int n86 = n84;
+                                ++array34[n86];
+                            }
+                            else {
+                                final int[] array35 = array33;
+                                final int n87 = n85;
+                                ++array35[n87];
+                            }
+                        }
+                        else if (n85 > n84) {
+                            final int[] array36 = array33;
+                            final int n88 = n84;
+                            ++array36[n88];
+                        }
+                        else {
+                            final int[] array37 = array33;
+                            final int n89 = n85;
+                            ++array37[n89];
+                        }
+                    }
+                }
+                for (int n90 = 0; n90 < n81; ++n90) {
+                    for (int n91 = 0; n91 < n81; ++n91) {
+                        if (array33[n91] == n90) {
+                            array2[array32[n91]].d(this.rd);
+                        }
+                    }
+                }
+                for (int n92 = 0; n92 < xtGraphics.nplayers; ++n92) {
+                    if (record.hfix[n92] == n7) {
+                        if (array2[n92].dist == 0) {
+                            array2[n92].fcnt = 8;
+                        }
+                        else {
+                            array2[n92].fix = true;
+                        }
+                    }
+                    if (array2[n92].fcnt == 7 || array2[n92].fcnt == 8) {
+                        array2[n92] = new ContO(array.get(array3[n92].cn), 0, 0, 0, 0);
+                        record.cntdest[n92] = 0;
+                    }
+                    record.playh(array2[n92], array3[n92], n92, n7, xtGraphics.im);
+                }
+                if (n9 == 2 && n7 == 299) {
+                    this.u[0].enter = true;
+                }
+                if (this.u[0].enter || this.u[0].handb) {
+                    xtGraphics.fase = -4;
+                    this.u[0].enter = false;
+                    this.u[0].handb = false;
+                    n7 = -7;
+                }
+                else {
+                    xtGraphics.levelhigh(record.wasted, record.whenwasted, record.closefinish, n7, checkPoints.stage);
+                    if (n7 == 0 || n7 == 1 || n7 == 2) {
+                        this.rd.setColor(new Color(0, 0, 0));
+                        this.rd.fillRect(0, 0, 800, 450);
+                    }
+                    if (record.wasted != xtGraphics.im) {
+                        if (record.closefinish == 0) {
+                            if (n8 == 9 || n8 == 11) {
+                                this.rd.setColor(new Color(255, 255, 255));
+                                this.rd.fillRect(0, 0, 800, 450);
+                            }
+                            if (n8 == 0) {
+                                medium.around(array2[xtGraphics.im], false);
+                            }
+                            if (n8 > 0 && n8 < 20) {
+                                medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8);
+                            }
+                            if (n8 == 20) {
+                                medium.around(array2[record.wasted], false);
+                            }
+                            if (n7 > record.whenwasted && n8 != 20) {
+                                ++n8;
+                            }
+                            if ((n8 == 0 || n8 == 20) && ++n7 == 300) {
+                                n7 = 0;
+                                n8 = 0;
+                                ++n9;
+                            }
+                        }
+                        else if (record.closefinish == 1) {
+                            if (n8 == 0) {
+                                medium.around(array2[xtGraphics.im], false);
+                            }
+                            if (n8 > 0 && n8 < 20) {
+                                medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8);
+                            }
+                            if (n8 == 20) {
+                                medium.around(array2[record.wasted], false);
+                            }
+                            if (n8 > 20 && n8 < 40) {
+                                medium.transaround(array2[record.wasted], array2[xtGraphics.im], n8 - 20);
+                            }
+                            if (n8 == 40) {
+                                medium.around(array2[xtGraphics.im], false);
+                            }
+                            if (n8 > 40 && n8 < 60) {
+                                medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8 - 40);
+                            }
+                            if (n8 == 60) {
+                                medium.around(array2[record.wasted], false);
+                            }
+                            if (n7 > 160 && n8 < 20) {
+                                ++n8;
+                            }
+                            if (n7 > 230 && n8 < 40) {
+                                ++n8;
+                            }
+                            if (n7 > 280 && n8 < 60) {
+                                ++n8;
+                            }
+                            if ((n8 == 0 || n8 == 20 || n8 == 40 || n8 == 60) && ++n7 == 300) {
+                                n7 = 0;
+                                n8 = 0;
+                                ++n9;
+                            }
+                        }
+                        else {
+                            if (n8 == 0) {
+                                medium.around(array2[xtGraphics.im], false);
+                            }
+                            if (n8 > 0 && n8 < 20) {
+                                medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8);
+                            }
+                            if (n8 == 20) {
+                                medium.around(array2[record.wasted], false);
+                            }
+                            if (n8 > 20 && n8 < 40) {
+                                medium.transaround(array2[record.wasted], array2[xtGraphics.im], n8 - 20);
+                            }
+                            if (n8 == 40) {
+                                medium.around(array2[xtGraphics.im], false);
+                            }
+                            if (n8 > 40 && n8 < 60) {
+                                medium.transaround(array2[xtGraphics.im], array2[record.wasted], n8 - 40);
+                            }
+                            if (n8 == 60) {
+                                medium.around(array2[record.wasted], false);
+                            }
+                            if (n8 > 60 && n8 < 80) {
+                                medium.transaround(array2[record.wasted], array2[xtGraphics.im], n8 - 60);
+                            }
+                            if (n8 == 80) {
+                                medium.around(array2[xtGraphics.im], false);
+                            }
+                            if (n7 > 90 && n8 < 20) {
+                                ++n8;
+                            }
+                            if (n7 > 160 && n8 < 40) {
+                                ++n8;
+                            }
+                            if (n7 > 230 && n8 < 60) {
+                                ++n8;
+                            }
+                            if (n7 > 280 && n8 < 80) {
+                                ++n8;
+                            }
+                            if ((n8 == 0 || n8 == 20 || n8 == 40 || n8 == 60 || n8 == 80) && ++n7 == 300) {
+                                n7 = 0;
+                                n8 = 0;
+                                ++n9;
+                            }
+                        }
+                    }
+                    else {
+                        if (n10 == 67 && (n8 == 3 || n8 == 31 || n8 == 66)) {
+                            this.rd.setColor(new Color(255, 255, 255));
+                            this.rd.fillRect(0, 0, 800, 450);
+                        }
+                        if (n10 == 69 && (n8 == 3 || n8 == 5 || n8 == 31 || n8 == 33 || n8 == 66 || n8 == 68)) {
+                            this.rd.setColor(new Color(255, 255, 255));
+                            this.rd.fillRect(0, 0, 800, 450);
+                        }
+                        if (n10 == 30 && n8 >= 1 && n8 < 30) {
+                            if (n8 % (int)(2.0f + medium.random() * 3.0f) == 0 && n11 == 0) {
+                                this.rd.setColor(new Color(255, 255, 255));
+                                this.rd.fillRect(0, 0, 800, 450);
+                                n11 = 1;
+                            }
+                            else {
+                                n11 = 0;
+                            }
+                        }
+                        if (n7 > record.whenwasted && n8 != n10) {
+                            ++n8;
+                        }
+                        medium.around(array2[xtGraphics.im], false);
+                        if ((n8 == 0 || n8 == n10) && ++n7 == 300) {
+                            n7 = 0;
+                            n8 = 0;
+                            ++n9;
+                        }
+                    }
+                }
+            }
+            if (xtGraphics.fase == -4) {
+                if (n7 == 0) {
+                    xtGraphics.sendwin(checkPoints);
+                    if (xtGraphics.winner && xtGraphics.multion == 0 && xtGraphics.gmode != 0 && checkPoints.stage != 27 && checkPoints.stage == xtGraphics.unlocked[xtGraphics.gmode - 1] + (xtGraphics.gmode - 1) * 10) {
+                        final int[] unlocked = xtGraphics.unlocked;
+                        final int n93 = xtGraphics.gmode - 1;
+                        ++unlocked[n93];
+                        this.setcarcookie(xtGraphics.sc[0], carDefine.names.get(xtGraphics.sc[0]), xtGraphics.arnp, xtGraphics.gmode, xtGraphics.unlocked, false);
+                        final int[] unlocked2 = xtGraphics.unlocked;
+                        final int n94 = xtGraphics.gmode - 1;
+                        --unlocked2[n94];
+                    }
+                }
+                if (n7 <= 0) {
+                    this.rd.drawImage(xtGraphics.mdness, 289, 30, null);
+                    this.rd.drawImage(xtGraphics.dude[0], 135, 10, null);
+                }
+                if (n7 >= 0) {
+                    xtGraphics.fleximage(this.offImage, n7, checkPoints.stage);
+                }
+                if (++n7 == 7) {
+                    xtGraphics.fase = -5;
+                }
+            }
+            if (xtGraphics.fase == -6) {
+                this.repaint();
+                xtGraphics.pauseimage(this.offImage);
+                xtGraphics.fase = -7;
+                this.mouses = 0;
+            }
+            if (xtGraphics.fase == -7) {
+                xtGraphics.pausedgame(checkPoints.stage, this.u[0], record);
+                if (n7 != 0) {
+                    n7 = 0;
+                }
+                xtGraphics.ctachm(this.xm, this.ym, this.mouses, this.u[0]);
+                if (this.mouses == 2) {
+                    this.mouses = 0;
+                }
+                if (this.mouses == 1) {
+                    this.mouses = 2;
+                }
+            }
+            if (xtGraphics.fase == -8) {
+                xtGraphics.cantreply();
+                if (++n7 == 150 || this.u[0].enter || this.u[0].handb || this.mouses == 1) {
+                    xtGraphics.fase = -7;
+                    this.mouses = 0;
+                    this.u[0].enter = false;
+                    this.u[0].handb = false;
+                }
+            }
+            if (this.lostfcs && xtGraphics.fase == 7001) {
+                if (this.fcscnt == 0) {
+                    if (this.u[0].chatup == 0) {
+                        this.requestFocus();
+                    }
+                    this.fcscnt = 10;
+                }
+                else {
+                    --this.fcscnt;
+                }
+            }
+        	this.repaint();
+        	//churner.render(rd);
+        	//churner.clear();
+        	xtGraphics.playsounds(array3[xtGraphics.im], this.u[0], checkPoints.stage);
+        	faseTarget = (xtGraphics.fase == 0 || xtGraphics.fase == -1 || xtGraphics.fase == -3 || xtGraphics.fase == 7001) ?
+        			targetMilliseconds[0] : targetMilliseconds[1];
+        	ctime = System.nanoTime();
+        	actat = faseTarget - (int) TimeUnit.NANOSECONDS.toMillis(ctime - ltime);
+        	ltime = ctime;
+        	if (xtGraphics.fase == 0 || xtGraphics.fase == -1 || xtGraphics.fase == -3 || xtGraphics.fase == 7001) {
+                medium.adjstfade(0);
+        	}
             if (this.exwist) {
         		this.rd.dispose();
         		xtGraphics.stopallnow();
@@ -1147,14 +1721,16 @@ public class GameSparker extends Applet implements Runnable
         		if (Madness.endadv == 2) {
         			Madness.advopen();
         		}
-        		this.gamer.stop();
+        		this.gamer.interrupt();
         		this.gamer = null;
         	}
-            try {
-                final Thread gamer = this.gamer;
-                Thread.sleep(actat);
-            } catch (final InterruptedException ex) {
-                System.out.println("uh oh");
+
+            if (actat > 0) {
+            	try {
+            		Thread.sleep(actat);
+            	} catch (InterruptedException e) {
+            		
+            	}
             }
         }
     }
@@ -1262,7 +1838,7 @@ public class GameSparker extends Applet implements Runnable
         }
 
         if (this.moto == 1) {
-            graphics2D.setComposite(AlphaComposite.getInstance(3, this.mvect / 100.0f));
+            graphics2D.setComposite(AlphaComposite.getInstance(3, this.mvect));
             this.rd.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
         }
 
@@ -2109,7 +2685,7 @@ public class GameSparker extends Applet implements Runnable
         System.gc();
     }
     
-    public boolean loadstagePreview(final int stage, final String name, final ContO[] array, final ContO[] array2, final Medium medium, final CheckPoints checkPoints) {
+    public boolean loadstagePreview(final int stage, final String name, final ContO[] array, final ArrayList<ContO> bco, final Medium medium, final CheckPoints checkPoints) {
         boolean b = true;
         if (stage < 100) {
             checkPoints.stage = stage;
@@ -2238,7 +2814,7 @@ public class GameSparker extends Applet implements Runnable
                 if (string.startsWith("set")) {
                     int getint5 = this.getint("set", string, 0);
                     getint5 += 46;
-                    array[this.nob] = new ContO(array2[getint5], this.getint("set", string, 1), medium.ground - array2[getint5].grat, this.getint("set", string, 2), this.getint("set", string, 3));
+                    array[this.nob] = new ContO(bco.get(getint5), this.getint("set", string, 1), medium.ground - bco.get(getint5).grat, this.getint("set", string, 2), this.getint("set", string, 3));
                     array[this.nob].t.nt = 0;
                     if (string.indexOf(")p") != -1) {
                         checkPoints.x[checkPoints.n] = this.getint("chk", string, 1);
@@ -2267,11 +2843,11 @@ public class GameSparker extends Applet implements Runnable
                 if (string.startsWith("chk")) {
                     int getint6 = this.getint("chk", string, 0);
                     getint6 += 46;
-                    float getint7 = medium.ground - array2[getint6].grat;
+                    float getint7 = medium.ground - bco.get(getint6).grat;
                     if (getint6 == 110) {
                         getint7 = this.getint("chk", string, 4);
                     }
-                    array[this.nob] = new ContO(array2[getint6], this.getint("chk", string, 1), getint7, this.getint("chk", string, 2), this.getint("chk", string, 3));
+                    array[this.nob] = new ContO(bco.get(getint6), this.getint("chk", string, 1), getint7, this.getint("chk", string, 2), this.getint("chk", string, 3));
                     checkPoints.x[checkPoints.n] = this.getint("chk", string, 1);
                     checkPoints.z[checkPoints.n] = this.getint("chk", string, 2);
                     checkPoints.y[checkPoints.n] = getint7;
@@ -2290,7 +2866,7 @@ public class GameSparker extends Applet implements Runnable
                 if (string.startsWith("fix")) {
                     int getint8 = this.getint("fix", string, 0);
                     getint8 += 46;
-                    array[this.nob] = new ContO(array2[getint8], this.getint("fix", string, 1), this.getint("fix", string, 3), this.getint("fix", string, 2), this.getint("fix", string, 4));
+                    array[this.nob] = new ContO(bco.get(getint8), this.getint("fix", string, 1), this.getint("fix", string, 3), this.getint("fix", string, 2), this.getint("fix", string, 4));
                     checkPoints.fx[checkPoints.fn] = this.getint("fix", string, 1);
                     checkPoints.fz[checkPoints.fn] = this.getint("fix", string, 2);
                     checkPoints.fy[checkPoints.fn] = this.getint("fix", string, 3);

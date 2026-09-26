@@ -7,8 +7,8 @@ public class Plane
     Medium m;
     Trackers t;
     float[] ox;
-    float[] oy;
     float[] oz;
+    float[] oy;
     int n;
     int[] c;
     int[] oc;
@@ -104,12 +104,12 @@ public class Plane
         this.t = t;
         this.n = n;
         this.ox = new float[this.n];
-        this.oz = new float[this.n];
         this.oy = new float[this.n];
+        this.oz = new float[this.n];
         for (int i = 0; i < this.n; ++i) {
             this.ox[i] = array[i];
-            this.oy[i] = array3[i];
-            this.oz[i] = array2[i];
+            this.oz[i] = array3[i];
+            this.oy[i] = array2[i];
         }
         for (int j = 0; j < 3; ++j) {
             this.oc[j] = array4[j];
@@ -122,7 +122,7 @@ public class Plane
                     final float[] ox = this.ox;
                     final int n4 = k;
                     ox[n4] += n2;
-                    final float[] oz = this.oz;
+                    final float[] oz = this.oy;
                     final int n5 = k;
                     oz[n5] += n3;
                 }
@@ -141,12 +141,12 @@ public class Plane
                     ox2[n7] += (int)(8.0 * Math.random() - 4.0);
                 }
                 if (Math.random() > Math.random()) {
-                    final float[] oy = this.oy;
+                    final float[] oy = this.oz;
                     final int n8 = l;
                     oy[n8] += (int)(8.0 * Math.random() - 4.0);
                 }
                 if (Math.random() > Math.random()) {
-                    final float[] oz2 = this.oz;
+                    final float[] oz2 = this.oy;
                     final int n9 = l;
                     oz2[n9] += (int)(8.0 * Math.random() - 4.0);
                 }
@@ -218,8 +218,8 @@ public class Plane
     
     public void deltafntyp() {
         final float abs = Math.abs(this.ox[2] - this.ox[1]);
-        final float abs2 = Math.abs(this.oy[2] - this.oy[1]);
-        final float abs3 = Math.abs(this.oz[2] - this.oz[1]);
+        final float abs2 = Math.abs(this.oz[2] - this.oz[1]);
+        final float abs3 = Math.abs(this.oy[2] - this.oy[1]);
         if (abs2 <= abs && abs2 <= abs3) {
             this.typ = 2;
         }
@@ -233,7 +233,7 @@ public class Plane
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 if (j != i) {
-                    this.deltaf *= (float)(Math.sqrt((this.ox[j] - this.ox[i]) * (this.ox[j] - this.ox[i]) + (this.oy[j] - this.oy[i]) * (this.oy[j] - this.oy[i]) + (this.oz[j] - this.oz[i]) * (this.oz[j] - this.oz[i])) / 100.0);
+                    this.deltaf *= (float)(Math.sqrt((this.ox[j] - this.ox[i]) * (this.ox[j] - this.ox[i]) + (this.oz[j] - this.oz[i]) * (this.oz[j] - this.oz[i]) + (this.oy[j] - this.oy[i]) * (this.oy[j] - this.oy[i])) / 100.0);
                 }
             }
         }
@@ -245,750 +245,931 @@ public class Plane
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 if (j != i) {
-                    this.projf *= (float)(Math.sqrt((this.ox[i] - this.ox[j]) * (this.ox[i] - this.ox[j]) + (this.oz[i] - this.oz[j]) * (this.oz[i] - this.oz[j])) / 100.0);
+                    this.projf *= (float)(Math.sqrt((this.ox[i] - this.ox[j]) * (this.ox[i] - this.ox[j]) + (this.oy[i] - this.oy[j]) * (this.oy[i] - this.oy[j])) / 100.0);
                 }
             }
         }
         this.projf /= 3.0f;
     }
     
-    public void d(final Graphics2D graphics2D, final float f, final float h, final float o, final float xz, final float xy, final float zy, final float wxz, final float wzy, boolean noOutline, final int maxR) {
-    	
+    public void d(final Graphics2D graphics2D, final float dx2, final float dy2, final float dz2, final float xz, final float xy, final float zy, final float wxz, final float wzy, boolean b, final int n8) {
     	if (this.master == 1) {
-            if (this.av > 1500 && !this.m.crs) {
-                this.n = 12;
-            }
-            else {
-                this.n = 20;
-            }
-        }
-        final float[] array = new float[this.n];
-        final float[] array2 = new float[this.n];
-        final float[] array3 = new float[this.n];
-        if (this.embos == 0) {
-            for (int i = 0; i < this.n; ++i) {
-                array[i] = this.ox[i] + f;
-                array3[i] = this.oy[i] + h;
-                array2[i] = this.oz[i] + o;
-            }
-            if ((this.gr == -11 || this.gr == -12 || this.gr == -13) && this.m.lastmaf == 1) {
-                for (int j = 0; j < this.n; ++j) {
-                    array[j] = -this.ox[j] + f;
-                    array3[j] = this.oy[j] + h;
-                    array2[j] = -this.oz[j] + o;
-                }
-            }
-        }
-        else {
-            if (this.embos <= 11 && this.m.random() > 0.5 && this.glass != 1) {
-                for (int k = 0; k < this.n; ++k) {
-                    array[k] = (int)(this.ox[k] + f + (15.0f - this.m.random() * 30.0f));
-                    array3[k] = (int)(this.oy[k] + h + (15.0f - this.m.random() * 30.0f));
-                    array2[k] = (int)(this.oz[k] + o + (15.0f - this.m.random() * 30.0f));
-                }
-                this.rot(array, array3, f, h, xy, this.n);
-                this.rot(array3, array2, h, o, zy, this.n);
-                this.rot(array, array2, f, o, xz, this.n);
-                this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, this.n);
-                this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, this.n);
-                final int[] array4 = new int[this.n];
-                final int[] array5 = new int[this.n];
-                for (int l = 0; l < this.n; ++l) {
-                    array4[l] = this.xs(array[l], array2[l]);
-                    array5[l] = this.ys(array3[l], array2[l]);
-                }
-                graphics2D.setColor(new Color(230, 230, 230));
-                graphics2D.fillPolygon(array4, array5, this.n);
-            }
-            float n9 = 1.0f;
-            if (this.embos <= 4) {
-                n9 = 1.0f + this.m.random() / 5.0f;
-            }
-            if (this.embos > 4 && this.embos <= 7) {
-                n9 = 1.0f + this.m.random() / 4.0f;
-            }
-            if (this.embos > 7 && this.embos <= 9) {
-                n9 = 1.0f + this.m.random() / 3.0f;
-                if (this.hsb[2] > 0.7) {
-                    this.hsb[2] = 0.7f;
-                }
-            }
-            if (this.embos > 9 && this.embos <= 10) {
-                n9 = 1.0f + this.m.random() / 2.0f;
-                if (this.hsb[2] > 0.6) {
-                    this.hsb[2] = 0.6f;
-                }
-            }
-            if (this.embos > 10 && this.embos <= 12) {
-                n9 = 1.0f + this.m.random() / 1.0f;
-                if (this.hsb[2] > 0.5) {
-                    this.hsb[2] = 0.5f;
-                }
-            }
-            if (this.embos == 12) {
-                this.chip = 1;
-                this.ctmag = 2.0f;
-                this.bfase = -7;
-            }
-            if (this.embos == 13) {
-                this.hsb[1] = 0.2f;
-                this.hsb[2] = 0.4f;
-            }
-            if (this.embos == 16) {
-                this.pa = (int)(this.m.random() * this.n);
-                this.pb = (int)(this.m.random() * this.n);
-                while (this.pa == this.pb) {
-                    this.pb = (int)(this.m.random() * this.n);
-                }
-            }
-            if (this.embos >= 16) {
-                int n10 = 1;
-                int n11 = 1;
-                float abs;
-                for (abs = Math.abs(zy); abs > 270; abs -= 360) {}
-                if (Math.abs(abs) > 90) {
-                    n10 = -1;
-                }
-                float abs2;
-                for (abs2 = Math.abs(xy); abs2 > 270; abs2 -= 360) {}
-                if (Math.abs(abs2) > 90) {
-                    n11 = -1;
-                }
-                final int[] array6 = new int[3];
-                final int[] array7 = new int[3];
-                array[0] = this.ox[this.pa] + f;
-                array3[0] = this.oy[this.pa] + h;
-                array2[0] = this.oz[this.pa] + o;
-                array[1] = this.ox[this.pb] + f;
-                array3[1] = this.oy[this.pb] + h;
-                array2[1] = this.oz[this.pb] + o;
-                while (Math.abs(array[0] - array[1]) > 100) {
-                    if (array[1] > array[0]) {
-                        final float[] array8 = array;
-                        final int n12 = 1;
-                        array8[n12] -= 30;
-                    }
-                    else {
-                        final float[] array9 = array;
-                        final int n13 = 1;
-                        array9[n13] += 30;
-                    }
-                }
-                while (Math.abs(array2[0] - array2[1]) > 100) {
-                    if (array2[1] > array2[0]) {
-                        final float[] array10 = array2;
-                        final int n14 = 1;
-                        array10[n14] -= 30;
-                    }
-                    else {
-                        final float[] array11 = array2;
-                        final int n15 = 1;
-                        array11[n15] += 30;
-                    }
-                }
-                final int n16 = (int)(Math.abs(array[0] - array[1]) / 3 * (0.5 - this.m.random()));
-                final int n17 = (int)(Math.abs(array2[0] - array2[1]) / 3 * (0.5 - this.m.random()));
-                array[2] = (array[0] + array[1]) / 2 + n16;
-                array2[2] = (array2[0] + array2[1]) / 2 + n17;
-                final int n18 = (int)((Math.abs(array[0] - array[1]) + Math.abs(array2[0] - array2[1])) / 1.5 * (this.m.random() / 2.0f + 0.5));
-                array3[2] = (array3[0] + array3[1]) / 2 - n10 * n11 * n18;
-                this.rot(array, array3, f, h, xy, 3);
-                this.rot(array3, array2, h, o, zy, 3);
-                this.rot(array, array2, f, o, xz, 3);
-                this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, 3);
-                this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, 3);
-                for (int n19 = 0; n19 < 3; ++n19) {
-                    array6[n19] = this.xs(array[n19], array2[n19]);
-                    array7[n19] = this.ys(array3[n19], array2[n19]);
-                }
-                int r = clampRGB((int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f)));
-                int g = clampRGB((int)(169.0f + 169.0f * (this.m.snap[1] / 300.0f)));
-                int b2 = clampRGB((int)(89.0f + 89.0f * (this.m.snap[2] / 200.0f)));
-                graphics2D.setColor(new Color(r, g, b2));
-                graphics2D.fillPolygon(array6, array7, 3);
-                array[0] = this.ox[this.pa] + f;
-                array3[0] = this.oy[this.pa] + h;
-                array2[0] = this.oz[this.pa] + o;
-                array[1] = this.ox[this.pb] + f;
-                array3[1] = this.oy[this.pb] + h;
-                array2[1] = this.oz[this.pb] + o;
-                while (Math.abs(array[0] - array[1]) > 100) {
-                    if (array[1] > array[0]) {
-                        final float[] array12 = array;
-                        final int n20 = 1;
-                        array12[n20] -= 30;
-                    }
-                    else {
-                        final float[] array13 = array;
-                        final int n21 = 1;
-                        array13[n21] += 30;
-                    }
-                }
-                while (Math.abs(array2[0] - array2[1]) > 100) {
-                    if (array2[1] > array2[0]) {
-                        final float[] array14 = array2;
-                        final int n22 = 1;
-                        array14[n22] -= 30;
-                    }
-                    else {
-                        final float[] array15 = array2;
-                        final int n23 = 1;
-                        array15[n23] += 30;
-                    }
-                }
-                array[2] = (array[0] + array[1]) / 2 + n16;
-                array2[2] = (array2[0] + array2[1]) / 2 + n17;
-                array3[2] = (array3[0] + array3[1]) / 2 - n10 * n11 * (int)(n18 * 0.8);
-                this.rot(array, array3, f, h, xy, 3);
-                this.rot(array3, array2, h, o, zy, 3);
-                this.rot(array, array2, f, o, xz, 3);
-                this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, 3);
-                this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, 3);
-                for (int n24 = 0; n24 < 3; ++n24) {
-                    array6[n24] = this.xs(array[n24], array2[n24]);
-                    array7[n24] = this.ys(array3[n24], array2[n24]);
-                }
-                int r2 = clampRGB((int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f)));
-                int g2 = clampRGB((int)(207.0f + 207.0f * (this.m.snap[1] / 300.0f)));
-                int b3 = clampRGB((int)(136.0f + 136.0f * (this.m.snap[2] / 200.0f)));
-                graphics2D.setColor(new Color(r2, g2, b3));
-                graphics2D.fillPolygon(array6, array7, 3);
-            }
-            for (int n25 = 0; n25 < this.n; ++n25) {
-                if (this.typ == 1) {
-                    array[n25] = (int)(this.ox[n25] * n9 + f);
-                }
-                else {
-                    array[n25] = this.ox[n25] + f;
-                }
-                if (this.typ == 2) {
-                    array3[n25] = (int)(this.oy[n25] * n9 + h);
-                }
-                else {
-                    array3[n25] = this.oy[n25] + h;
-                }
-                if (this.typ == 3) {
-                    array2[n25] = (int)(this.oz[n25] * n9 + o);
-                }
-                else {
-                    array2[n25] = this.oz[n25] + o;
-                }
-            }
-            if (this.embos != 70) {
-                ++this.embos;
-            }
-            else {
-                this.embos = 16;
-            }
-        }
-        if (this.wz != 0) {
-            this.rot(array3, array2, this.wy + h, this.wz + o, wzy, this.n);
-        }
-        if (this.wx != 0) {
-            this.rot(array, array2, this.wx + f, this.wz + o, wxz, this.n);
-        }
-        if (this.chip == 1 && (this.m.random() > 0.6 || this.bfase == 0)) {
-            this.chip = 0;
-            if (this.bfase == 0 && this.nocol) {
-                this.bfase = 1;
-            }
-        }
-        if (this.chip != 0) {
-            if (this.chip == 1) {
-                this.cxz = xz;
-                this.cxy = xy;
-                this.czy = zy;
-                final int n26 = (int)(this.m.random() * this.n);
-                this.cox[0] = this.ox[n26];
-                this.coz[0] = this.oz[n26];
-                this.coy[0] = this.oy[n26];
-                if (this.ctmag > 3.0f) {
-                    this.ctmag = 3.0f;
-                }
-                if (this.ctmag < -3.0f) {
-                    this.ctmag = -3.0f;
-                }
-                this.cox[1] = (int)(this.cox[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
-                this.cox[2] = (int)(this.cox[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
-                this.coy[1] = (int)(this.coy[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
-                this.coy[2] = (int)(this.coy[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
-                this.coz[1] = (int)(this.coz[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
-                this.coz[2] = (int)(this.coz[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
-                this.dx = 0;
-                this.dy = 0;
-                this.dz = 0;
-                if (this.bfase != -7) {
-                    this.vx = (int)(this.ctmag * (30.0f - this.m.random() * 60.0f));
-                    this.vz = (int)(this.ctmag * (30.0f - this.m.random() * 60.0f));
-                    this.vy = (int)(this.ctmag * (30.0f - this.m.random() * 60.0f));
-                }
-                else {
-                    this.vx = (int)(this.ctmag * (10.0f - this.m.random() * 20.0f));
-                    this.vz = (int)(this.ctmag * (10.0f - this.m.random() * 20.0f));
-                    this.vy = (int)(this.ctmag * (10.0f - this.m.random() * 20.0f));
-                }
-                this.chip = 2;
-            }
-            final float[] array16 = new float[3];
-            final float[] array17 = new float[3];
-            final float[] array18 = new float[3];
-            for (int n27 = 0; n27 < 3; ++n27) {
-                array16[n27] = this.cox[n27] + f;
-                array18[n27] = this.coy[n27] + h;
-                array17[n27] = this.coz[n27] + o;
-            }
-            this.rot(array16, array18, f, h, this.cxy, 3);
-            this.rot(array18, array17, h, o, this.czy, 3);
-            this.rot(array16, array17, f, o, this.cxz, 3);
-            for (int n28 = 0; n28 < 3; ++n28) {
-                final float[] array19 = array16;
-                final int n29 = n28;
-                array19[n29] += this.dx;
-                final float[] array20 = array18;
-                final int n30 = n28;
-                array20[n30] += this.dy;
-                final float[] array21 = array17;
-                final int n31 = n28;
-                array21[n31] += this.dz;
-            }
-            this.dx += this.vx;
-            this.dz += this.vz;
-            this.dy += this.vy;
-            this.vy += 7;
-            if (array18[0] > this.m.ground) {
-                this.chip = 19;
-            }
-            this.rot(array16, array17, this.m.cx, this.m.cz, this.m.xz, 3);
-            this.rot(array18, array17, this.m.cy, this.m.cz, this.m.zy, 3);
-            final int[] array22 = new int[3];
-            final int[] array23 = new int[3];
-            for (int n32 = 0; n32 < 3; ++n32) {
-                array22[n32] = this.xs(array16[n32], array17[n32]);
-                array23[n32] = this.ys(array18[n32], array17[n32]);
-            }
-            final int n33 = (int)(this.m.random() * 3.0f);
-            if (this.bfase != -7) {
-                if (n33 == 0) {
-                    graphics2D.setColor(new Color(this.c[0], this.c[1], this.c[2]).darker());
-                }
-                if (n33 == 1) {
-                    graphics2D.setColor(new Color(this.c[0], this.c[1], this.c[2]));
-                }
-                if (n33 == 2) {
-                    graphics2D.setColor(new Color(this.c[0], this.c[1], this.c[2]).brighter());
-                }
-            }
-            else {
-                graphics2D.setColor(Color.getHSBColor(this.hsb[0], this.hsb[1], this.hsb[2]));
-            }
-            graphics2D.fillPolygon(array22, array23, 3);
-            ++this.chip;
-            if (this.chip == 20) {
-                this.chip = 0;
-            }
-        }
-        this.rot(array, array3, f, h, xy, this.n);
-        this.rot(array3, array2, h, o, zy, this.n);
-        this.rot(array, array2, f, o, xz, this.n);
-        if ((xy != 0 || zy != 0 || xz != 0) && this.m.trk != 2) {
-            this.projf = 1.0f;
-            for (int n34 = 0; n34 < 3; ++n34) {
-                for (int n35 = 0; n35 < 3; ++n35) {
-                    if (n35 != n34) {
-                        this.projf *= (float)(Math.sqrt((array[n34] - array[n35]) * (array[n34] - array[n35]) + (array2[n34] - array2[n35]) * (array2[n34] - array2[n35])) / 100.0);
-                    }
-                }
-            }
-            this.projf /= 3.0f;
-        }
-        this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, this.n);
-        boolean b4 = false;
-        final int[] array24 = new int[this.n];
-        final int[] array25 = new int[this.n];
-        int n36 = 500;
-        for (int n37 = 0; n37 < this.n; ++n37) {
-            array24[n37] = this.xs(array[n37], array2[n37]);
-            array25[n37] = this.ys(array3[n37], array2[n37]);
-        }
-        int n38 = 0;
-        int n39 = 1;
-        for (int n40 = 0; n40 < this.n; ++n40) {
-            for (int n41 = n40; n41 < this.n; ++n41) {
-                if (n40 != n41 && Math.abs(array24[n40] - array24[n41]) - Math.abs(array25[n40] - array25[n41]) < n36) {
-                    n39 = n40;
-                    n38 = n41;
-                    n36 = Math.abs(array24[n40] - array24[n41]) - Math.abs(array25[n40] - array25[n41]);
-                }
-            }
-        }
-        if (array25[n38] < array25[n39]) {
-            final int n42 = n38;
-            n38 = n39;
-            n39 = n42;
-        }
-        if (this.spy(array[n38], array2[n38]) > this.spy(array[n39], array2[n39])) {
-            b4 = true;
-            int n43 = 0;
-            for (int n44 = 0; n44 < this.n; ++n44) {
-                if (array2[n44] < 50 && array3[n44] > this.m.cy) {
-                    b4 = false;
-                }
-                else if (array3[n44] == array3[0]) {
-                    ++n43;
-                }
-            }
-            if (n43 == this.n && array3[0] > this.m.cy) {
-                b4 = false;
-            }
-        }
-        this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, this.n);
-        int visible = 1;
-        final int[] outline2DX = new int[this.n];
-        final int[] outline2DY = new int[this.n];
-        int n46 = 0;
-        int n47 = 0;
-        int n48 = 0;
-        int n49 = 0;
-        int n50 = 0;
-        for (int n51 = 0; n51 < this.n; ++n51) {
-            outline2DX[n51] = this.xs(array[n51], array2[n51]);
-            outline2DY[n51] = this.ys(array3[n51], array2[n51]);
-            if (outline2DY[n51] < this.m.ih || array2[n51] < 10) {
-                ++n46;
-            }
-            if (outline2DY[n51] > this.m.h || array2[n51] < 10) {
-                ++n47;
-            }
-            if (outline2DX[n51] < this.m.iw || array2[n51] < 10) {
-                ++n48;
-            }
-            if (outline2DX[n51] > this.m.w || array2[n51] < 10) {
-                ++n49;
-            }
-            if (array2[n51] < 10) {
-                ++n50;
-            }
-        }
-        if (n48 == this.n || n46 == this.n || n47 == this.n || n49 == this.n) {
-            visible = 0;
-        }
-        if ((this.m.trk == 1 || this.m.trk == 4) && (n48 != 0 || n46 != 0 || n47 != 0 || n49 != 0)) {
-            visible = 0;
-        }
-        if (this.m.trk == 3 && n50 != 0) {
-            visible = 0;
-        }
-        if (n50 != 0) {
-            noOutline = true;
-        }
-        if (visible != 0 && maxR != -1) {
-            int abs3 = 0;
-            int abs4 = 0;
-            for (int n52 = 0; n52 < this.n; ++n52) {
-                for (int n53 = n52; n53 < this.n; ++n53) {
-                    if (n52 != n53) {
-                        if (Math.abs(outline2DX[n52] - outline2DX[n53]) > abs3) {
-                            abs3 = Math.abs(outline2DX[n52] - outline2DX[n53]);
-                        }
-                        if (Math.abs(outline2DY[n52] - outline2DY[n53]) > abs4) {
-                            abs4 = Math.abs(outline2DY[n52] - outline2DY[n53]);
-                        }
-                    }
-                }
-            }
-            if (abs3 == 0 || abs4 == 0) {
-                visible = 0;
-            }
-            else if (abs3 < 3 && abs4 < 3 && ((maxR / abs3 > 15 && maxR / abs4 > 15) || noOutline) && (!this.m.lightson || this.light == 0)) {
-                visible = 0;
-            }
-        }
-        if (visible != 0) {
-            int lastmaf = 1;
-            int gr = this.gr;
-            if (gr < 0 && gr >= -15) {
-                gr = 0;
-            }
-            if (this.gr == -11) {
-                gr = -90;
-            }
-            if (this.gr == -12) {
-                gr = -75;
-            }
-            if (this.gr == -14 || this.gr == -15) {
-                gr = -50;
-            }
-            if (this.glass == 2) {
-                gr = 200;
-            }
-            if (this.fs != 0) {
-                int n54;
-                int n55;
-                if (Math.abs(outline2DY[0] - outline2DY[1]) > Math.abs(outline2DY[2] - outline2DY[1])) {
-                    n54 = 0;
-                    n55 = 2;
-                }
-                else {
-                    n54 = 2;
-                    n55 = 0;
-                    lastmaf *= -1;
-                }
-                if (outline2DY[1] > outline2DY[n54]) {
-                    lastmaf *= -1;
-                }
-                if (outline2DX[1] > outline2DX[n55]) {
-                    lastmaf *= -1;
-                }
-                if (this.fs != 22) {
-                    lastmaf *= this.fs;
-                    if (lastmaf == -1) {
-                        gr += 40;
-                        lastmaf = -111;
-                    }
-                }
-            }
-            if (this.m.lightson && this.light == 2) {
-                gr -= 40;
-            }
-            float n56 = array3[0];
-            float n57 = array3[0];
-            float n58 = array[0];
-            float n59 = array[0];
-            float n60 = array2[0];
-            float n61 = array2[0];
-            for (int n62 = 0; n62 < this.n; ++n62) {
-                if (array3[n62] > n56) {
-                    n56 = array3[n62];
-                }
-                if (array3[n62] < n57) {
-                    n57 = array3[n62];
-                }
-                if (array[n62] > n58) {
-                    n58 = array[n62];
-                }
-                if (array[n62] < n59) {
-                    n59 = array[n62];
-                }
-                if (array2[n62] > n60) {
-                    n60 = array2[n62];
-                }
-                if (array2[n62] < n61) {
-                    n61 = array2[n62];
-                }
-            }
-            final float n63 = (n56 + n57) / 2;
-            final float n64 = (n58 + n59) / 2;
-            final float n65 = (n60 + n61) / 2;
-            this.av = (float) Math.sqrt((this.m.cy - n63) * (this.m.cy - n63) + (this.m.cx - n64) * (this.m.cx - n64) + n65 * n65 + gr * gr * gr);
-            if (this.m.trk == 0 && (this.av > this.m.fade[this.disline] || this.av == 0)) {
-                visible = 0;
-            }
-            if (lastmaf == -111 && this.av > 4500 && !this.road) {
-                visible = 0;
-            }
-            if (lastmaf == -111 && this.av > 1500) {
-                noOutline = true;
-            }
-            if (this.av > 3000 && this.m.adv <= 900) {
-                noOutline = true;
-            }
-            if (this.fs == 22 && this.av < 11200) {
-                this.m.lastmaf = lastmaf;
-            }
-            if (this.gr == -13 && (!this.m.lastcheck || maxR != -1)) {
-                visible = 0;
-            }
-            if (this.master == 2 && this.av > 1500 && !this.m.crs) {
-                visible = 0;
-            }
-            if ((this.gr == -14 || this.gr == -15 || this.gr == -12) && (this.av > 11000 || b4 || lastmaf == -111) && this.m.trk != 2 && this.m.trk != 3) {
-                visible = 0;
-            }
-            if (this.gr == -11 && this.av > 11000 && this.m.trk != 2 && this.m.trk != 3) {
-                visible = 0;
-            }
-            if (this.glass == 2 && (this.m.trk != 0 || this.av > 6700)) {
-                visible = 0;
-            }
-            if (this.flx != 0 && this.m.random() > 0.3 && this.flx != 77) {
-                visible = 0;
-            }
-        }
-        if (visible != 0) {
-        	float n66 = (float)(this.projf / this.deltaf + 0.3f);
-            if (noOutline && !this.solo) {
-                boolean b5 = false;
-                if (n66 > 1.0) {
-                    if (n66 >= 1.27) {
-                        b5 = true;
-                    }
-                    n66 = 1.0f;
-                }
-                if (b5) {
-                    n66 *= 0.89f;
-                }
-                else {
-                    n66 *= 0.86f;
-                }
-                if (n66 < 0.37) {
-                    n66 = 0.37f;
-                }
-                if (this.gr == -9) {
-                    n66 = 0.7f;
-                }
-                if (this.gr == -4) {
-                    n66 = 0.74f;
-                }
-                if (this.gr != -7 && this.m.trk == 0 && b4) {
-                    n66 = 0.32f;
-                }
-                if (this.gr == -8 || this.gr == -14 || this.gr == -15) {
-                    n66 = 1.0f;
-                }
-                if (this.gr == -11 || this.gr == -12) {
-                    n66 = 0.6f;
-                    if (maxR == -1) {
-                        if (this.m.cpflik || (this.m.nochekflk && !this.m.lastcheck)) {
-                            n66 = 1.0f;
-                        }
-                        else {
-                            n66 = 0.76f;
-                        }
-                    }
-                }
-                if (this.gr == -13 && maxR == -1) {
-                    if (this.m.cpflik) {
-                        n66 = 0.0f;
-                    }
-                    else {
-                        n66 = 0.76f;
-                    }
-                }
-                if (this.gr == -6) {
-                    n66 = 0.62f;
-                }
-                if (this.gr == -5) {
-                    n66 = 0.55f;
-                }
-            }
-            else {
-                if (n66 > 1.0f) {
-                    n66 = 1.0f;
-                }
-                if (n66 < 0.6 || b4) {
-                    n66 = 0.6f;
-                }
-            }
-            Color color = Color.getHSBColor(this.hsb[0], this.hsb[1], this.hsb[2] * n66);
-            if (this.m.trk == 1) {
-                final float[] hsbvals = new float[3];
-                Color.RGBtoHSB(this.oc[0], this.oc[1], this.oc[2], hsbvals);
-                hsbvals[0] = 0.15f;
-                hsbvals[1] = 0.3f;
-                color = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2] * n66);
-            }
-            if (this.m.trk == 3) {
-                final float[] hsbvals2 = new float[3];
-                Color.RGBtoHSB(this.oc[0], this.oc[1], this.oc[2], hsbvals2);
-                hsbvals2[0] = 0.6f;
-                hsbvals2[1] = 0.14f;
-                color = Color.getHSBColor(hsbvals2[0], hsbvals2[1], hsbvals2[2] * n66);
-            }
-            int red = color.getRed();
-            int green = color.getGreen();
-            int blue = color.getBlue();
-            if (this.m.lightson && (this.light != 0 || ((this.gr == -11 || this.gr == -12) && maxR == -1))) {
-                red = clampRGB(this.oc[0]);
-                green = clampRGB(this.oc[1]);
-                blue = clampRGB(this.oc[2]);
-            }
-            if (this.m.trk == 0) {
-                for (int n67 = 0; n67 < 16; ++n67) {
-                    if (this.av > this.m.fade[n67]) {
-                        red = (red * this.m.fogd + this.m.cfade[0]) / (this.m.fogd + 1);
-                        green = (green * this.m.fogd + this.m.cfade[1]) / (this.m.fogd + 1);
-                        blue = (blue * this.m.fogd + this.m.cfade[2]) / (this.m.fogd + 1);
-                    }
-                }
-            }
-            graphics2D.setColor(new Color(red, green, blue));
-            graphics2D.fillPolygon(outline2DX, outline2DY, this.n);
-            if (this.m.trk != 0 && this.gr == -10) {
-                noOutline = false;
-            }
-            if (!noOutline) {
-                if (this.flx == 0) {
-                    if (!this.solo) {
-                        int r3 = 0;
-                        int g3 = 0;
-                        int b6 = 0;
-                        if (this.m.lightson && this.light != 0) {
-                            r3 = clampRGB(this.oc[0] / 2);
-                            g3 = clampRGB(this.oc[1] / 2);
-                            b6 = clampRGB(this.oc[2] / 2);
-                        }
-                        graphics2D.setColor(new Color(r3, g3, b6));
-                        graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
-                    }
-                }
-                else {
-                    electricColor(graphics2D);
-                    graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
-                }
-            }
-            else if (this.road && this.av <= 3000 && this.m.trk == 0 && this.m.fade[0] > 4000) {
-            	roadColor(graphics2D, red, green, blue);
-                graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
-            }
-            if (this.gr == -10) {
-                if (this.m.trk == 0) {
-                    int r6 = this.c[0];
-                    int g6 = this.c[1];
-                    int b9 = this.c[2];
-                    if (maxR == -1 && this.m.cpflik) {
-                        r6 = clampRGB((int)(r6 * 1.6));
-                        g6 = clampRGB((int)(g6 * 1.6));
-                        b9 = clampRGB((int)(b9 * 1.6));
-                    }
-                    for (int n68 = 0; n68 < 16; ++n68) {
-                        if (this.av > this.m.fade[n68]) {
-                            r6 = (r6 * this.m.fogd + this.m.cfade[0]) / (this.m.fogd + 1);
-                            g6 = (g6 * this.m.fogd + this.m.cfade[1]) / (this.m.fogd + 1);
-                            b9 = (b9 * this.m.fogd + this.m.cfade[2]) / (this.m.fogd + 1);
-                        }
-                    }
-                    graphics2D.setColor(new Color(r6, g6, b9));
-                    graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
-                }
-                else if (this.m.cpflik && this.m.hit == 5000) {
-                    int g7 = (int)(Math.random() * 115.0);
-                    int r7 = clampRGB(g7 * 2 - 54);
-                    int b10 = clampRGB(202 + g7 * 2);
-                    g7 = clampRGB(g7 + 101);
-                    graphics2D.setColor(new Color(r7, g7, b10));
-                    graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
-                }
-            }
-            if (this.gr == -18 && this.m.trk == 0) {
-                int r8 = this.c[0];
-                int g8 = this.c[1];
-                int b11 = this.c[2];
-                if (this.m.cpflik && this.m.elecr >= 0.0f) {
-                    r8 = clampRGB((int)(25.5f * this.m.elecr));
-                    g8 = clampRGB((int)(128.0f + 12.8f * this.m.elecr));
-                    b11 = 255;
-                }
-                for (int n69 = 0; n69 < 16; ++n69) {
-                    if (this.av > this.m.fade[n69]) {
-                        r8 = (r8 * this.m.fogd + this.m.cfade[0]) / (this.m.fogd + 1);
-                        g8 = (g8 * this.m.fogd + this.m.cfade[1]) / (this.m.fogd + 1);
-                        b11 = (b11 * this.m.fogd + this.m.cfade[2]) / (this.m.fogd + 1);
-                    }
-                }
-                graphics2D.setColor(new Color(r8, g8, b11));
-                graphics2D.drawPolygon(outline2DX, outline2DY, this.n);
-            }
-        }
+    		if (this.av > 1500 && !this.m.crs) {
+    			this.n = 12;
+    		}
+    		else {
+    			this.n = 20;
+    		}
+    	}
+    	final float[] array = new float[this.n];
+    	final float[] array2 = new float[this.n];
+    	final float[] array3 = new float[this.n];
+    	if (this.embos == 0) {
+    		for (int i = 0; i < this.n; ++i) {
+    			array[i] = this.ox[i] + dx2;
+    			array3[i] = this.oz[i] + dy2;
+    			array2[i] = this.oy[i] + dz2;
+    		}
+    		if ((this.gr == -11 || this.gr == -12 || this.gr == -13) && this.m.lastmaf == 1) {
+    			for (int j = 0; j < this.n; ++j) {
+    				array[j] = -this.ox[j] + dx2;
+    				array3[j] = this.oz[j] + dy2;
+    				array2[j] = -this.oy[j] + dz2;
+    			}
+    		}
+    	}
+    	else {
+    		if (this.embos <= 11 && this.m.random() > 0.5 && this.glass != 1) {
+    			for (int k = 0; k < this.n; ++k) {
+    				array[k] = (int)(this.ox[k] + dx2 + (15.0f - this.m.random() * 30.0f));
+    				array3[k] = (int)(this.oz[k] + dy2 + (15.0f - this.m.random() * 30.0f));
+    				array2[k] = (int)(this.oy[k] + dz2 + (15.0f - this.m.random() * 30.0f));
+    			}
+    			this.rot(array, array3, dx2, dy2, xy, this.n);
+    			this.rot(array3, array2, dy2, dz2, zy, this.n);
+    			this.rot(array, array2, dx2, dz2, xz, this.n);
+    			this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, this.n);
+    			this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, this.n);
+    			final int[] array4 = new int[this.n];
+    			final int[] array5 = new int[this.n];
+    			for (int l = 0; l < this.n; ++l) {
+    				array4[l] = this.xs(array[l], array2[l]);
+    				array5[l] = this.ys(array3[l], array2[l]);
+    			}
+    			graphics2D.setColor(new Color(230, 230, 230));
+    			graphics2D.fillPolygon(array4, array5, this.n);
+    		}
+    		float n9 = 1.0f;
+    		if (this.embos <= 4) {
+    			n9 = 1.0f + this.m.random() / 5.0f;
+    		}
+    		if (this.embos > 4 && this.embos <= 7) {
+    			n9 = 1.0f + this.m.random() / 4.0f;
+    		}
+    		if (this.embos > 7 && this.embos <= 9) {
+    			n9 = 1.0f + this.m.random() / 3.0f;
+    			if (this.hsb[2] > 0.7) {
+    				this.hsb[2] = 0.7f;
+    			}
+    		}
+    		if (this.embos > 9 && this.embos <= 10) {
+    			n9 = 1.0f + this.m.random() / 2.0f;
+    			if (this.hsb[2] > 0.6) {
+    				this.hsb[2] = 0.6f;
+    			}
+    		}
+    		if (this.embos > 10 && this.embos <= 12) {
+    			n9 = 1.0f + this.m.random() / 1.0f;
+    			if (this.hsb[2] > 0.5) {
+    				this.hsb[2] = 0.5f;
+    			}
+    		}
+    		if (this.embos == 12) {
+    			this.chip = 1;
+    			this.ctmag = 2.0f;
+    			this.bfase = -7;
+    		}
+    		if (this.embos == 13) {
+    			this.hsb[1] = 0.2f;
+    			this.hsb[2] = 0.4f;
+    		}
+    		if (this.embos == 16) {
+    			this.pa = (int)(this.m.random() * this.n);
+    			this.pb = (int)(this.m.random() * this.n);
+    			while (this.pa == this.pb) {
+    				this.pb = (int)(this.m.random() * this.n);
+    			}
+    		}
+    		if (this.embos >= 16) {
+    			int n10 = 1;
+    			int n11 = 1;
+    			float abs;
+    			for (abs = Math.abs(zy); abs > 270; abs -= 360) {}
+    			if (Math.abs(abs) > 90) {
+    				n10 = -1;
+    			}
+    			float abs2;
+    			for (abs2 = Math.abs(xy); abs2 > 270; abs2 -= 360) {}
+    			if (Math.abs(abs2) > 90) {
+    				n11 = -1;
+    			}
+    			final int[] array6 = new int[3];
+    			final int[] array7 = new int[3];
+    			array[0] = this.ox[this.pa] + dx2;
+    			array3[0] = this.oz[this.pa] + dy2;
+    			array2[0] = this.oy[this.pa] + dz2;
+    			array[1] = this.ox[this.pb] + dx2;
+    			array3[1] = this.oz[this.pb] + dy2;
+    			array2[1] = this.oy[this.pb] + dz2;
+    			while (Math.abs(array[0] - array[1]) > 100) {
+    				if (array[1] > array[0]) {
+    					final float[] array8 = array;
+    					final int n12 = 1;
+    					array8[n12] -= 30;
+    				}
+    				else {
+    					final float[] array9 = array;
+    					final int n13 = 1;
+    					array9[n13] += 30;
+    				}
+    			}
+    			while (Math.abs(array2[0] - array2[1]) > 100) {
+    				if (array2[1] > array2[0]) {
+    					final float[] array10 = array2;
+    					final int n14 = 1;
+    					array10[n14] -= 30;
+    				}
+    				else {
+    					final float[] array11 = array2;
+    					final int n15 = 1;
+    					array11[n15] += 30;
+    				}
+    			}
+    			final int n16 = (int)(Math.abs(array[0] - array[1]) / 3 * (0.5 - this.m.random()));
+    			final int n17 = (int)(Math.abs(array2[0] - array2[1]) / 3 * (0.5 - this.m.random()));
+    			array[2] = (array[0] + array[1]) / 2 + n16;
+    			array2[2] = (array2[0] + array2[1]) / 2 + n17;
+    			final int n18 = (int)((Math.abs(array[0] - array[1]) + Math.abs(array2[0] - array2[1])) / 1.5 * (this.m.random() / 2.0f + 0.5));
+    			array3[2] = (array3[0] + array3[1]) / 2 - n10 * n11 * n18;
+    			this.rot(array, array3, dx2, dy2, xy, 3);
+    			this.rot(array3, array2, dy2, dz2, zy, 3);
+    			this.rot(array, array2, dx2, dz2, xz, 3);
+    			this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, 3);
+    			this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, 3);
+    			for (int n19 = 0; n19 < 3; ++n19) {
+    				array6[n19] = this.xs(array[n19], array2[n19]);
+    				array7[n19] = this.ys(array3[n19], array2[n19]);
+    			}
+    			int r = (int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f));
+    			if (r > 255) {
+    				r = 255;
+    			}
+    			if (r < 0) {
+    				r = 0;
+    			}
+    			int g = (int)(169.0f + 169.0f * (this.m.snap[1] / 300.0f));
+    			if (g > 255) {
+    				g = 255;
+    			}
+    			if (g < 0) {
+    				g = 0;
+    			}
+    			int b2 = (int)(89.0f + 89.0f * (this.m.snap[2] / 200.0f));
+    			if (b2 > 255) {
+    				b2 = 255;
+    			}
+    			if (b2 < 0) {
+    				b2 = 0;
+    			}
+    			graphics2D.setColor(new Color(r, g, b2));
+    			graphics2D.fillPolygon(array6, array7, 3);
+    			array[0] = this.ox[this.pa] + dx2;
+    			array3[0] = this.oz[this.pa] + dy2;
+    			array2[0] = this.oy[this.pa] + dz2;
+    			array[1] = this.ox[this.pb] + dx2;
+    			array3[1] = this.oz[this.pb] + dy2;
+    			array2[1] = this.oy[this.pb] + dz2;
+    			while (Math.abs(array[0] - array[1]) > 100) {
+    				if (array[1] > array[0]) {
+    					final float[] array12 = array;
+    					final int n20 = 1;
+    					array12[n20] -= 30;
+    				}
+    				else {
+    					final float[] array13 = array;
+    					final int n21 = 1;
+    					array13[n21] += 30;
+    				}
+    			}
+    			while (Math.abs(array2[0] - array2[1]) > 100) {
+    				if (array2[1] > array2[0]) {
+    					final float[] array14 = array2;
+    					final int n22 = 1;
+    					array14[n22] -= 30;
+    				}
+    				else {
+    					final float[] array15 = array2;
+    					final int n23 = 1;
+    					array15[n23] += 30;
+    				}
+    			}
+    			array[2] = (array[0] + array[1]) / 2 + n16;
+    			array2[2] = (array2[0] + array2[1]) / 2 + n17;
+    			array3[2] = (array3[0] + array3[1]) / 2 - n10 * n11 * (int)(n18 * 0.8);
+    			this.rot(array, array3, dx2, dy2, xy, 3);
+    			this.rot(array3, array2, dy2, dz2, zy, 3);
+    			this.rot(array, array2, dx2, dz2, xz, 3);
+    			this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, 3);
+    			this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, 3);
+    			for (int n24 = 0; n24 < 3; ++n24) {
+    				array6[n24] = this.xs(array[n24], array2[n24]);
+    				array7[n24] = this.ys(array3[n24], array2[n24]);
+    			}
+    			int r2 = (int)(255.0f + 255.0f * (this.m.snap[0] / 400.0f));
+    			if (r2 > 255) {
+    				r2 = 255;
+    			}
+    			if (r2 < 0) {
+    				r2 = 0;
+    			}
+    			int g2 = (int)(207.0f + 207.0f * (this.m.snap[1] / 300.0f));
+    			if (g2 > 255) {
+    				g2 = 255;
+    			}
+    			if (g2 < 0) {
+    				g2 = 0;
+    			}
+    			int b3 = (int)(136.0f + 136.0f * (this.m.snap[2] / 200.0f));
+    			if (b3 > 255) {
+    				b3 = 255;
+    			}
+    			if (b3 < 0) {
+    				b3 = 0;
+    			}
+    			graphics2D.setColor(new Color(r2, g2, b3));
+    			graphics2D.fillPolygon(array6, array7, 3);
+    		}
+    		for (int n25 = 0; n25 < this.n; ++n25) {
+    			if (this.typ == 1) {
+    				array[n25] = (int)(this.ox[n25] * n9 + dx2);
+    			}
+    			else {
+    				array[n25] = this.ox[n25] + dx2;
+    			}
+    			if (this.typ == 2) {
+    				array3[n25] = (int)(this.oz[n25] * n9 + dy2);
+    			}
+    			else {
+    				array3[n25] = this.oz[n25] + dy2;
+    			}
+    			if (this.typ == 3) {
+    				array2[n25] = (int)(this.oy[n25] * n9 + dz2);
+    			}
+    			else {
+    				array2[n25] = this.oy[n25] + dz2;
+    			}
+    		}
+    		if (this.embos != 70) {
+    			++this.embos;
+    		}
+    		else {
+    			this.embos = 16;
+    		}
+    	}
+    	if (this.wz != 0) {
+    		this.rot(array3, array2, this.wy + dy2, this.wz + dz2, wzy, this.n);
+    	}
+    	if (this.wx != 0) {
+    		this.rot(array, array2, this.wx + dx2, this.wz + dz2, wxz, this.n);
+    	}
+    	if (this.chip == 1 && (this.m.random() > 0.6 || this.bfase == 0)) {
+    		this.chip = 0;
+    		if (this.bfase == 0 && this.nocol) {
+    			this.bfase = 1;
+    		}
+    	}
+    	if (this.chip != 0) {
+    		if (this.chip == 1) {
+    			this.cxz = xz;
+    			this.cxy = xy;
+    			this.czy = zy;
+    			final int n26 = (int)(this.m.random() * this.n);
+    			this.cox[0] = this.ox[n26];
+    			this.coz[0] = this.oy[n26];
+    			this.coy[0] = this.oz[n26];
+    			if (this.ctmag > 3.0f) {
+    				this.ctmag = 3.0f;
+    			}
+    			if (this.ctmag < -3.0f) {
+    				this.ctmag = -3.0f;
+    			}
+    			this.cox[1] = (int)(this.cox[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
+    			this.cox[2] = (int)(this.cox[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
+    			this.coy[1] = (int)(this.coy[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
+    			this.coy[2] = (int)(this.coy[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
+    			this.coz[1] = (int)(this.coz[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
+    			this.coz[2] = (int)(this.coz[0] + this.ctmag * (10.0f - this.m.random() * 20.0f));
+    			this.dx = 0;
+    			this.dy = 0;
+    			this.dz = 0;
+    			if (this.bfase != -7) {
+    				this.vx = (int)(this.ctmag * (30.0f - this.m.random() * 60.0f));
+    				this.vz = (int)(this.ctmag * (30.0f - this.m.random() * 60.0f));
+    				this.vy = (int)(this.ctmag * (30.0f - this.m.random() * 60.0f));
+    			}
+    			else {
+    				this.vx = (int)(this.ctmag * (10.0f - this.m.random() * 20.0f));
+    				this.vz = (int)(this.ctmag * (10.0f - this.m.random() * 20.0f));
+    				this.vy = (int)(this.ctmag * (10.0f - this.m.random() * 20.0f));
+    			}
+    			this.chip = 2;
+    		}
+    		final float[] array16 = new float[3];
+    		final float[] array17 = new float[3];
+    		final float[] array18 = new float[3];
+    		for (int n27 = 0; n27 < 3; ++n27) {
+    			array16[n27] = this.cox[n27] + dx2;
+    			array18[n27] = this.coy[n27] + dy2;
+    			array17[n27] = this.coz[n27] + dz2;
+    		}
+    		this.rot(array16, array18, dx2, dy2, this.cxy, 3);
+    		this.rot(array18, array17, dy2, dz2, this.czy, 3);
+    		this.rot(array16, array17, dx2, dz2, this.cxz, 3);
+    		for (int n28 = 0; n28 < 3; ++n28) {
+    			final float[] array19 = array16;
+    			final int n29 = n28;
+    			array19[n29] += this.dx;
+    			final float[] array20 = array18;
+    			final int n30 = n28;
+    			array20[n30] += this.dy;
+    			final float[] array21 = array17;
+    			final int n31 = n28;
+    			array21[n31] += this.dz;
+    		}
+    		this.dx += this.vx;
+    		this.dz += this.vz;
+    		this.dy += this.vy;
+    		this.vy += 7;
+    		if (array18[0] > this.m.ground) {
+    			this.chip = 19;
+    		}
+    		this.rot(array16, array17, this.m.cx, this.m.cz, this.m.xz, 3);
+    		this.rot(array18, array17, this.m.cy, this.m.cz, this.m.zy, 3);
+    		final int[] array22 = new int[3];
+    		final int[] array23 = new int[3];
+    		for (int n32 = 0; n32 < 3; ++n32) {
+    			array22[n32] = this.xs(array16[n32], array17[n32]);
+    			array23[n32] = this.ys(array18[n32], array17[n32]);
+    		}
+    		final int n33 = (int)(this.m.random() * 3.0f);
+    		if (this.bfase != -7) {
+    			if (n33 == 0) {
+    				graphics2D.setColor(new Color(this.c[0], this.c[1], this.c[2]).darker());
+    			}
+    			if (n33 == 1) {
+    				graphics2D.setColor(new Color(this.c[0], this.c[1], this.c[2]));
+    			}
+    			if (n33 == 2) {
+    				graphics2D.setColor(new Color(this.c[0], this.c[1], this.c[2]).brighter());
+    			}
+    		}
+    		else {
+    			graphics2D.setColor(Color.getHSBColor(this.hsb[0], this.hsb[1], this.hsb[2]));
+    		}
+    		graphics2D.fillPolygon(array22, array23, 3);
+    		++this.chip;
+    		if (this.chip == 20) {
+    			this.chip = 0;
+    		}
+    	}
+    	this.rot(array, array3, dx2, dy2, xy, this.n);
+    	this.rot(array3, array2, dy2, dz2, zy, this.n);
+    	this.rot(array, array2, dx2, dz2, xz, this.n);
+    	if ((xy != 0 || zy != 0 || xz != 0) && this.m.trk != 2) {
+    		this.projf = 1.0f;
+    		for (int n34 = 0; n34 < 3; ++n34) {
+    			for (int n35 = 0; n35 < 3; ++n35) {
+    				if (n35 != n34) {
+    					this.projf *= (float)(Math.sqrt((array[n34] - array[n35]) * (array[n34] - array[n35]) + (array2[n34] - array2[n35]) * (array2[n34] - array2[n35])) / 100.0);
+    				}
+    			}
+    		}
+    		this.projf /= 3.0f;
+    	}
+    	this.rot(array, array2, this.m.cx, this.m.cz, this.m.xz, this.n);
+    	boolean b4 = false;
+    	final int[] array24 = new int[this.n];
+    	final int[] array25 = new int[this.n];
+    	int n36 = 500;
+    	for (int n37 = 0; n37 < this.n; ++n37) {
+    		array24[n37] = this.xs(array[n37], array2[n37]);
+    		array25[n37] = this.ys(array3[n37], array2[n37]);
+    	}
+    	int n38 = 0;
+    	int n39 = 1;
+    	for (int n40 = 0; n40 < this.n; ++n40) {
+    		for (int n41 = n40; n41 < this.n; ++n41) {
+    			if (n40 != n41 && Math.abs(array24[n40] - array24[n41]) - Math.abs(array25[n40] - array25[n41]) < n36) {
+    				n39 = n40;
+    				n38 = n41;
+    				n36 = Math.abs(array24[n40] - array24[n41]) - Math.abs(array25[n40] - array25[n41]);
+    			}
+    		}
+    	}
+    	if (array25[n38] < array25[n39]) {
+    		final int n42 = n38;
+    		n38 = n39;
+    		n39 = n42;
+    	}
+    	if (this.spy(array[n38], array2[n38]) > this.spy(array[n39], array2[n39])) {
+    		b4 = true;
+    		int n43 = 0;
+    		for (int n44 = 0; n44 < this.n; ++n44) {
+    			if (array2[n44] < 50 && array3[n44] > this.m.cy) {
+    				b4 = false;
+    			}
+    			else if (array3[n44] == array3[0]) {
+    				++n43;
+    			}
+    		}
+    		if (n43 == this.n && array3[0] > this.m.cy) {
+    			b4 = false;
+    		}
+    	}
+    	this.rot(array3, array2, this.m.cy, this.m.cz, this.m.zy, this.n);
+    	int n45 = 1;
+    	final int[] array26 = new int[this.n];
+    	final int[] array27 = new int[this.n];
+    	int n46 = 0;
+    	int n47 = 0;
+    	int n48 = 0;
+    	int n49 = 0;
+    	int n50 = 0;
+    	for (int n51 = 0; n51 < this.n; ++n51) {
+    		array26[n51] = this.xs(array[n51], array2[n51]);
+    		array27[n51] = this.ys(array3[n51], array2[n51]);
+    		if (array27[n51] < this.m.ih || array2[n51] < 10) {
+    			++n46;
+    		}
+    		if (array27[n51] > this.m.h || array2[n51] < 10) {
+    			++n47;
+    		}
+    		if (array26[n51] < this.m.iw || array2[n51] < 10) {
+    			++n48;
+    		}
+    		if (array26[n51] > this.m.w || array2[n51] < 10) {
+    			++n49;
+    		}
+    		if (array2[n51] < 10) {
+    			++n50;
+    		}
+    	}
+    	if (n48 == this.n || n46 == this.n || n47 == this.n || n49 == this.n) {
+    		n45 = 0;
+    	}
+    	if ((this.m.trk == 1 || this.m.trk == 4) && (n48 != 0 || n46 != 0 || n47 != 0 || n49 != 0)) {
+    		n45 = 0;
+    	}
+    	if (this.m.trk == 3 && n50 != 0) {
+    		n45 = 0;
+    	}
+    	if (n50 != 0) {
+    		b = true;
+    	}
+    	if (n45 != 0 && n8 != -1) {
+    		int abs3 = 0;
+    		int abs4 = 0;
+    		for (int n52 = 0; n52 < this.n; ++n52) {
+    			for (int n53 = n52; n53 < this.n; ++n53) {
+    				if (n52 != n53) {
+    					if (Math.abs(array26[n52] - array26[n53]) > abs3) {
+    						abs3 = Math.abs(array26[n52] - array26[n53]);
+    					}
+    					if (Math.abs(array27[n52] - array27[n53]) > abs4) {
+    						abs4 = Math.abs(array27[n52] - array27[n53]);
+    					}
+    				}
+    			}
+    		}
+    		if (abs3 == 0 || abs4 == 0) {
+    			n45 = 0;
+    		}
+    		else if (abs3 < 3 && abs4 < 3 && ((n8 / abs3 > 15 && n8 / abs4 > 15) || b) && (!this.m.lightson || this.light == 0)) {
+    			n45 = 0;
+    		}
+    	}
+    	if (n45 != 0) {
+    		int lastmaf = 1;
+    		int gr = this.gr;
+    		if (gr < 0 && gr >= -15) {
+    			gr = 0;
+    		}
+    		if (this.gr == -11) {
+    			gr = -90;
+    		}
+    		if (this.gr == -12) {
+    			gr = -75;
+    		}
+    		if (this.gr == -14 || this.gr == -15) {
+    			gr = -50;
+    		}
+    		if (this.glass == 2) {
+    			gr = 200;
+    		}
+    		if (this.fs != 0) {
+    			int n54;
+    			int n55;
+    			if (Math.abs(array27[0] - array27[1]) > Math.abs(array27[2] - array27[1])) {
+    				n54 = 0;
+    				n55 = 2;
+    			}
+    			else {
+    				n54 = 2;
+    				n55 = 0;
+    				lastmaf *= -1;
+    			}
+    			if (array27[1] > array27[n54]) {
+    				lastmaf *= -1;
+    			}
+    			if (array26[1] > array26[n55]) {
+    				lastmaf *= -1;
+    			}
+    			if (this.fs != 22) {
+    				lastmaf *= this.fs;
+    				if (lastmaf == -1) {
+    					gr += 40;
+    					lastmaf = -111;
+    				}
+    			}
+    		}
+    		if (this.m.lightson && this.light == 2) {
+    			gr -= 40;
+    		}
+    		float n56 = array3[0];
+    		float n57 = array3[0];
+    		float n58 = array[0];
+    		float n59 = array[0];
+    		float n60 = array2[0];
+    		float n61 = array2[0];
+    		for (int n62 = 0; n62 < this.n; ++n62) {
+    			if (array3[n62] > n56) {
+    				n56 = array3[n62];
+    			}
+    			if (array3[n62] < n57) {
+    				n57 = array3[n62];
+    			}
+    			if (array[n62] > n58) {
+    				n58 = array[n62];
+    			}
+    			if (array[n62] < n59) {
+    				n59 = array[n62];
+    			}
+    			if (array2[n62] > n60) {
+    				n60 = array2[n62];
+    			}
+    			if (array2[n62] < n61) {
+    				n61 = array2[n62];
+    			}
+    		}
+    		final float n63 = (n56 + n57) / 2;
+    		final float n64 = (n58 + n59) / 2;
+    		final float n65 = (n60 + n61) / 2;
+    		this.av = (int)Math.sqrt((this.m.cy - n63) * (this.m.cy - n63) + (this.m.cx - n64) * (this.m.cx - n64) + n65 * n65 + gr * gr * gr);
+    		if (this.m.trk == 0 && (this.av > this.m.fade[this.disline] || this.av == 0)) {
+    			n45 = 0;
+    		}
+    		if (lastmaf == -111 && this.av > 4500 && !this.road) {
+    			n45 = 0;
+    		}
+    		if (lastmaf == -111 && this.av > 1500) {
+    			b = true;
+    		}
+    		if (this.av > 3000 && this.m.adv <= 900) {
+    			b = true;
+    		}
+    		if (this.fs == 22 && this.av < 11200) {
+    			this.m.lastmaf = lastmaf;
+    		}
+    		if (this.gr == -13 && (!this.m.lastcheck || n8 != -1)) {
+    			n45 = 0;
+    		}
+    		if (this.master == 2 && this.av > 1500 && !this.m.crs) {
+    			n45 = 0;
+    		}
+    		if ((this.gr == -14 || this.gr == -15 || this.gr == -12) && (this.av > 11000 || b4 || lastmaf == -111 || this.m.resdown == 2) && this.m.trk != 2 && this.m.trk != 3) {
+    			n45 = 0;
+    		}
+    		if (this.gr == -11 && this.av > 11000 && this.m.trk != 2 && this.m.trk != 3) {
+    			n45 = 0;
+    		}
+    		if (this.glass == 2 && (this.m.trk != 0 || this.av > 6700)) {
+    			n45 = 0;
+    		}
+    		if (this.flx != 0 && this.m.random() > 0.3 && this.flx != 77) {
+    			n45 = 0;
+    		}
+    	}
+    	if (n45 != 0) {
+    		float n66 = (float)(this.projf / this.deltaf + 0.3);
+    		if (b && !this.solo) {
+    			boolean b5 = false;
+    			if (n66 > 1.0f) {
+    				if (n66 >= 1.27) {
+    					b5 = true;
+    				}
+    				n66 = 1.0f;
+    			}
+    			if (b5) {
+    				n66 *= (float)0.89;
+    			}
+    			else {
+    				n66 *= (float)0.86;
+    			}
+    			if (n66 < 0.37) {
+    				n66 = 0.37f;
+    			}
+    			if (this.gr == -9) {
+    				n66 = 0.7f;
+    			}
+    			if (this.gr == -4) {
+    				n66 = 0.74f;
+    			}
+    			if (this.gr != -7 && this.m.trk == 0 && b4) {
+    				n66 = 0.32f;
+    			}
+    			if (this.gr == -8 || this.gr == -14 || this.gr == -15) {
+    				n66 = 1.0f;
+    			}
+    			if (this.gr == -11 || this.gr == -12) {
+    				n66 = 0.6f;
+    				if (n8 == -1) {
+    					if (this.m.cpflik || (this.m.nochekflk && !this.m.lastcheck)) {
+    						n66 = 1.0f;
+    					}
+    					else {
+    						n66 = 0.76f;
+    					}
+    				}
+    			}
+    			if (this.gr == -13 && n8 == -1) {
+    				if (this.m.cpflik) {
+    					n66 = 0.0f;
+    				}
+    				else {
+    					n66 = 0.76f;
+    				}
+    			}
+    			if (this.gr == -6) {
+    				n66 = 0.62f;
+    			}
+    			if (this.gr == -5) {
+    				n66 = 0.55f;
+    			}
+    		}
+    		else {
+    			if (n66 > 1.0f) {
+    				n66 = 1.0f;
+    			}
+    			if (n66 < 0.6 || b4) {
+    				n66 = 0.6f;
+    			}
+    		}
+    		Color color = Color.getHSBColor(this.hsb[0], this.hsb[1], this.hsb[2] * n66);
+    		if (this.m.trk == 1) {
+    			final float[] hsbvals = new float[3];
+    			Color.RGBtoHSB(this.oc[0], this.oc[1], this.oc[2], hsbvals);
+    			hsbvals[0] = 0.15f;
+    			hsbvals[1] = 0.3f;
+    			color = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2] * n66 + 0.0f);
+    		}
+    		if (this.m.trk == 3) {
+    			final float[] hsbvals2 = new float[3];
+    			Color.RGBtoHSB(this.oc[0], this.oc[1], this.oc[2], hsbvals2);
+    			hsbvals2[0] = 0.6f;
+    			hsbvals2[1] = 0.14f;
+    			color = Color.getHSBColor(hsbvals2[0], hsbvals2[1], hsbvals2[2] * n66 + 0.0f);
+    		}
+    		int red = color.getRed();
+    		int green = color.getGreen();
+    		int blue = color.getBlue();
+    		if (this.m.lightson && (this.light != 0 || ((this.gr == -11 || this.gr == -12) && n8 == -1))) {
+    			red = this.oc[0];
+    			if (red > 255) {
+    				red = 255;
+    			}
+    			if (red < 0) {
+    				red = 0;
+    			}
+    			green = this.oc[1];
+    			if (green > 255) {
+    				green = 255;
+    			}
+    			if (green < 0) {
+    				green = 0;
+    			}
+    			blue = this.oc[2];
+    			if (blue > 255) {
+    				blue = 255;
+    			}
+    			if (blue < 0) {
+    				blue = 0;
+    			}
+    		}
+    		if (this.m.trk == 0) {
+    			for (int n67 = 0; n67 < 16; ++n67) {
+    				if (this.av > this.m.fade[n67]) {
+    					red = (red * this.m.fogd + this.m.cfade[0]) / (this.m.fogd + 1);
+    					green = (green * this.m.fogd + this.m.cfade[1]) / (this.m.fogd + 1);
+    					blue = (blue * this.m.fogd + this.m.cfade[2]) / (this.m.fogd + 1);
+    				}
+    			}
+    		}
+    		graphics2D.setColor(new Color(red, green, blue));
+    		graphics2D.fillPolygon(array26, array27, this.n);
+    		if (this.m.trk != 0 && this.gr == -10) {
+    			b = false;
+    		}
+    		if (!b) {
+    			if (this.flx == 0) {
+    				if (!this.solo) {
+    					int r3 = 0;
+    					int g3 = 0;
+    					int b6 = 0;
+    					if (this.m.lightson && this.light != 0) {
+    						r3 = this.oc[0] / 2;
+    						if (r3 > 255) {
+    							r3 = 255;
+    						}
+    						if (r3 < 0) {
+    							r3 = 0;
+    						}
+    						g3 = this.oc[1] / 2;
+    						if (g3 > 255) {
+    							g3 = 255;
+    						}
+    						if (g3 < 0) {
+    							g3 = 0;
+    						}
+    						b6 = this.oc[2] / 2;
+    						if (b6 > 255) {
+    							b6 = 255;
+    						}
+    						if (b6 < 0) {
+    							b6 = 0;
+    						}
+    					}
+    					if (Madness.anti == 1) {
+    						graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    					}
+    					graphics2D.setColor(new Color(r3, g3, b6));
+    					graphics2D.drawPolygon(array26, array27, this.n);
+    					if (Madness.anti == 1) {
+    						graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+    					}
+    				}
+    			}
+    			else {
+    				if (this.flx == 2) {
+    					graphics2D.setColor(new Color(0, 0, 0));
+    					graphics2D.drawPolygon(array26, array27, this.n);
+    				}
+    				if (this.flx == 1) {
+    					final int r4 = 0;
+    					int g4 = (int)(223.0f + 223.0f * (this.m.snap[1] / 100.0f));
+    					if (g4 > 255) {
+    						g4 = 255;
+    					}
+    					if (g4 < 0) {
+    						g4 = 0;
+    					}
+    					int b7 = (int)(255.0f + 255.0f * (this.m.snap[2] / 100.0f));
+    					if (b7 > 255) {
+    						b7 = 255;
+    					}
+    					if (b7 < 0) {
+    						b7 = 0;
+    					}
+    					graphics2D.setColor(new Color(r4, g4, b7));
+    					graphics2D.drawPolygon(array26, array27, this.n);
+    					this.flx = 2;
+    				}
+    				if (this.flx == 3) {
+    					final int r5 = 0;
+    					int g5 = (int)(255.0f + 255.0f * (this.m.snap[1] / 100.0f));
+    					if (g5 > 255) {
+    						g5 = 255;
+    					}
+    					if (g5 < 0) {
+    						g5 = 0;
+    					}
+    					int b8 = (int)(223.0f + 223.0f * (this.m.snap[2] / 100.0f));
+    					if (b8 > 255) {
+    						b8 = 255;
+    					}
+    					if (b8 < 0) {
+    						b8 = 0;
+    					}
+    					graphics2D.setColor(new Color(r5, g5, b8));
+    					graphics2D.drawPolygon(array26, array27, this.n);
+    					this.flx = 2;
+    				}
+    				if (this.flx == 77) {
+    					graphics2D.setColor(new Color(16, 198, 255));
+    					graphics2D.drawPolygon(array26, array27, this.n);
+    					this.flx = 0;
+    				}
+    			}
+    		}
+    		else if (this.road && this.av <= 3000 && this.m.trk == 0 && this.m.fade[0] > 4000) {
+    			red -= 10;
+    			if (red < 0) {
+    				red = 0;
+    			}
+    			green -= 10;
+    			if (green < 0) {
+    				green = 0;
+    			}
+    			blue -= 10;
+    			if (blue < 0) {
+    				blue = 0;
+    			}
+    			graphics2D.setColor(new Color(red, green, blue));
+    			graphics2D.drawPolygon(array26, array27, this.n);
+    		}
+    		if (this.gr == -10) {
+    			if (this.m.trk == 0) {
+    				int r6 = this.c[0];
+    				int g6 = this.c[1];
+    				int b9 = this.c[2];
+    				if (n8 == -1 && this.m.cpflik) {
+    					r6 *= (int)1.6;
+    					if (r6 > 255) {
+    						r6 = 255;
+    					}
+    					g6 *= (int)1.6;
+    					if (g6 > 255) {
+    						g6 = 255;
+    					}
+    					b9 *= (int)1.6;
+    					if (b9 > 255) {
+    						b9 = 255;
+    					}
+    				}
+    				for (int n68 = 0; n68 < 16; ++n68) {
+    					if (this.av > this.m.fade[n68]) {
+    						r6 = (r6 * this.m.fogd + this.m.cfade[0]) / (this.m.fogd + 1);
+    						g6 = (g6 * this.m.fogd + this.m.cfade[1]) / (this.m.fogd + 1);
+    						b9 = (b9 * this.m.fogd + this.m.cfade[2]) / (this.m.fogd + 1);
+    					}
+    				}
+    				graphics2D.setColor(new Color(r6, g6, b9));
+    				graphics2D.drawPolygon(array26, array27, this.n);
+    			}
+    			else if (this.m.cpflik && this.m.hit == 5000) {
+    				int g7 = (int)(Math.random() * 115.0);
+    				int r7 = g7 * 2 - 54;
+    				if (r7 < 0) {
+    					r7 = 0;
+    				}
+    				if (r7 > 255) {
+    					r7 = 255;
+    				}
+    				int b10 = 202 + g7 * 2;
+    				if (b10 < 0) {
+    					b10 = 0;
+    				}
+    				if (b10 > 255) {
+    					b10 = 255;
+    				}
+    				g7 += 101;
+    				if (g7 < 0) {
+    					g7 = 0;
+    				}
+    				if (g7 > 255) {
+    					g7 = 255;
+    				}
+    				graphics2D.setColor(new Color(r7, g7, b10));
+    				graphics2D.drawPolygon(array26, array27, this.n);
+    			}
+    		}
+    		if (this.gr == -18 && this.m.trk == 0) {
+    			int r8 = this.c[0];
+    			int g8 = this.c[1];
+    			int b11 = this.c[2];
+    			if (this.m.cpflik && this.m.elecr >= 0.0f) {
+    				r8 = (int)(25.5f * this.m.elecr);
+    				if (r8 > 255) {
+    					r8 = 255;
+    				}
+    				g8 = (int)(128.0f + 12.8f * this.m.elecr);
+    				if (g8 > 255) {
+    					g8 = 255;
+    				}
+    				b11 = 255;
+    			}
+    			for (int n69 = 0; n69 < 16; ++n69) {
+    				if (this.av > this.m.fade[n69]) {
+    					r8 = (r8 * this.m.fogd + this.m.cfade[0]) / (this.m.fogd + 1);
+    					g8 = (g8 * this.m.fogd + this.m.cfade[1]) / (this.m.fogd + 1);
+    					b11 = (b11 * this.m.fogd + this.m.cfade[2]) / (this.m.fogd + 1);
+    				}
+    			}
+    			graphics2D.setColor(new Color(r8, g8, b11));
+    			graphics2D.drawPolygon(array26, array27, this.n);
+    		}
+    	}
+    }
+
+    public void drawPlane(final Graphics2D graphics2D, final float x, final float y, final float z, final float pitch, final float roll, final float yaw) {
+    	float plane3DX = this.ox[0] + x , plane3DZ = this.oz[0] + y, plane3DY = this.oy[0] + z;
+    	rot(plane3DY, plane3DZ, y, z, pitch);
+    	rot(plane3DX, plane3DZ, x, z, roll);
+    	rot(plane3DX, plane3DY, x, y, yaw);
+    	rot(plane3DX, plane3DZ, this.m.cx, this.m.cz, this.m.zy);
+		rot(plane3DY, plane3DZ, this.m.cy, this.m.cz, this.m.xz);
+		int plane2DX = xs(plane3DX, plane3DY), plane2DY = xs(plane3DZ, plane3DY);
+		graphics2D.setColor(Color.BLACK);
+		graphics2D.drawOval(plane2DX - 10, plane2DY - 10, 20, 20);
     }
 
 	/**
@@ -1037,8 +1218,8 @@ public class Plane
         final float[] array3 = new float[this.n];
         for (int i = 0; i < this.n; ++i) {
             array[i] = this.ox[i] + f;
-            array3[i] = this.oy[i] + h;
-            array2[i] = this.oz[i] + o;
+            array3[i] = this.oz[i] + h;
+            array2[i] = this.oy[i] + o;
         }
         this.rot(array, array3, f, h, xy, this.n);
         this.rot(array3, array2, h, o, zy, this.n);
@@ -1095,7 +1276,7 @@ public class Plane
             if (ncx < 0) {
                 ncx = 0;
             }
-            int ncz = (int) ((n17 - this.t.sz + this.m.z) / 3000);
+            int ncz = (int) ((n17 - this.t.sz + this.m.y) / 3000);
             if (ncz > this.t.ncz) {
                 ncz = this.t.ncz;
             }
@@ -1105,16 +1286,16 @@ public class Plane
             for (int n18 = this.t.sect[ncx][ncz].length - 1; n18 >= 0; --n18) {
                 final int n19 = this.t.sect[ncx][ncz][n18];
                 int n20 = 0;
-                if (Math.abs(this.t.zy[n19]) != 90 && Math.abs(this.t.xy[n19]) != 90 && this.t.rady[n19] != 801 && Math.abs(n16 - (this.t.x[n19] - this.m.x)) < this.t.radx[n19] && Math.abs(n17 - (this.t.z[n19] - this.m.z)) < this.t.radz[n19] && !this.t.decor[n19]) {
+                if (Math.abs(this.t.zy[n19]) != 90 && Math.abs(this.t.xy[n19]) != 90 && this.t.rady[n19] != 801 && Math.abs(n16 - (this.t.x[n19] - this.m.x)) < this.t.radx[n19] && Math.abs(n17 - (this.t.z[n19] - this.m.y)) < this.t.radz[n19] && !this.t.decor[n19]) {
                     ++n20;
                 }
                 if (n20 != 0) {
                     for (int n21 = 0; n21 < this.n; ++n21) {
-                        array3[n21] = this.t.y[n19] - this.m.y;
+                        array3[n21] = this.t.y[n19] - this.m.z;
                         if (this.t.zy[n19] != 0) {
                             final float[] array4 = array3;
                             final int n22 = n21;
-                            array4[n22] += (int)((array2[n21] - (this.t.z[n19] - this.m.z - this.t.radz[n19])) * this.m.sin(this.t.zy[n19]) / this.m.sin(90 - this.t.zy[n19]) - this.t.radz[n19] * this.m.sin(this.t.zy[n19]) / this.m.sin(90 - this.t.zy[n19]));
+                            array4[n22] += (int)((array2[n21] - (this.t.z[n19] - this.m.y - this.t.radz[n19])) * this.m.sin(this.t.zy[n19]) / this.m.sin(90 - this.t.zy[n19]) - this.t.radz[n19] * this.m.sin(this.t.zy[n19]) / this.m.sin(90 - this.t.zy[n19]));
                         }
                         if (this.t.xy[n19] != 0) {
                             final float[] array5 = array3;
@@ -1218,6 +1399,15 @@ public class Plane
         }
     }
     
+    public void rot(float array, float array2, final float cx, final float cz, final float xz) {
+        if (xz != 0) {
+                final float n5 = array;
+                final float n6 = array2;
+                array = cx + ((n5 - cx) * this.m.cos(xz) - (n6 - cz) * this.m.sin(xz));
+                array2 = cz + ((n5 - cx) * this.m.sin(xz) + (n6 - cz) * this.m.cos(xz));
+        }
+    }
+    
     public float spy(final float array, final float array2) {
         return (float)Math.sqrt((array - this.m.cx) * (array - this.m.cx) + array2 * array2);
     }
@@ -1236,18 +1426,18 @@ public class Plane
         }
         float minX = this.ox[0];
         float maxX = this.ox[0];
-        float minY = this.oy[0];
-        float maxY = this.oy[0];
-        float minZ = this.oz[0];
-        float maxZ = this.oz[0];
+        float minY = this.oz[0];
+        float maxY = this.oz[0];
+        float minZ = this.oy[0];
+        float maxZ = this.oy[0];
 
         for (int i = 1; i < this.n; ++i) {
             if (this.ox[i] < minX) minX = this.ox[i];
             if (this.ox[i] > maxX) maxX = this.ox[i];
-            if (this.oy[i] < minY) minY = this.oy[i];
-            if (this.oy[i] > maxY) maxY = this.oy[i];
-            if (this.oz[i] < minZ) minZ = this.oz[i];
-            if (this.oz[i] > maxZ) maxZ = this.oz[i];
+            if (this.oz[i] < minY) minY = this.oz[i];
+            if (this.oz[i] > maxY) maxY = this.oz[i];
+            if (this.oy[i] < minZ) minZ = this.oy[i];
+            if (this.oy[i] > maxZ) maxZ = this.oy[i];
         }
 
         x[0] = minX;

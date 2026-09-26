@@ -52,8 +52,7 @@ public class Madness extends Panel
     static long advtime;
     
     public static void main(final String[] array) {
-        //System.runFinalizersOnExit(true);
-    	// inside main, first thing after fpath setup:
+    	
     	String os = System.getProperty("os.name").toLowerCase();
     	String arch = System.getProperty("os.arch").toLowerCase();
     	String sub;
@@ -65,14 +64,8 @@ public class Madness extends Panel
     	    sub = arch.contains("64") ? "linux64" : "linux32";
 
     	String libDir = Madness.fpath + "lib" + File.separator + sub;
-    	try {
-    	    System.setProperty("java.library.path", libDir);
-    	    Field sysPaths = ClassLoader.class.getDeclaredField("sys_paths");
-    	    sysPaths.setAccessible(true);
-    	    sysPaths.set(null, null);
-    	} catch (Exception e) {
-    	    System.out.println("Failed to set library path: " + e);
-    	}
+    	System.setProperty("java.library.path", libDir);
+    	System.setProperty("org.lwjgl.librarypath", libDir);  // NativeBass/LibLoader also checks this
 
     	try {
     	    BassInit.loadLibraries();
@@ -81,6 +74,8 @@ public class Madness extends Panel
     	} catch (Exception e) {
     	    System.out.println("NativeBass init error: " + e);
     	}
+    	
+    	//System.runFinalizersOnExit(true);
         (Madness.frame = new Frame("Need for Madness")).setBackground(new Color(0, 0, 0));
         Madness.frame.setIgnoreRepaint(true);
         Madness.fpath = "";
